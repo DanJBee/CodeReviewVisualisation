@@ -1,0 +1,33 @@
+{
+  repository(owner: "%s", name: "%s") {
+    pullRequests(last: 10) {
+      edges {
+        node {
+          number
+          createdAt
+          author {
+            login
+            avatarUrl
+            __typename
+          }
+          comments(first: 100) {
+            nodes {
+              author {
+                login
+                avatarUrl
+                __typename
+              }
+              createdAt
+            }
+          }
+        }
+      }
+    }
+  }
+  rateLimit {
+    limit
+    cost
+    remaining
+    resetAt
+  }
+}
