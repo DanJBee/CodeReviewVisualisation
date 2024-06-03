@@ -25,7 +25,7 @@ if __name__ == "__main__":
     if not os.path.isdir("microsoft-typescript"):
         sys.exit(1)
 
-    print("ant-design ant-design")
+    print("microsoft typescript")
     output_directory = "./microsoft-typescript-split/"
     if not os.path.isdir(output_directory):
         os.mkdir(output_directory)
