@@ -22,15 +22,15 @@ def save_nodes(output_dir: str, edges_list: list):
 # Main loop
 if __name__ == "__main__":
     # If the owner/repository pair does not have a directory then continue
-    if not os.path.isdir("ant-design-ant-design"):
+    if not os.path.isdir("microsoft-typescript"):
         sys.exit(1)
 
     print("ant-design ant-design")
-    output_directory = "./ant-design-ant-design-split/"
+    output_directory = "./microsoft-typescript-split/"
     if not os.path.isdir(output_directory):
         os.mkdir(output_directory)
 
-    with open("./ant-design-ant-design/first.json") as file:
+    with open("./microsoft-typescript/first.json") as file:
         content = file.read()
         edges = extract_edges(content)
         save_nodes(output_directory, edges)
@@ -39,7 +39,7 @@ if __name__ == "__main__":
     while previous_cursor:
         print(previous_cursor)
         try:
-            with open("./ant-design-ant-design/%s" % previous_cursor) as file:
+            with open("./microsoft-typescript/%s" % previous_cursor) as file:
                 content = file.read()
                 edges = extract_edges(content)
                 save_nodes(output_directory, edges)
