@@ -14,13 +14,13 @@ config = ConfigParser()
 config.read("settings.ini")
 
 # Initialises the logger from the logger.py file
-init_logger()
+init_logger("execution.log")
 
 # Initialises the authorisation headers required by GitHub's GraphQL API
 HEADERS = {"Authorization": "Bearer %s" % config["DEFAULT"]["PAT"]}
 
 # Defines an owner-repository dictionary that will be iterated through during execution of the program
-OWNER_REPO_DICT = {"microsoft": "fgdfgdfg"}
+OWNER_REPO_DICT = {"microsoft": "typescript"}
 
 # Defines a template string for the GraphQL query
 query_template = """{
