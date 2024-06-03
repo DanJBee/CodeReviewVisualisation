@@ -4,6 +4,10 @@ import json
 import os.path
 import sys
 
+OWNER = "microsoft"
+REPO = "typescript"
+OUTPUT = "%s-%s" % (OWNER, REPO)
+
 
 # Extracts the edges from the generated JSON files from the crawler
 def extract_edges(json_content: str):
@@ -22,7 +26,7 @@ def save_nodes(output_dir: str, edges_list: list):
 # Main loop
 if __name__ == "__main__":
     # If the owner/repository pair does not have a directory then continue
-    if not os.path.isdir("microsoft-typescript"):
+    if not os.path.isdir(OUTPUT):
         sys.exit(1)
 
     print("microsoft typescript")

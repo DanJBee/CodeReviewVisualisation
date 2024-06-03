@@ -3,6 +3,7 @@
 import json
 import logging
 import os.path
+import sys
 from configparser import ConfigParser
 
 import requests
@@ -149,7 +150,11 @@ if __name__ == "__main__":
             os.mkdir(output_directory)
 
         # Initially set prs_before_cursor = None since this is the first crawl
-        cursor = crawl(owner, repo, output_directory, None)
+        cursor = (
+            sys.argv[1]
+            if len(sys.argv) > 1
+            else crawl(owner, repo, output_directory, None)
+        )
         # While there is still pull request information being returned
         while cursor:
             cursor = crawl(owner, repo, output_directory, cursor)
