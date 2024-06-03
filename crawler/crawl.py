@@ -20,7 +20,7 @@ init_logger()
 HEADERS = {"Authorization": "Bearer %s" % config["DEFAULT"]["PAT"]}
 
 # Defines an owner-repository dictionary that will be iterated through during execution of the program
-OWNER_REPO_DICT = {"baidu": "amis"}
+OWNER_REPO_DICT = {"microsoft": "fgdfgdfg"}
 
 # Defines a template string for the GraphQL query
 query_template = """{
@@ -61,13 +61,15 @@ query_template = """{
 
 
 # Runs the GraphQL query by submitting a post request to the GraphQL API endpoint & returning response in JSON format
-def run_query(q: str) -> dict | None:
+def run_query(q: str) -> dict:
     request = requests.post(
         "https://api.github.com/graphql", json={"query": q}, headers=HEADERS
     )
     if request.status_code == 200:
         if "errors" in request.json():
-            logging.info(f"GitHub returns error{request.json()['errors']}")
+            logging.info(
+                f"GitHub returns error with message: {request.json()['errors'][0]['message']}"
+            )
             return
         return request.json()
     else:
@@ -139,15 +141,16 @@ def crawl(
 
 
 # Main loop
-for owner, repo in OWNER_REPO_DICT.items():
-    output_directory = "./%s-%s/" % (owner, repo)
-    # If the output directory does not exist then create it
-    if not os.path.isdir(output_directory):
-        os.mkdir(output_directory)
+if __name__ == "__main__":
+    for owner, repo in OWNER_REPO_DICT.items():
+        output_directory = "./%s-%s/" % (owner, repo)
+        # If the output directory does not exist then create it
+        if not os.path.isdir(output_directory):
+            os.mkdir(output_directory)
 
-    # Initially set prs_before_cursor = None since this is the first crawl
-    cursor = crawl(owner, repo, output_directory, None)
-    # While there is still pull request information being returned
-    while cursor:
-        cursor = crawl(owner, repo, output_directory, cursor)
-    logging.info("Crawling PRs from '%s/%s is done" % (owner, repo))
+        # Initially set prs_before_cursor = None since this is the first crawl
+        cursor = crawl(owner, repo, output_directory, None)
+        # While there is still pull request information being returned
+        while cursor:
+            cursor = crawl(owner, repo, output_directory, cursor)
+        logging.info("Crawling PRs from '%s/%s' is done" % (owner, repo))

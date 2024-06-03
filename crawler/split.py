@@ -2,14 +2,7 @@
 
 import json
 import os.path
-
-OWNER_REPO_DICT = {
-    "ant-design": "ant-design",
-    "web-infra-dev": "modern-js",
-    "emqx": "emqx",
-    "pancakeswap": "pancake-frontend",
-    "baidu": "amis",
-}
+import sys
 
 
 # Extracts the edges from the generated JSON files from the crawler
@@ -27,17 +20,17 @@ def save_nodes(output_dir: str, edges_list: list):
 
 
 # Main loop
-for owner, repo in OWNER_REPO_DICT.items():
+if __name__ == "__main__":
     # If the owner/repository pair does not have a directory then continue
-    if not os.path.isdir(f"{owner}-{repo}"):
-        continue
+    if not os.path.isdir("ant-design-ant-design"):
+        sys.exit(1)
 
-    print(owner, repo)
-    output_directory = "./%s-%s-split/" % (owner, repo)
+    print("ant-design ant-design")
+    output_directory = "./ant-design-ant-design-split/"
     if not os.path.isdir(output_directory):
         os.mkdir(output_directory)
 
-    with open("./%s-%s/first.json" % (owner, repo)) as file:
+    with open("./ant-design-ant-design/first.json") as file:
         content = file.read()
         edges = extract_edges(content)
         save_nodes(output_directory, edges)
@@ -46,7 +39,7 @@ for owner, repo in OWNER_REPO_DICT.items():
     while previous_cursor:
         print(previous_cursor)
         try:
-            with open("./%s-%s/%s" % (owner, repo, previous_cursor)) as file:
+            with open("./ant-design-ant-design/%s" % previous_cursor) as file:
                 content = file.read()
                 edges = extract_edges(content)
                 save_nodes(output_directory, edges)
