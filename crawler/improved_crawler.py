@@ -3,7 +3,6 @@
 import json
 import logging
 import os.path
-import sys
 from configparser import ConfigParser
 
 import requests
@@ -161,18 +160,18 @@ def save_cursor(output_directory: str, saved_cursor: str):
 def load_cursor(output_directory: str) -> str | None:
     # Retrieve previously saved cursor file from save_cursor method
     saved_cursor_file = os.path.join(output_directory, "cursor.txt")
-    # If the file exists then read the file & load it
-    if os.path.exists(saved_cursor_file):
-        with open(saved_cursor_file, "r") as file:
-            retrieved_cursor = file.read()
-            logging.info(
-                "Loaded cursor from saved cursor file %s with cursor value %s"
-                % (saved_cursor_file, retrieved_cursor)
-            )
-            # Return the retrieved cursor value from the saved cursor file
-            return retrieved_cursor
-    # If the file does not exist i.e. there is no saved cursor value then return None
-    return None
+    # If the file does not exist then return
+    if not os.path.exists(saved_cursor_file):
+        return
+    # Otherwise read & load the saved cursor file
+    with open(saved_cursor_file, "r") as file:
+        retrieved_cursor = file.read()
+        logging.info(
+            "Loaded cursor from saved cursor file %s with cursor value %s"
+            % (saved_cursor_file, retrieved_cursor)
+        )
+        # Return the retrieved cursor value from the saved cursor file
+        return retrieved_cursor
 
 
 # Main loop
@@ -184,8 +183,8 @@ if __name__ == "__main__":
 
     # Loads the cursor value from the current output directory
     cursor = (
-        sys.argv[1]
-        if len(sys.argv) > 1
+        load_cursor(output_dir)
+        if load_cursor(output_dir)
         else crawl("microsoft", "typescript", output_dir, None)
     )
     # If there is no currently loaded cursor i.e. this is the first query
@@ -195,4 +194,7 @@ if __name__ == "__main__":
     # While there is still pull request information being returned
     while cursor:
         cursor = crawl("microsoft", "typescript", output_dir, cursor)
+    # Save the last cursor, so it can be re-used in the next run of the program
+    with open("last_cursor.txt", "w") as file:
+        file.write(cursor)
     logging.info("Crawling all PRs from 'microsoft/typescript' is done")
