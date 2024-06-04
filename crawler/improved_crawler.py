@@ -195,6 +195,6 @@ if __name__ == "__main__":
     while cursor:
         cursor = crawl("microsoft", "typescript", output_dir, cursor)
     # Save the last cursor, so it can be re-used in the next run of the program
-    with open("last_cursor.txt", "w") as file:
-        file.write(cursor)
+    with open("last_cursor.txt", "w") as last_cursor_file:
+        last_cursor_file.write(cursor)
     logging.info("Crawling all PRs from 'microsoft/typescript' is done")
