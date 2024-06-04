@@ -26,7 +26,6 @@ CURSOR_FILE = "cursor.txt"
 # Defines owner, repository name, & output constants
 OWNER = "microsoft"
 REPO = "typescript"
-OUTPUT = "%s-%s" % (OWNER, REPO)
 
 # Defines a template string for the GraphQL query
 query_template = """{
@@ -203,11 +202,11 @@ if __name__ == "__main__":
     # While there is still pull request information being returned
     while cursor:
         cursor = crawl(OWNER, REPO, output_dir, cursor)
-        # Save the last cursor, so it can be re-used in the next run of the program
-        with open(CURSOR_FILE, "w") as last_cursor_file:
-            last_cursor_file.write(cursor)
         if cursor is None:
             # Sleep for an hour to recover the API rate limit
             time.sleep(3600)
             cursor = crawl(OWNER, REPO, output_dir, cursor)
     logging.info(f"Crawling all PRs from '{OWNER}/{REPO}' is done")
+    # Save the last cursor, so it can be re-used in the next run of the program
+    with open(CURSOR_FILE, "w") as last_cursor_file:
+        last_cursor_file.write(cursor)
