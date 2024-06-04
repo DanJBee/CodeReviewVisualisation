@@ -3,6 +3,7 @@
 import json
 import logging
 import os.path
+import time
 from configparser import ConfigParser
 
 import requests
@@ -18,6 +19,14 @@ init_logger("execution.log")
 
 # Initialises the authorisation headers required by GitHub's GraphQL API
 HEADERS = {"Authorization": "Bearer %s" % config["DEFAULT"]["PAT"]}
+
+# Defines a standard cursor file name
+CURSOR_FILE = "cursor.txt"
+
+# Defines owner, repository name, & output constants
+OWNER = "microsoft"
+REPO = "typescript"
+OUTPUT = "%s-%s" % (OWNER, REPO)
 
 # Defines a template string for the GraphQL query
 query_template = """{
@@ -149,7 +158,7 @@ def crawl(
 # Saves the current cursor value to a file called "cursor.txt" for future reference
 def save_cursor(output_directory: str, saved_cursor: str):
     # Save the current cursor value to "cursor.txt" for storage
-    cursor_file = os.path.join(output_directory, "cursor.txt")
+    cursor_file = os.path.join(output_directory, CURSOR_FILE)
     with open(cursor_file, "w") as file:
         # Save & write the cursor to the assigned cursor file
         file.write(saved_cursor)
@@ -159,7 +168,7 @@ def save_cursor(output_directory: str, saved_cursor: str):
 # Loads the cursor from a given output directory
 def load_cursor(output_directory: str) -> str | None:
     # Retrieve previously saved cursor file from save_cursor method
-    saved_cursor_file = os.path.join(output_directory, "cursor.txt")
+    saved_cursor_file = os.path.join(output_directory, CURSOR_FILE)
     # If the file does not exist then return
     if not os.path.exists(saved_cursor_file):
         return
@@ -177,7 +186,7 @@ def load_cursor(output_directory: str) -> str | None:
 # Main loop
 if __name__ == "__main__":
     # If the output directory does not exist then create it
-    output_dir = "./microsoft-typescript/"
+    output_dir = f"./{OWNER}-{REPO}/"
     if not os.path.isdir(output_dir):
         os.mkdir(output_dir)
 
@@ -185,16 +194,20 @@ if __name__ == "__main__":
     cursor = (
         load_cursor(output_dir)
         if load_cursor(output_dir)
-        else crawl("microsoft", "typescript", output_dir, None)
+        else crawl(OWNER, REPO, output_dir, None)
     )
     # If there is no currently loaded cursor i.e. this is the first query
     if not cursor:
         # Initially set prs_before_cursor = None since this is the first crawl
-        cursor = crawl("microsoft", "typescript", output_dir, None)
+        cursor = crawl(OWNER, REPO, output_dir, None)
     # While there is still pull request information being returned
     while cursor:
-        cursor = crawl("microsoft", "typescript", output_dir, cursor)
-    # Save the last cursor, so it can be re-used in the next run of the program
-    with open("last_cursor.txt", "w") as last_cursor_file:
-        last_cursor_file.write(cursor)
-    logging.info("Crawling all PRs from 'microsoft/typescript' is done")
+        cursor = crawl(OWNER, REPO, output_dir, cursor)
+        # Save the last cursor, so it can be re-used in the next run of the program
+        with open(CURSOR_FILE, "w") as last_cursor_file:
+            last_cursor_file.write(cursor)
+        if cursor is None:
+            # Sleep for an hour to recover the API rate limit
+            time.sleep(3600)
+            cursor = crawl(OWNER, REPO, output_dir, cursor)
+    logging.info(f"Crawling all PRs from '{OWNER}/{REPO}' is done")
