@@ -37,7 +37,7 @@ create table comments
 create table authors
 (
     author_id         varchar(100) primary key,
-    number            bigint       foreign key (number) references pull_requests (number),
+    number            bigint       null foreign key (number) references pull_requests (number),
     author_avatar_url varchar(100) not null,
     type_name         varchar(100) not null,
     index author_author_avatar_url_index on authors (author_avatar_url),
