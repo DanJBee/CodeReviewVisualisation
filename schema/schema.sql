@@ -25,8 +25,8 @@ create table comments
 (
     id                bigint       primary key auto_increment,
     number            bigint       foreign key (number) references pull_requests (number),
-    author_id         varchar(100) null,
-    type_name         varchar(100) null,
+    author_id         varchar(100) not null,
+    type_name         varchar(100) not null,
     created_at        timestamp    not null,
     index comments_author_id_index on comments (author_id),
     index comments_number_index on comments (number),
@@ -35,9 +35,8 @@ create table comments
 
 create table authors
 (
-    id                bigint       primary key auto_increment,
+    author_id         varchar(100) primary key,
     number            bigint       foreign key (number) references pull_requests (number),
-    author_id         varchar(100) not null,
     author_avatar_url varchar(100) not null,
     type_name         varchar(100) not null,
     index author_author_avatar_url_index on authors (author_avatar_url),
