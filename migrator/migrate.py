@@ -36,6 +36,12 @@ REPO = "typescript"
 projects_sql = f"INSERT INTO projects VALUES (1, '{OWNER}', '{REPO}');"
 cursor.execute(projects_sql)
 
+# Initialises the pull request count to be 1
+pull_request_id = 1
+
+# Initialise the comment ID to 1
+comment_id = 1
+
 # Find all files with the .json extension
 for filename in glob.glob("*.json"):
     # Open each file
@@ -70,23 +76,47 @@ for filename in glob.glob("*.json"):
 
     # If the pull request author is not a bot, then execute the query
     if not type_name == "Bot":
-        # Insert into pull_requests table
-        pull_requests_sql = "INSERT INTO pull_requests VALUES (%s, %s, %s, %s, %s, %s);"
+        # Insert into authors table with no number originally
+        authors_sql = "INSERT INTO authors (author_id, author_avatar_url, type_name) VALUES (%s, %s, %s);"
+        authors_values = (login, avatar_url, type_name)
+        cursor.execute(authors_sql, authors_values)
+
+        # Get the last inserted author ID
+        author_id_sql = "SELECT author_id FROM authors ORDER BY author_id DESC LIMIT 1;"
+        cursor.execute(author_id_sql)
+        author_id = cursor.fetchall()[0][0]
+
+        # Insert into pull_requests table with no author_id & type_name originally
+        pull_requests_sql = "INSERT INTO pull_requests (id, number, project_id, created_at) VALUES (%s, %s, %s, %s);"
         pull_requests_values = (
-            project_id,
+            pull_request_id,
             number,
+            project_id,
             created_at_timestamp,
-            login,
-            avatar_url,
-            type_name,
         )
         cursor.execute(pull_requests_sql, pull_requests_values)
 
-    # Loop for author information
-    for i in range(comment_count):
-        # If the author of a comment is a deleted user then continue
-        if data["comments"]["nodes"][i]["author"] is None:
-            continue
+        # Get the last inserted pull request number
+        pull_request_number_sql = (
+            "SELECT number FROM pull_requests ORDER BY number DESC LIMIT 1;"
+        )
+        cursor.execute(pull_request_number_sql)
+        pull_request_number = cursor.fetchall()[0][0]
+
+        # Update the latest authors table entry with the appropriate number
+        update_authors_sql = "UPDATE authors SET number = %s WHERE author_id = %s;"
+        update_authors_values = (pull_request_number, author_id)
+        cursor.execute(update_authors_sql, update_authors_values)
+
+        # Update the latest pull_requests table entry with the appropriate author_id & type_name
+        update_pull_requests_sql = (
+            "UPDATE pull_requests SET author_id = %s, type_name = %s WHERE number = %s;"
+        )
+        update_pull_requests_values = (author_id, type_name, pull_request_number)
+        cursor.execute(update_pull_requests_sql, update_pull_requests_values)
+
+        # Increment the pull request count by 1
+        pull_request_id += 1
 
     # Loop through every comment
     for i in range(comment_count):
@@ -103,25 +133,29 @@ for filename in glob.glob("*.json"):
                 "%Y-%m-%d %H:%M:%S"
             )
 
-            # If the author is a deleted user, then add None values for author_id, author_avatar_url, & type_name
+            # If the author is a deleted user, then add "Deleted User" value for author_id & type_name
             comments_sql_deleted_user = (
                 "INSERT INTO comments VALUES (%s, %s, %s, %s, %s);"
             )
             comments_values_deleted_user = (
+                comment_id,
                 number,
-                None,
-                None,
-                None,
+                "Deleted User",
+                "Deleted User",
                 comment_created_at_timestamp,
             )
             cursor.execute(comments_sql_deleted_user, comments_values_deleted_user)
+
+            # Increment comment ID by 1
+            comment_id += 1
+
             continue
 
         # Finds the author identifier
         login = data["comments"]["nodes"][i]["author"]["login"]
         # Finds the author avatar URL
         avatar_url = data["comments"]["nodes"][i]["author"]["avatarUrl"]
-        # Finds the comment creation dat
+        # Finds the comment creation date
         comment_created_at = data["comments"]["nodes"][i]["createdAt"]
         comment_created_at_datetime = datetime.strptime(
             comment_created_at, "%Y-%m-%dT%H:%M:%SZ"
@@ -139,13 +173,15 @@ for filename in glob.glob("*.json"):
             # Insert into comments table
             comments_sql = "INSERT INTO comments VALUES (%s, %s, %s, %s, %s);"
             comments_values = (
+                comment_id,
                 number,
                 login,
-                avatar_url,
                 type_name,
                 comment_created_at_timestamp,
             )
             cursor.execute(comments_sql, comments_values)
+
+            comment_id += 1
 
     # Commit the changes to the database
     db.commit()
