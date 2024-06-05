@@ -27,12 +27,8 @@ create table pull_requests
     project_id        int          foreign key (project_id) references projects (id),
     created_at        timestamp    not null,
     author_id         varchar(100) null,
-    author_avatar_url varchar(100) null,
     type_name         varchar(100) null,
 );
-
-create index pull_requests_author_avatar_url_index
-    on pull_requests (author_avatar_url);
 
 create index pull_requests_author_id_index
     on pull_requests (author_id);
@@ -55,13 +51,9 @@ create table comments
     id                bigint       auto_increment,
     number            bigint       foreign key (number) references pull_requests (number),
     author_id         varchar(100) null,
-    author_avatar_url varchar(100) null,
     type_name         varchar(100) null,
     created_at        timestamp    not null,
 );
-
-create index comments_author_avatar_url_index
-    on comments (author_avatar_url);
 
 create index comments_author_id_index
     on comments (author_id);
@@ -76,33 +68,33 @@ alter table comments
     add constraint comments_pk
         primary key (id);
 
-create table author
+create table authors
 (
     id                bigint,
     number            bigint       foreign key (number) references pull_requests (number),
-    author_id         varchar(100) foreign key (author_id) references author (author_id),
-    author_avatar_url varchar(100) foreign key (author_avatar_url) references author (author_avatar_url),
-    type_name         varchar(100) foreign key (type_name) references author (type_name),
+    author_id         varchar(100) not null,
+    author_avatar_url varchar(100) not null,
+    type_name         varchar(100) not null,
 );
 
 create index author_author_avatar_url_index
-    on author (author_avatar_url);
+    on authors (author_avatar_url);
 
 create index author_author_id_index
-    on author (author_id);
+    on authors (author_id);
 
 create index author_id_index
-    on author (id);
+    on authors (id);
 
 create index author_number_index
-    on author (number);
+    on authors (number);
 
 create index author_type_name_index
-    on author (type_name);
+    on authors (type_name);
 
-alter table author
+alter table authors
     add constraint author_pk
         primary key (id);
 
-alter table author
+alter table authors
     modify id bigint auto_increment;
