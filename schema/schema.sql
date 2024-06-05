@@ -10,7 +10,8 @@ create table projects
 
 create table pull_requests
 (
-    number            bigint       primary key auto_increment,
+    id                bigint       primary key auto_increment,
+    number            bigint       not null,
     project_id        int          foreign key (project_id) references projects (id),
     created_at        timestamp    not null,
     author_id         varchar(100) foreign key (author_id) references author (author_id),
