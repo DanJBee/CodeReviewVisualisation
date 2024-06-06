@@ -36,7 +36,7 @@ REPO = "typescript"
 projects_sql = f"INSERT INTO projects VALUES (1, '{OWNER}', '{REPO}');"
 cursor.execute(projects_sql)
 
-# Initialises the pull request count to be 1
+# Initialise the pull request count to be 1
 pull_request_id = 1
 
 # Initialise the comment ID to 1
@@ -76,10 +76,19 @@ for filename in glob.glob("*.json"):
 
     # If the pull request author is not a bot, then execute the query
     if not type_name == "Bot":
-        # Insert into authors table with no number originally
-        authors_sql = "INSERT INTO authors (author_id, author_avatar_url, type_name) VALUES (%s, %s, %s);"
-        authors_values = (login, avatar_url, type_name)
-        cursor.execute(authors_sql, authors_values)
+        # Check if the author ID is already in the authors table
+        authors_check_sql = (
+            "SELECT author_id FROM authors WHERE author_id = '%s';" % login
+        )
+        cursor.execute(authors_check_sql)
+        authors_check_result = cursor.fetchall()
+
+        # If the author is not already in the authors table
+        if len(authors_check_result) == 0:
+            # Insert into authors table with no number originally
+            authors_sql = "INSERT INTO authors (author_id, author_avatar_url, type_name) VALUES (%s, %s, %s);"
+            authors_values = (login, avatar_url, type_name)
+            cursor.execute(authors_sql, authors_values)
 
         # Get the last inserted author ID
         author_id_sql = "SELECT author_id FROM authors ORDER BY author_id DESC LIMIT 1;"
@@ -110,9 +119,9 @@ for filename in glob.glob("*.json"):
 
         # Update the latest pull_requests table entry with the appropriate author_id & type_name
         update_pull_requests_sql = (
-            "UPDATE pull_requests SET author_id = %s, type_name = %s WHERE number = %s;"
+            "UPDATE pull_requests SET author_id = %s WHERE number = %s;"
         )
-        update_pull_requests_values = (author_id, type_name, pull_request_number)
+        update_pull_requests_values = (author_id, pull_request_number)
         cursor.execute(update_pull_requests_sql, update_pull_requests_values)
 
         # Increment the pull request count by 1
@@ -134,13 +143,10 @@ for filename in glob.glob("*.json"):
             )
 
             # If the author is a deleted user, then add "Deleted User" value for author_id & type_name
-            comments_sql_deleted_user = (
-                "INSERT INTO comments VALUES (%s, %s, %s, %s, %s);"
-            )
+            comments_sql_deleted_user = "INSERT INTO comments VALUES (%s, %s, %s, %s);"
             comments_values_deleted_user = (
                 comment_id,
                 number,
-                "Deleted User",
                 "Deleted User",
                 comment_created_at_timestamp,
             )
@@ -171,12 +177,11 @@ for filename in glob.glob("*.json"):
         # If the pull request author is not a bot, then execute the query
         if not type_name == "Bot":
             # Insert into comments table
-            comments_sql = "INSERT INTO comments VALUES (%s, %s, %s, %s, %s);"
+            comments_sql = "INSERT INTO comments VALUES (%s, %s, %s, %s);"
             comments_values = (
                 comment_id,
                 number,
                 login,
-                type_name,
                 comment_created_at_timestamp,
             )
             cursor.execute(comments_sql, comments_values)
