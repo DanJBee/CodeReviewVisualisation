@@ -90,12 +90,10 @@ for filename in glob.glob("*.json"):
             authors_values = (login, avatar_url, type_name)
             cursor.execute(authors_sql, authors_values)
 
-        # Get the last inserted author ID
-        author_id_sql = "SELECT author_id FROM authors ORDER BY author_id DESC LIMIT 1;"
-        cursor.execute(author_id_sql)
-        author_id = cursor.fetchall()[0][0]
+        # Get the last inserted author ID using the current value of the "login" variable
+        author_id = login
 
-        # Insert into pull_requests table with no author_id & type_name originally
+        # Insert into pull_requests table with no author_id originally
         pull_requests_sql = "INSERT INTO pull_requests (id, number, project_id, created_at) VALUES (%s, %s, %s, %s);"
         pull_requests_values = (
             pull_request_id,
