@@ -1,3 +1,8 @@
+DROP TABLE comments IF EXISTS;
+DROP TABLE pull_requests IF EXISTS;
+DROP TABLE authors IF EXISTS;
+DROP TABLE projects IF EXISTS;
+
 create table projects
 (
     id         int          primary key auto_increment,
@@ -37,12 +42,12 @@ create table comments
 create table authors
 (
     author_id         varchar(100) primary key,
-    number            bigint       null foreign key (number) references pull_requests (number),
+    number            bigint       null,
     author_avatar_url varchar(100) not null,
     type_name         varchar(100) not null,
-    index author_author_avatar_url_index on authors (author_avatar_url),
     index author_author_id_index on authors (author_id),
     index author_id_index on authors (id),
-    index author_number_index on authors (number),
     index author_type_name_index on authors (type_name)
 );
+
+INSERT INTO authors VALUES ('Ghost', 0, 'https://example.com', 'User');

@@ -4,9 +4,10 @@ import json
 import os.path
 import sys
 
+# Defines owner, repository name, & output constants
 OWNER = "microsoft"
 REPO = "typescript"
-OUTPUT = "%s-%s" % (OWNER, REPO)
+OUTPUT = "../data/%s-%s" % (OWNER, REPO)
 
 
 # Extracts the edges from the generated JSON files from the crawler
@@ -30,11 +31,11 @@ if __name__ == "__main__":
         sys.exit(1)
 
     print("microsoft typescript")
-    output_directory = "./microsoft-typescript-split/"
+    output_directory = "../data/microsoft-typescript-split/"
     if not os.path.isdir(output_directory):
         os.mkdir(output_directory)
 
-    with open("./microsoft-typescript/first.json") as file:
+    with open("../data/microsoft-typescript/first.json") as file:
         content = file.read()
         edges = extract_edges(content)
         save_nodes(output_directory, edges)
@@ -43,7 +44,7 @@ if __name__ == "__main__":
     while previous_cursor:
         print(previous_cursor)
         try:
-            with open("./microsoft-typescript/%s" % previous_cursor) as file:
+            with open("../data/microsoft-typescript/%s" % previous_cursor) as file:
                 content = file.read()
                 edges = extract_edges(content)
                 save_nodes(output_directory, edges)

@@ -10,37 +10,28 @@ import mysql.connector
 
 # Initialises & reads the settings.ini configuration file
 config = ConfigParser()
-config.read("../crawler/settings.ini")
+config.read("../settings.ini")
 
 # Initialises the database connection
 db = mysql.connector.connect(
-    host="localhost",
-    user=config["DEFAULT"]["USER"],
-    password=config["DEFAULT"]["PASSWORD"],
-    database="codereviewvisualisation",
+    host=config["DATABASE"]["HOST"],
+    user=config["DATABASE"]["USER"],
+    password=config["DATABASE"]["PASSWORD"],
+    database=config["DATABASE"]["DATABASE_NAME"],
     time_zone="+00:00",  # Sets timezone to UTC
 )
-
-# Prints the database connection (for testing purposes, will probably be removed later on)
-print(db)
 
 # Initialises the database cursor
 cursor = db.cursor()
 
 # Change directory to the "microsoft-typescript-split" folder inside the crawler folder
-os.chdir("../crawler/microsoft-typescript-split")
+os.chdir("../data/microsoft-typescript-split")
 
 # Add the microsoft/typescript repository to the projects table
-OWNER = "microsoft"
-REPO = "typescript"
-projects_sql = f"INSERT INTO projects VALUES (1, '{OWNER}', '{REPO}');"
+OWNER = config["DATABASE"]["OWNER"]
+REPO = config["DATABASE"]["REPO"]
+projects_sql = f"INSERT INTO projects (owner, repository) VALUES ('{OWNER}', '{REPO}');"
 cursor.execute(projects_sql)
-
-# Initialise the pull request count to be 1
-pull_request_id = 1
-
-# Initialise the comment ID to 1
-comment_id = 1
 
 # Find all files with the .json extension
 for filename in glob.glob("*.json"):
@@ -52,8 +43,12 @@ for filename in glob.glob("*.json"):
     cursor.execute(
         "SELECT id FROM projects WHERE owner = 'microsoft' AND repository = 'typescript';"
     )
-    result = cursor.fetchall()
-    project_id = result[0][0]
+    result = cursor.fetchone()
+    project_id = result[0]
+
+    # Clear the result set
+    cursor.fetchall()
+
     # Finds the pull request number
     number = data["number"]
     # Finds the pull request creation dat
@@ -74,17 +69,27 @@ for filename in glob.glob("*.json"):
     # Converts the pull request creation date in datetime format back into a string
     created_at_timestamp = created_at_datetime.strftime("%Y-%m-%d %H:%M:%S")
 
+    # Check if the author ID is already in the authors table
+    authors_ids_sql = "SELECT author_id FROM authors;"
+    cursor.execute(authors_ids_sql)
+    author_ids = cursor.fetchall()
+
     # If the pull request author is not a bot, then execute the query
     if not type_name == "Bot":
-        # Check if the author ID is already in the authors table
-        authors_check_sql = (
-            "SELECT author_id FROM authors WHERE author_id = '%s';" % login
-        )
-        cursor.execute(authors_check_sql)
-        authors_check_result = cursor.fetchall()
 
-        # If the author is not already in the authors table
-        if len(authors_check_result) == 0:
+        # Initialise the value of already_added to False
+        already_added = False
+
+        # For each value in the author_ids list of tuples
+        for (item,) in author_ids:
+            # If the author is not already in the authors table
+            if login == item:
+                # Set the value of already_added to true
+                already_added = True
+                break
+
+        # If the author is not already added into the authors table
+        if not already_added:
             # Insert into authors table with no number originally
             authors_sql = "INSERT INTO authors (author_id, author_avatar_url, type_name) VALUES (%s, %s, %s);"
             authors_values = (login, avatar_url, type_name)
@@ -93,13 +98,16 @@ for filename in glob.glob("*.json"):
         # Get the last inserted author ID using the current value of the "login" variable
         author_id = login
 
-        # Insert into pull_requests table with no author_id originally
-        pull_requests_sql = "INSERT INTO pull_requests (id, number, project_id, created_at) VALUES (%s, %s, %s, %s);"
+        # Insert into pull_requests table with author_id as "Ghost" originally
+        pull_requests_sql = (
+            "INSERT INTO pull_requests (number, project_id, created_at, author_id) VALUES (%s, %s, "
+            "%s, %s);"
+        )
         pull_requests_values = (
-            pull_request_id,
             number,
             project_id,
             created_at_timestamp,
+            "Ghost",
         )
         cursor.execute(pull_requests_sql, pull_requests_values)
 
@@ -122,9 +130,6 @@ for filename in glob.glob("*.json"):
         update_pull_requests_values = (author_id, pull_request_number)
         cursor.execute(update_pull_requests_sql, update_pull_requests_values)
 
-        # Increment the pull request count by 1
-        pull_request_id += 1
-
     # Loop through every comment
     for i in range(comment_count):
         # If the author is a deleted user
@@ -140,19 +145,14 @@ for filename in glob.glob("*.json"):
                 "%Y-%m-%d %H:%M:%S"
             )
 
-            # If the author is a deleted user, then add "Deleted User" value for author_id & type_name
-            comments_sql_deleted_user = "INSERT INTO comments VALUES (%s, %s, %s, %s);"
+            # If the author is a deleted user, then add "Deleted User" value for author_id
+            comments_sql_deleted_user = "INSERT INTO comments (number, author_id, created_at) VALUES (%s, %s, %s);"
             comments_values_deleted_user = (
-                comment_id,
                 number,
                 "Deleted User",
                 comment_created_at_timestamp,
             )
             cursor.execute(comments_sql_deleted_user, comments_values_deleted_user)
-
-            # Increment comment ID by 1
-            comment_id += 1
-
             continue
 
         # Finds the author identifier
@@ -175,16 +175,13 @@ for filename in glob.glob("*.json"):
         # If the pull request author is not a bot, then execute the query
         if not type_name == "Bot":
             # Insert into comments table
-            comments_sql = "INSERT INTO comments VALUES (%s, %s, %s, %s);"
+            comments_sql = "INSERT INTO comments (number, author_id, created_at) VALUES (%s, %s, %s);"
             comments_values = (
-                comment_id,
                 number,
                 login,
                 comment_created_at_timestamp,
             )
             cursor.execute(comments_sql, comments_values)
-
-            comment_id += 1
 
     # Commit the changes to the database
     db.commit()
