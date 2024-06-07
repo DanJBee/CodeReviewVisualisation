@@ -42,7 +42,6 @@ create table comments
 create table authors
 (
     author_id         varchar(100) primary key,
-    number            bigint       null,
     author_avatar_url varchar(100) not null,
     type_name         varchar(100) not null,
     index author_author_id_index on authors (author_id),
@@ -50,4 +49,4 @@ create table authors
     index author_type_name_index on authors (type_name)
 );
 
-INSERT INTO authors VALUES ('Ghost', 0, 'https://example.com', 'User');
+INSERT INTO authors VALUES ('Ghost', 'https://example.com', 'User');

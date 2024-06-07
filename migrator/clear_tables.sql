@@ -36,19 +36,12 @@ alter table projects
 create table authors
 (
     author_id         varchar(100) not null,
-    number            bigint       null,
     author_avatar_url varchar(100) not null,
     type_name         varchar(100) not null
 );
 
 create index authors_author_id_index
     on authors (author_id);
-
-create index authors_author_avatar_url_index
-    on authors (author_avatar_url);
-
-create index authors_number_index
-    on authors (number);
 
 create index authors_type_name_index
     on authors (type_name);
@@ -109,9 +102,8 @@ alter table comments
 alter table comments
     modify id bigint auto_increment;
 
-alter table authors
-    add constraint authors_pull_requests_number_fk
-        foreign key (number) references pull_requests (number);
-
 alter table pull_requests
     modify author_id varchar(100) null;
+
+INSERT INTO authors
+VALUES ('Ghost', 'https://example.com', 'User');
