@@ -41,6 +41,83 @@ def convert_timestamp(creation_date: str) -> str:
     return created_at_datetime.strftime("%Y-%m-%d %H:%M:%S")
 
 
+# Defines a function that inserts an author into the authors table with cursor, login, avatar_url,
+# & type_name parameters
+def insert_author(db_cursor, author_id_value, avatar_url_value, type_name_value):
+    # Initialise the value of already_added to False
+    already_added = False
+
+    # For each value in the author_ids list of tuples
+    for (item,) in author_ids:
+        # If the author is not already in the authors table
+        if author_id_value == item:
+            # Set the value of already_added to true
+            already_added = True
+            break
+
+    # If the author is not already added into the authors table
+    if not already_added:
+        # Insert into authors table
+        authors_sql = "INSERT INTO authors VALUES (%s, %s, %s);"
+        authors_values = (author_id_value, avatar_url_value, type_name_value)
+        db_cursor.execute(authors_sql, authors_values)
+
+
+# Defines a function that inserts a pull request into the pull_requests table with number, project_id,
+# created_at, & author_id parameters
+def insert_pull_request(
+    db_cursor, pr_number, project_id_value, created_at_timestamp_value, author_id_value
+):
+    # Insert into pull_requests table
+    pull_requests_sql = (
+        "INSERT INTO pull_requests (number, project_id, created_at, author_id) VALUES (%s, %s, "
+        "%s, %s);"
+    )
+    pull_requests_values = (
+        pr_number,
+        project_id_value,
+        created_at_timestamp_value,
+        author_id_value,
+    )
+    db_cursor.execute(pull_requests_sql, pull_requests_values)
+
+    # Get the last inserted pull request number
+    pull_request_number_sql_query = (
+        "SELECT number FROM pull_requests ORDER BY number DESC LIMIT 1;"
+    )
+    db_cursor.execute(pull_request_number_sql_query)
+    last_inserted_pull_request_number = db_cursor.fetchall()[0][0]
+
+    # Update the latest pull_requests table entry with the appropriate author_id & type_name
+    update_pull_requests_sql = (
+        "UPDATE pull_requests SET author_id = %s WHERE number = %s;"
+    )
+    update_pull_requests_values = (login, last_inserted_pull_request_number)
+    db_cursor.execute(update_pull_requests_sql, update_pull_requests_values)
+
+
+# Defines a function that inserts a comment into the comments table with cursor, number, author_id,
+# & created_at parameters
+def insert_comment(db_cursor, author_id_value, created_at_date):
+    # Get the last inserted pull request number
+    pull_request_number_sql_query = (
+        "SELECT number FROM pull_requests ORDER BY number DESC LIMIT 1;"
+    )
+    cursor.execute(pull_request_number_sql_query)
+    last_inserted_pull_request_number = cursor.fetchall()[0][0]
+
+    # If the author is a deleted user, then add "Deleted User" value for author_id
+    comments_sql_deleted_user_query = (
+        "INSERT INTO comments (number, author_id, created_at) VALUES (%s, %s, %s);"
+    )
+    comments_deleted_user_values = (
+        last_inserted_pull_request_number,
+        author_id_value,
+        created_at_date,
+    )
+    db_cursor.execute(comments_sql_deleted_user_query, comments_deleted_user_values)
+
+
 # Find all files with the .json extension
 for filename in glob.glob("*.json"):
     # Open each file
@@ -61,73 +138,48 @@ for filename in glob.glob("*.json"):
     number = data["number"]
     # Finds the pull request creation date
     created_at = data["createdAt"]
-    # Finds the pull request author identifier
-    login = data["author"]["login"]
-    # Finds the pull request author avatar URL
-    avatar_url = data["author"]["avatarUrl"]
-    # Finds the pull request author type name
-    type_name = data["author"]["__typename"]
+    # If the author of the pull request is not a deleted user
+    if data["author"] is not None:
+        # Finds the pull request author identifier
+        login = data["author"]["login"]
+        # Finds the pull request author avatar URL
+        avatar_url = data["author"]["avatarUrl"]
+        # Finds the pull request author type name
+        type_name = data["author"]["__typename"]
+
+        # Converts the pull request creation date into timestamp format that MariaDB accepts
+        created_at_timestamp = convert_timestamp(created_at)
+
+        # Check if the author ID is already in the authors table
+        authors_ids_sql = "SELECT author_id FROM authors;"
+        cursor.execute(authors_ids_sql)
+        author_ids = cursor.fetchall()
+
+        # If the pull request author is not a bot, then execute the query
+        if not type_name == "Bot":
+            # Insert the author into the authors table
+            insert_author(cursor, login, avatar_url, type_name)
+
+            # Get the last inserted author ID using the current value of the "login" variable
+            author_id = login
+
+            # Insert the pull request into the pull_requests table
+            insert_pull_request(
+                cursor, number, project_id, created_at_timestamp, author_id
+            )
+    # If the author of the pull request is a deleted user
+    else:
+        # If the author of the pull request is a deleted user then set the author_id to "Deleted User"
+        login = "Deleted User"
+
+        # Converts the pull request creation date into timestamp format that MariaDB accepts
+        created_at_timestamp = convert_timestamp(created_at)
+
+        # Insert the pull request into the pull_requests table
+        insert_pull_request(cursor, number, project_id, created_at_timestamp, login)
+
     # Finds the number of comments in the pull request
     comment_count = len(data["comments"]["nodes"])
-
-    # Converts the pull request creation date into timestamp format that MariaDB accepts
-    created_at_timestamp = convert_timestamp(created_at)
-
-    # Check if the author ID is already in the authors table
-    authors_ids_sql = "SELECT author_id FROM authors;"
-    cursor.execute(authors_ids_sql)
-    author_ids = cursor.fetchall()
-
-    # If the pull request author is not a bot, then execute the query
-    if not type_name == "Bot":
-
-        # Initialise the value of already_added to False
-        already_added = False
-
-        # For each value in the author_ids list of tuples
-        for (item,) in author_ids:
-            # If the author is not already in the authors table
-            if login == item:
-                # Set the value of already_added to true
-                already_added = True
-                break
-
-        # If the author is not already added into the authors table
-        if not already_added:
-            # Insert into authors table with no number originally
-            authors_sql = "INSERT INTO authors (author_id, author_avatar_url, type_name) VALUES (%s, %s, %s);"
-            authors_values = (login, avatar_url, type_name)
-            cursor.execute(authors_sql, authors_values)
-
-        # Get the last inserted author ID using the current value of the "login" variable
-        author_id = login
-
-        # Insert into pull_requests table with author_id as "Ghost" originally
-        pull_requests_sql = (
-            "INSERT INTO pull_requests (number, project_id, created_at, author_id) VALUES (%s, %s, "
-            "%s, %s);"
-        )
-        pull_requests_values = (
-            number,
-            project_id,
-            created_at_timestamp,
-            "Ghost",
-        )
-        cursor.execute(pull_requests_sql, pull_requests_values)
-
-        # Get the last inserted pull request number
-        pull_request_number_sql = (
-            "SELECT number FROM pull_requests ORDER BY number DESC LIMIT 1;"
-        )
-        cursor.execute(pull_request_number_sql)
-        pull_request_number = cursor.fetchall()[0][0]
-
-        # Update the latest pull_requests table entry with the appropriate author_id & type_name
-        update_pull_requests_sql = (
-            "UPDATE pull_requests SET author_id = %s WHERE number = %s;"
-        )
-        update_pull_requests_values = (author_id, pull_request_number)
-        cursor.execute(update_pull_requests_sql, update_pull_requests_values)
 
     # Loop through every comment
     for i in range(comment_count):
@@ -137,56 +189,26 @@ for filename in glob.glob("*.json"):
             # Converts the comment creation date into timestamp format that MariaDB accepts
             comment_created_at_timestamp = convert_timestamp(comment_created_at)
 
-            # Get the last inserted pull request number
-            pull_request_number_sql = (
-                "SELECT number FROM pull_requests ORDER BY number DESC LIMIT 1;"
-            )
-            cursor.execute(pull_request_number_sql)
-            pull_request_number = cursor.fetchall()[0][0]
+            # Insert the comment into the comments table
+            insert_comment(cursor, "Deleted User", comment_created_at_timestamp)
+        else:
+            # Finds the comment author identifier
+            login = data["comments"]["nodes"][i]["author"]["login"]
+            # Finds the comment creation date
+            comment_created_at = data["comments"]["nodes"][i]["createdAt"]
+            # Converts the comment creation date into a timestamp format that MariaDB accepts
+            comment_created_at_timestamp = convert_timestamp(comment_created_at)
+            # Finds the comment author type name
+            type_name = data["comments"]["nodes"][i]["author"]["__typename"]
 
-            # If the author is a deleted user, then add "Deleted User" value for author_id
-            comments_sql_deleted_user = "INSERT INTO comments (number, author_id, created_at) VALUES (%s, %s, %s);"
-            comments_values_deleted_user = (
-                pull_request_number,
-                "Deleted User",
-                comment_created_at_timestamp,
-            )
-            cursor.execute(comments_sql_deleted_user, comments_values_deleted_user)
-            continue
-
-        # Finds the author identifier
-        login = data["comments"]["nodes"][i]["author"]["login"]
-        # Finds the author avatar URL
-        avatar_url = data["comments"]["nodes"][i]["author"]["avatarUrl"]
-        # Finds the comment creation date
-        comment_created_at = data["comments"]["nodes"][i]["createdAt"]
-        # Converts the comment creation date into a timestamp format that MariaDB accepts
-        comment_created_at_timestamp = convert_timestamp(comment_created_at)
-        type_name = data["comments"]["nodes"][i]["author"]["__typename"]
-
-        # Get the last inserted pull request number
-        pull_request_number_sql = (
-            "SELECT number FROM pull_requests ORDER BY number DESC LIMIT 1;"
-        )
-        cursor.execute(pull_request_number_sql)
-        pull_request_number = cursor.fetchall()[0][0]
-
-        # If the pull request author is not a bot, then execute the query
-        if not type_name == "Bot":
-            # Insert into comments table
-            comments_sql = "INSERT INTO comments (number, author_id, created_at) VALUES (%s, %s, %s);"
-            comments_values = (
-                pull_request_number,
-                login,
-                comment_created_at_timestamp,
-            )
-            cursor.execute(comments_sql, comments_values)
+            # Insert the comment into the comments table
+            insert_comment(cursor, login, comment_created_at_timestamp)
 
     # Commit the changes to the database
     db.commit()
     # Output a confirmation message that a record was inserted into the database
     print(
         cursor.rowcount,
-        "record inserted into database from pull request with ID",
+        "record(s) inserted into database from pull request with ID",
         number,
     )

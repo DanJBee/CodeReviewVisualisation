@@ -106,4 +106,4 @@ alter table pull_requests
     modify author_id varchar(100) null;
 
 INSERT INTO authors
-VALUES ('Ghost', 'https://example.com', 'User');
+VALUES ('Deleted User', 'https://example.com', 'User');
