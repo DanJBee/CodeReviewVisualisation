@@ -44,19 +44,20 @@ def convert_timestamp(creation_date: str) -> str:
 # Defines a function that inserts an author into the authors table with cursor, login, avatar_url,
 # & type_name parameters
 def insert_author(db_cursor, author_id_value, avatar_url_value, type_name_value):
-    # Initialise the value of already_added to False
+    # Defines a boolean variable showing whether an author is already added or not
     already_added = False
 
     # For each value in the author_ids list of tuples
     for (item,) in author_ids:
         # If the author is not already in the authors table
         if author_id_value == item:
-            # Set the value of already_added to true
             already_added = True
-            break
 
-    # If the author is not already added into the authors table
-    if not already_added:
+    # If the author is already in the authors table
+    if already_added:
+        # Append to the authors_id list
+        author_ids.append(author_id_value)
+    else:
         # Insert into authors table
         authors_sql = "INSERT INTO authors VALUES (%s, %s, %s);"
         authors_values = (author_id_value, avatar_url_value, type_name_value)
@@ -70,48 +71,35 @@ def insert_pull_request(
 ):
     # Insert into pull_requests table
     pull_requests_sql = (
-        "INSERT INTO pull_requests (number, project_id, created_at, author_id) VALUES (%s, %s, "
-        "%s, %s);"
+        "INSERT INTO pull_requests (number, project_id, created_at, author_id)"
+        "VALUES (%s, %s, %s, %s);"
     )
-    pull_requests_values = (
+    pull_requests_values = [
         pr_number,
         project_id_value,
         created_at_timestamp_value,
         author_id_value,
-    )
+    ]
     db_cursor.execute(pull_requests_sql, pull_requests_values)
-
-    # Get the last inserted pull request number
-    pull_request_number_sql_query = (
-        "SELECT number FROM pull_requests ORDER BY number DESC LIMIT 1;"
-    )
-    db_cursor.execute(pull_request_number_sql_query)
-    last_inserted_pull_request_number = db_cursor.fetchall()[0][0]
-
-    # Update the latest pull_requests table entry with the appropriate author_id & type_name
-    update_pull_requests_sql = (
-        "UPDATE pull_requests SET author_id = %s WHERE number = %s;"
-    )
-    update_pull_requests_values = (login, last_inserted_pull_request_number)
-    db_cursor.execute(update_pull_requests_sql, update_pull_requests_values)
 
 
 # Defines a function that inserts a comment into the comments table with cursor, number, author_id,
 # & created_at parameters
 def insert_comment(db_cursor, author_id_value, created_at_date):
     # Get the last inserted pull request number
-    pull_request_number_sql_query = (
-        "SELECT number FROM pull_requests ORDER BY number DESC LIMIT 1;"
-    )
+    pull_request_number_sql_query = "SELECT number FROM pull_requests;"
     cursor.execute(pull_request_number_sql_query)
-    last_inserted_pull_request_number = cursor.fetchall()[0][0]
+    last_inserted_pull_request_number = cursor.fetchone()
 
-    # If the author is a deleted user, then add "Deleted User" value for author_id
+    # Clear the result before executing the next SQL query
+    cursor.fetchall()
+
+    # If the author is a deleted user, then add "Ghost" value for author_id
     comments_sql_deleted_user_query = (
         "INSERT INTO comments (number, author_id, created_at) VALUES (%s, %s, %s);"
     )
     comments_deleted_user_values = (
-        last_inserted_pull_request_number,
+        last_inserted_pull_request_number[0],
         author_id_value,
         created_at_date,
     )
@@ -126,7 +114,8 @@ for filename in glob.glob("*.json"):
 
     # Finds the project ID value for microsoft/typescript
     cursor.execute(
-        "SELECT id FROM projects WHERE owner = 'microsoft' AND repository = 'typescript';"
+        "SELECT id FROM projects WHERE owner = '%s' AND repository = '%s';"
+        % (OWNER, REPO)
     )
     result = cursor.fetchone()
     project_id = result[0]
@@ -140,12 +129,14 @@ for filename in glob.glob("*.json"):
     created_at = data["createdAt"]
     # If the author of the pull request is not a deleted user
     if data["author"] is not None:
+        # Defines the author array of the collected data
+        author = data["author"]
         # Finds the pull request author identifier
-        login = data["author"]["login"]
+        login = author["login"]
         # Finds the pull request author avatar URL
-        avatar_url = data["author"]["avatarUrl"]
+        avatar_url = author["avatarUrl"]
         # Finds the pull request author type name
-        type_name = data["author"]["__typename"]
+        type_name = author["__typename"]
 
         # Converts the pull request creation date into timestamp format that MariaDB accepts
         created_at_timestamp = convert_timestamp(created_at)
@@ -170,7 +161,7 @@ for filename in glob.glob("*.json"):
     # If the author of the pull request is a deleted user
     else:
         # If the author of the pull request is a deleted user then set the author_id to "Deleted User"
-        login = "Deleted User"
+        login = "Ghost"
 
         # Converts the pull request creation date into timestamp format that MariaDB accepts
         created_at_timestamp = convert_timestamp(created_at)
@@ -190,7 +181,7 @@ for filename in glob.glob("*.json"):
             comment_created_at_timestamp = convert_timestamp(comment_created_at)
 
             # Insert the comment into the comments table
-            insert_comment(cursor, "Deleted User", comment_created_at_timestamp)
+            insert_comment(cursor, "Ghost", comment_created_at_timestamp)
         else:
             # Finds the comment author identifier
             login = data["comments"]["nodes"][i]["author"]["login"]
@@ -204,11 +195,12 @@ for filename in glob.glob("*.json"):
             # Insert the comment into the comments table
             insert_comment(cursor, login, comment_created_at_timestamp)
 
-    # Commit the changes to the database
-    db.commit()
     # Output a confirmation message that a record was inserted into the database
     print(
         cursor.rowcount,
-        "record(s) inserted into database from pull request with ID",
+        "record(s) inserted into database for pull request with ID",
         number,
     )
+
+# Commit the changes to the database
+db.commit()
