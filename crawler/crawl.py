@@ -12,7 +12,7 @@ from logger import init_logger
 
 # Initialises & reads the settings.ini configuration file
 config = ConfigParser()
-config.read("settings.ini")
+config.read("../settings.ini")
 
 # Initialises the logger from the logger.py file
 init_logger("execution.log")
@@ -144,7 +144,7 @@ def crawl(
 # Main loop
 if __name__ == "__main__":
     for owner, repo in OWNER_REPO_DICT.items():
-        output_directory = "./%s-%s/" % (owner, repo)
+        output_directory = "../data/%s-%s/" % (owner, repo)
         # If the output directory does not exist then create it
         if not os.path.isdir(output_directory):
             os.mkdir(output_directory)
