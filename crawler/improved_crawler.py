@@ -12,7 +12,7 @@ from crawler.logger import init_logger
 
 # Initialises & reads the settings.ini configuration file
 config = ConfigParser()
-config.read("settings.ini")
+config.read("../settings.ini")
 
 # Initialises the logger
 init_logger("execution.log")
@@ -185,7 +185,7 @@ def load_cursor(output_directory: str) -> str | None:
 # Main loop
 if __name__ == "__main__":
     # If the output directory does not exist then create it
-    output_dir = f"./{OWNER}-{REPO}/"
+    output_dir = f"../data/{OWNER}-{REPO}/"
     if not os.path.isdir(output_dir):
         os.mkdir(output_dir)
 

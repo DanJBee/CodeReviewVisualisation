@@ -196,11 +196,7 @@ for filename in glob.glob("*.json"):
             insert_comment(cursor, login, comment_created_at_timestamp)
 
     # Output a confirmation message that a record was inserted into the database
-    print(
-        cursor.rowcount,
-        "record(s) inserted into database for pull request with ID",
-        number,
-    )
+    print("Record inserted into database for pull request with ID", number)
 
 # Commit the changes to the database
 db.commit()
