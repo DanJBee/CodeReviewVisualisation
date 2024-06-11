@@ -45,6 +45,3 @@ create table comments
     index comments_number_index (number),
     foreign key number_fk (number) references pull_requests (number)
 );
-
-INSERT INTO authors
-VALUES ('Ghost', 'https://example.com', 'User');
