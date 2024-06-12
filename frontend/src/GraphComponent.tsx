@@ -2,22 +2,16 @@
 
 import './App.css';
 import { select } from 'd3';
-import { graph } from './Graph.ts';
+import graph from './Graph';
 
 function GraphComponent() {
   // Removes the overflow from the body of the page
   const body = select('body').attr('style', 'overflow: hidden;');
 
-  // Defines the main function that generates the force-directed graph onto the screen
-  const main = async () => {
-    const force_directed_graph = graph();
+  // Generates the force-directed graph so it appears on the screen
+  graph(body).then(() => {});
 
-    body.call(force_directed_graph);
-  };
-
-  main().then(() => {});
-
-  return <></>;
+  return <div />;
 }
 
 export default GraphComponent;
