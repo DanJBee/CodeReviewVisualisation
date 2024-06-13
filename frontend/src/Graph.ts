@@ -6,10 +6,10 @@ import {
   forceLink,
   forceManyBody,
   forceSimulation,
-  json,
   SimulationLinkDatum,
   SimulationNodeDatum,
 } from 'd3';
+import axios from 'axios';
 
 interface Node extends SimulationNodeDatum {
   id: string;
@@ -25,6 +25,7 @@ interface Link extends SimulationLinkDatum<Node> {
 interface Data {
   nodes: Node[];
   links: Link[];
+  data: Data;
 }
 
 const graph = () => {
@@ -33,11 +34,14 @@ const graph = () => {
   const width = window.innerWidth;
 
   return async (selection: any) => {
-    const data: Data | undefined = await json('../miserables.json');
+    // Collects a JSON response from the 'miserables.json' file
+    const response: Data | undefined = await axios.get('/miserables.json');
 
-    if (!data) {
-      return;
-    }
+    // If there is no response then return
+    if (!response) return;
+
+    // Stores the response data in a 'data' variable
+    const { data } = response;
 
     // Backup code for setting the nodes to a solid colour if needed
     // const colour = scaleOrdinal(schemeCategory10);
