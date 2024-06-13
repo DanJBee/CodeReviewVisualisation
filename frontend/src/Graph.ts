@@ -55,7 +55,7 @@ const graph = () => {
       .append('svg')
       .attr('height', height)
       .attr('width', width)
-      .attr('viewBox', [0, 0, width, height])
+      .attr('viewBox', [50, 10, width / 2, height / 2])
       .attr('style', 'max-width: 100%; height: auto;');
 
     // Defines the link between each node in the graph
@@ -99,7 +99,7 @@ const graph = () => {
         forceLink(links).id((d: any) => d.id),
       )
       .force('charge', forceManyBody())
-      .force('centre', forceCenter(width / 2, height / 2))
+      .force('centre', forceCenter(width / 4 + 20, height / 4 + 45))
       .on('tick', ticked);
 
     // Reheats the simulation when the drag starts & fix the subject's i.e. the node's position
