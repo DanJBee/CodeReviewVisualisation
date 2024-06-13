@@ -6,27 +6,9 @@ import {
   forceLink,
   forceManyBody,
   forceSimulation,
-  SimulationLinkDatum,
-  SimulationNodeDatum,
 } from 'd3';
 import axios from 'axios';
-
-interface Node extends SimulationNodeDatum {
-  id: string;
-  group?: string;
-}
-
-interface Link extends SimulationLinkDatum<Node> {
-  source: Node;
-  target: Node;
-  value: number;
-}
-
-interface Data {
-  nodes: Node[];
-  links: Link[];
-  data: Data;
-}
+import { Data, Link, Node } from './Types';
 
 const graph = () => {
   // Defines height & width values
@@ -103,7 +85,7 @@ const graph = () => {
       .on('tick', ticked);
 
     // Reheats the simulation when the drag starts & fix the subject's i.e. the node's position
-    function started(event: any) {
+    function startDrag(event: any) {
       const newEvent = event;
       if (!event.active) simulation.alphaTarget(0.3).restart();
       newEvent.subject.fx = event.x;
@@ -111,7 +93,7 @@ const graph = () => {
     }
 
     // Updates the subject's i.e. the dragged node's position during the drag
-    function dragged(event: any) {
+    function dragging(event: any) {
       const newEvent = event;
       newEvent.subject.fx = event.x;
       newEvent.subject.fy = event.y;
@@ -120,7 +102,7 @@ const graph = () => {
     // Restores the target alpha so the simulation cools after dragging ends
     // Unfixes the subject's i.e. the previously dragged node's position now that it is no longer
     // being dragged
-    function ended(event: any) {
+    function endDrag(event: any) {
       const newEvent = event;
       if (!event.active) simulation.alphaTarget(0);
       newEvent.subject.fx = null;
@@ -155,7 +137,9 @@ const graph = () => {
     node.append('title').text((d: any) => d.id);
 
     // Applies the drag physics to each node in the graph
-    node.call(drag().on('start', started).on('drag', dragged).on('end', ended));
+    node.call(
+      drag().on('start', startDrag).on('drag', dragging).on('end', endDrag),
+    );
   };
 };
 
