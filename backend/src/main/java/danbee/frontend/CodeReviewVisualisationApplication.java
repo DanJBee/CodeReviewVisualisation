@@ -3,11 +3,16 @@ package danbee.frontend;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+/**
+ * Main class for Code Review Visualisation application.
+ *
+ * @author Dan Bee
+ */
 @SpringBootApplication
-public class BackendApplication {
+public class CodeReviewVisualisationApplication {
 
   public static void main(String[] args) {
-    SpringApplication.run(BackendApplication.class, args);
+    SpringApplication.run(CodeReviewVisualisationApplication.class, args);
   }
 
 }
