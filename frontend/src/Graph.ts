@@ -6,8 +6,6 @@ import {
   forceLink,
   forceManyBody,
   forceSimulation,
-  scaleOrdinal,
-  schemeCategory10,
 } from 'd3';
 import axios from 'axios';
 import { Data, Link, Node } from './Types';
@@ -26,8 +24,6 @@ const graph = () => {
 
     // Stores the response data in a 'data' variable
     const { data } = response;
-
-    const colour = scaleOrdinal(schemeCategory10);
 
     // Defines the links & nodes in the graph
     const links = data.links.map((d: Link) => ({ ...d }));
@@ -49,7 +45,7 @@ const graph = () => {
       .selectAll()
       .data(links)
       .join('line')
-      .attr('stroke-width', (d: Link) => Math.sqrt(d.thickness));
+      .attr('stroke-width', (d: Link) => d.thickness);
 
     // Defines each individual node in the graph
     const node = svg
@@ -60,8 +56,9 @@ const graph = () => {
       .data(nodes)
       .join('circle')
       .attr('r', (d: Node) => d.size) // this number controls the size of each node
-      .attr('fill', (d: Node) => colour(String(d.size)));
-    // .attr('fill', 'url(#image)');
+      // sets an individual ID for each node to ensure the images' height/width are the correct
+      // dimensions
+      .attr('fill', (d: Node) => `url(#image-${d.id})`);
 
     // Sets the position attribute of the links & nodes in the graph each time the nodes 'ticks'
     function ticked() {
@@ -109,29 +106,32 @@ const graph = () => {
       newEvent.subject.fy = null;
     }
 
-    // // Defines the element for the avatar URl pattern on the nodes in the graph
-    // const defs = svg.append('defs');
-    //
-    // // Defines the avatar URL pattern themselves on the nodes in the graph
-    // const pattern = defs
-    //   .append('pattern')
-    //   .attr('id', 'image')
-    //   .attr('x', '0')
-    //   .attr('y', '0')
-    //   .attr('height', '1')
-    //   .attr('width', '1');
-    //
-    // // Adds the avatar URL pattern to the nodes in the graph
-    // pattern
-    //   .append('image')
-    //   .attr('x', '0')
-    //   .attr('y', '0')
-    //   .attr('height', (d: Node) => d.size * 2) // double the radius value
-    //   .attr('width', (d: Node) => d.size * 2) // double the radius value
-    //   .attr(
-    //     'xlink:href',
-    //     'https://avatars.githubusercontent.com/u/22572315?v=4', // this value controls the image on the nodes in the graph
-    //   );
+    // Defines the element for the avatar URL pattern on the nodes in the graph
+    const defs = svg.append('defs');
+
+    // Defines the avatar URL pattern themselves on the nodes in the graph
+    const pattern = defs
+      .selectAll('pattern')
+      .data(nodes)
+      .enter()
+      .append('pattern')
+      .attr('id', (d: Node) => `image-${d.id}`)
+      .attr('x', '0')
+      .attr('y', '0')
+      .attr('height', '1')
+      .attr('width', '1');
+
+    // Adds the avatar URL pattern to the nodes in the graph
+    pattern
+      .append('image')
+      .attr('x', '0')
+      .attr('y', '0')
+      .attr('height', (d: Node) => d.size * 2) // double the radius value
+      .attr('width', (d: Node) => d.size * 2) // double the radius value
+      .attr(
+        'xlink:href',
+        'https://avatars.githubusercontent.com/u/22572315?v=4', // this value controls the image on the nodes in the graph
+      );
 
     // Appends a title to each node
     node.append('title').text((d: any) => d.id);
