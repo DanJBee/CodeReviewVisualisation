@@ -1,0 +1,42 @@
+{
+  "nodes": [
+    {
+      "id": "Myriel",
+      "size": 30
+    },
+    {
+      "id": "Napoleon",
+      "size": 20
+    },
+    {
+      "id": "Mlle.Baptistine",
+      "size": 10
+    },
+    {
+      "id": "Mme.Magloire",
+      "size": 5
+    }
+  ],
+  "links": [
+    {
+      "source": "Napoleon",
+      "target": "Myriel",
+      "thickness": 1
+    },
+    {
+      "source": "Mlle.Baptistine",
+      "target": "Myriel",
+      "thickness": 16
+    },
+    {
+      "source": "Mme.Magloire",
+      "target": "Myriel",
+      "thickness": 49
+    },
+    {
+      "source": "Mme.Magloire",
+      "target": "Mlle.Baptistine",
+      "thickness": 100
+    }
+  ]
+}

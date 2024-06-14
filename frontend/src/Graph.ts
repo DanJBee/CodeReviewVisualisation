@@ -16,17 +16,14 @@ const graph = () => {
   const width = window.innerWidth;
 
   return async (selection: any) => {
-    // Collects a JSON response from the 'miserables.json' file
-    const response: Data | undefined = await axios.get('/miserables.json');
+    // Collects a JSON response from the 'mock.json' file
+    const response: Data | undefined = await axios.get('/mock.json');
 
     // If there is no response then return
     if (!response) return;
 
     // Stores the response data in a 'data' variable
     const { data } = response;
-
-    // Backup code for setting the nodes to a solid colour if needed
-    // const colour = scaleOrdinal(schemeCategory10);
 
     // Defines the links & nodes in the graph
     const links = data.links.map((d: Link) => ({ ...d }));
@@ -48,7 +45,7 @@ const graph = () => {
       .selectAll()
       .data(links)
       .join('line')
-      .attr('stroke-width', (d: Link) => Math.sqrt(d.value));
+      .attr('stroke-width', (d: Link) => Math.sqrt(d.thickness));
 
     // Defines each individual node in the graph
     const node = svg
@@ -58,10 +55,10 @@ const graph = () => {
       .selectAll()
       .data(nodes)
       .join('circle')
-      .attr('r', 15) // this number controls the size of each node
-      // Backup code for when nodes are filled with a solid colour if needed
-      // .attr('fill', (d) => colour(d.group))
-      .attr('fill', 'url(#image)');
+      .attr('r', (d: Node) => d.size) // this number controls the size of each node
+      // sets an individual ID for each node to ensure the images' height/width are the correct
+      // dimensions
+      .attr('fill', (d: Node) => `url(#image-${d.id})`);
 
     // Sets the position attribute of the links & nodes in the graph each time the nodes 'ticks'
     function ticked() {
@@ -109,13 +106,16 @@ const graph = () => {
       newEvent.subject.fy = null;
     }
 
-    // Defines the element for the avatar URl pattern on the nodes in the graph
+    // Defines the element for the avatar URL pattern on the nodes in the graph
     const defs = svg.append('defs');
 
     // Defines the avatar URL pattern themselves on the nodes in the graph
     const pattern = defs
+      .selectAll('pattern')
+      .data(nodes)
+      .enter()
       .append('pattern')
-      .attr('id', 'image')
+      .attr('id', (d: Node) => `image-${d.id}`)
       .attr('x', '0')
       .attr('y', '0')
       .attr('height', '1')
@@ -126,8 +126,8 @@ const graph = () => {
       .append('image')
       .attr('x', '0')
       .attr('y', '0')
-      .attr('height', '30') // double the radius value
-      .attr('width', '30') // double the radius value
+      .attr('height', (d: Node) => d.size * 2) // double the radius value
+      .attr('width', (d: Node) => d.size * 2) // double the radius value
       .attr(
         'xlink:href',
         'https://avatars.githubusercontent.com/u/22572315?v=4', // this value controls the image on the nodes in the graph
