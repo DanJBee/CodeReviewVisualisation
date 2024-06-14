@@ -26,17 +26,17 @@
     {
       "source": "Mlle.Baptistine",
       "target": "Myriel",
-      "thickness": 8
+      "thickness": 16
     },
     {
       "source": "Mme.Magloire",
       "target": "Myriel",
-      "thickness": 10
+      "thickness": 49
     },
     {
       "source": "Mme.Magloire",
       "target": "Mlle.Baptistine",
-      "thickness": 6
+      "thickness": 100
     }
   ]
 }

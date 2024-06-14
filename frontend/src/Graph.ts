@@ -45,7 +45,7 @@ const graph = () => {
       .selectAll()
       .data(links)
       .join('line')
-      .attr('stroke-width', (d: Link) => d.thickness);
+      .attr('stroke-width', (d: Link) => Math.sqrt(d.thickness));
 
     // Defines each individual node in the graph
     const node = svg
