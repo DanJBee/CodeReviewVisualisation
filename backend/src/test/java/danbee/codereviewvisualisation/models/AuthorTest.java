@@ -27,17 +27,17 @@ class AuthorTest {
   void testGetters() {
     assertEquals(author.getAuthorId(), "microsoft");
     assertEquals(author.getAuthorAvatarUrl(), "https://example.com");
-    assertEquals(author.getTypeName(), Type.USER);
+    assertEquals(author.getTypeName(), "User");
   }
 
   @Test
   void testSetters() {
     author.setAuthorId("facebook");
     author.setAuthorAvatarUrl("https://example2.com");
-    author.setTypeName(Type.BOT);
+    author.setTypeName("Bot");
 
     assertEquals(author.getAuthorId(), "facebook");
     assertEquals(author.getAuthorAvatarUrl(), "https://example2.com");
-    assertEquals(author.getTypeName(), Type.BOT);
+    assertEquals(author.getTypeName(), "Bot");
   }
 }

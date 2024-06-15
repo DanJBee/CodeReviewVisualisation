@@ -18,7 +18,7 @@ public class Author {
 
   private String authorAvatarUrl;
 
-  private Type typeName;
+  private String typeName;
 
   public Author() {
   }
@@ -32,7 +32,7 @@ public class Author {
   public Author(String authorId, String authorAvatarUrl) {
     this.authorId = authorId;
     this.authorAvatarUrl = authorAvatarUrl;
-    this.typeName = Type.USER;
+    this.typeName = "User";
   }
 
   public String getAuthorId() {
@@ -51,11 +51,11 @@ public class Author {
     this.authorAvatarUrl = authorAvatarUrl;
   }
 
-  public Type getTypeName() {
+  public String getTypeName() {
     return typeName;
   }
 
-  public void setTypeName(Type typeName) {
+  public void setTypeName(String typeName) {
     this.typeName = typeName;
   }
 }
