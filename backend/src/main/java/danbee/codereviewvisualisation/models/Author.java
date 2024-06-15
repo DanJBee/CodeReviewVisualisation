@@ -20,9 +20,6 @@ public class Author {
 
   private Type typeName;
 
-  public Author() {
-  }
-
   /**
    * Author constructor method.
    *
@@ -33,6 +30,9 @@ public class Author {
     this.authorId = authorId;
     this.authorAvatarUrl = authorAvatarUrl;
     this.typeName = Type.USER;
+  }
+
+  public Author() {
   }
 
   public String getAuthorId() {
