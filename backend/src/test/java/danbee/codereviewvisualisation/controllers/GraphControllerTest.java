@@ -1,4 +1,4 @@
-package danbee.frontend.controllers;
+package danbee.codereviewvisualisation.controllers;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

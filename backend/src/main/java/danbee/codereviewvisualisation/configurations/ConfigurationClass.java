@@ -1,4 +1,4 @@
-package danbee.frontend.configurations;
+package danbee.codereviewvisualisation.configurations;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
