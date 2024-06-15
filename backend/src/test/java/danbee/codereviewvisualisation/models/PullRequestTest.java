@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class PullRequestTest {
 
   private final Timestamp timestamp = new Timestamp(1);
+  
   private PullRequest pullRequest;
 
   @BeforeEach

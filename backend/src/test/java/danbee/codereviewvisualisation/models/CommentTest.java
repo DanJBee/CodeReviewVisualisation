@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class CommentTest {
 
   private final Timestamp timestamp = new Timestamp(2);
+
   private Comment comment;
 
   @BeforeEach
