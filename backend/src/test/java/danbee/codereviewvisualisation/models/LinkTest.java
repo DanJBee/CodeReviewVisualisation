@@ -15,9 +15,9 @@ class LinkTest {
 
   @BeforeEach
   void setUp() {
-    link = new Link(sourceNode, targetNode, 1);
     sourceNode = new Node("Source Node", 2);
     targetNode = new Node("Target Node", 3);
+    link = new Link(sourceNode, targetNode, 1);
   }
 
   @Test
