@@ -1,7 +1,6 @@
 package danbee.codereviewvisualisation.services;
 
 import danbee.codereviewvisualisation.models.Project;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,7 +20,6 @@ class ProjectServiceTest {
   private ProjectService projectService;
 
   @Test
-  @Disabled
   void testFindByOwnerAndRepositoryValid() {
     assertEquals("{\"id\":11,\"owner\":\"microsoft\",\"repository\":\"typescript\"}",
         projectService.findByOwnerAndRepository("microsoft", "typescript").toString());

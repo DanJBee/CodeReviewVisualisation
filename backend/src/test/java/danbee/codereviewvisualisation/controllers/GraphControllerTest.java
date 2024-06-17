@@ -1,5 +1,7 @@
 package danbee.codereviewvisualisation.controllers;
 
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,16 +34,27 @@ class GraphControllerTest {
   }
 
   @Test
-  @Disabled
   void testGetGetGraphWithoutStartAndEndTime() {
     ResponseEntity<String> response = restTemplate
         .getForEntity("/getGraph?owner=microsoft&project=typescript", String.class);
     assertThat(response.getStatusCode())
         .isEqualTo(HttpStatus.OK);
-    assertThat(response.getBody())
-        .isEqualTo(
-            "{\"id\":11,\"owner\":\"microsoft\",\"repository\":\"typescript\"}"
-        );
+    DocumentContext documentContext = JsonPath.parse(response.getBody());
+    Integer id = documentContext.read("$[0].id");
+    assertThat(id)
+        .isEqualTo(1079);
+    Integer number = documentContext.read("$[0].number");
+    assertThat(number)
+        .isEqualTo(1000);
+    Integer projectId = documentContext.read("$[0].projectId");
+    assertThat(projectId)
+        .isEqualTo(11);
+    String createdAt = documentContext.read("$[0].createdAt");
+    assertThat(createdAt)
+        .isEqualTo("2014-10-30T15:15:03.000+00:00");
+    String authorId = documentContext.read("$[0].authorId");
+    assertThat(authorId)
+        .isEqualTo("jrieken");
   }
 
   @Test
