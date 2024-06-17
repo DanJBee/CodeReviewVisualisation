@@ -1,13 +1,11 @@
 package danbee.codereviewvisualisation.controllers;
 
-import danbee.codereviewvisualisation.models.PullRequest;
+import danbee.codereviewvisualisation.models.Graph;
 import danbee.codereviewvisualisation.services.GraphService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 /**
  * Graph controller class.
@@ -44,10 +42,10 @@ public class GraphController {
    * @return the pull request graph information for 'microsoft/typescript'
    */
   @GetMapping("/getGraph")
-  public List<PullRequest> getGraph(@RequestParam String owner,
-                                    @RequestParam String project,
-                                    @RequestParam(required = false) String start,
-                                    @RequestParam(required = false) String end) {
+  public Graph getGraph(@RequestParam String owner,
+                        @RequestParam String project,
+                        @RequestParam(required = false) String start,
+                        @RequestParam(required = false) String end) {
     return graphService.getGraphData(owner, project);
   }
 }

@@ -43,7 +43,7 @@ public class Author {
     this.authorId = authorId;
   }
 
-  public String getAuthorAvatarUrl() {
+  public String getAvatarUrl() {
     return authorAvatarUrl;
   }
 

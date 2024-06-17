@@ -15,8 +15,8 @@ class LinkTest {
 
   @BeforeEach
   void setUp() {
-    sourceNode = new Node("Source Node", 2);
-    targetNode = new Node("Target Node", 3);
+    sourceNode = new Node("Source Node", "https://google.com", "User", 1L);
+    targetNode = new Node("Target Node", "https://google2.com", "User", 2L);
     link = new Link(sourceNode, targetNode, 1);
   }
 
@@ -29,8 +29,8 @@ class LinkTest {
 
   @Test
   void testSetters() {
-    Node newSourceNode = new Node("New Source Node", 4);
-    Node newTargetNode = new Node("New Target Node", 5);
+    Node newSourceNode = new Node("New Source Node", "https://google3.com", "User", 3L);
+    Node newTargetNode = new Node("New Target Node", "https://google4.com", "User", 4L);
     link.setSource(newSourceNode);
     link.setTarget(newTargetNode);
     link.setThickness(6);

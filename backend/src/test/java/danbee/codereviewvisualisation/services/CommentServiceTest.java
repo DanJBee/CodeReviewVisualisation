@@ -22,6 +22,11 @@ class CommentServiceTest {
   private CommentService commentService;
 
   @Test
+  void testFindAll() {
+
+  }
+
+  @Test
   void testFindByNumberValid() {
     assertEquals(1000L, commentService.findByNumber(1000L).getFirst().getNumber());
   }

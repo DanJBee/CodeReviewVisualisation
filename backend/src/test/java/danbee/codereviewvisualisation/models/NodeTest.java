@@ -11,21 +11,27 @@ class NodeTest {
 
   @BeforeEach
   void setUp() {
-    node = new Node("Test", 1);
+    node = new Node("Test", "https://google.com", "User", 1L);
   }
 
   @Test
   void testGetters() {
-    assertEquals(node.getId(), "Test");
-    assertEquals(node.getNumber(), 1);
+    assertEquals(node.getAuthorId(), "Test");
+    assertEquals(node.getAvatarUrl(), "https://google.com");
+    assertEquals(node.getTypeName(), "User");
+    assertEquals(node.getSize(), 1L);
   }
 
   @Test
   void testSetters() {
-    node.setId("Testing");
-    node.setNumber(2);
+    node.setAuthorId("Testing");
+    node.setAvatarUrl("https://google2.com");
+    node.setTypeName("Bot");
+    node.setSize(2L);
 
-    assertEquals(node.getId(), "Testing");
-    assertEquals(node.getNumber(), 2);
+    assertEquals(node.getAuthorId(), "Testing");
+    assertEquals(node.getAvatarUrl(), "https://google2.com");
+    assertEquals(node.getTypeName(), "Bot");
+    assertEquals(node.getSize(), 2L);
   }
 }

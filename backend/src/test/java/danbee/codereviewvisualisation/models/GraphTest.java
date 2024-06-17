@@ -20,9 +20,9 @@ class GraphTest {
   void setUp() {
     nodes = new ArrayList<>();
     links = new ArrayList<>();
-    Node sourceNode = new Node("Source Node", 1);
-    Node targetNode = new Node("Target Node", 2);
-    Node node = new Node("Test Node", 3);
+    Node sourceNode = new Node("Source Node", "https://google.com", "User", 1L);
+    Node targetNode = new Node("Target Node", "https://google2.com", "User", 2L);
+    Node node = new Node("Test Node", "https://google3.com", "User", 3L);
     nodes.add(node);
     Link link = new Link(sourceNode, targetNode, 4);
     links.add(link);
