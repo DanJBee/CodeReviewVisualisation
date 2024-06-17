@@ -1,7 +1,9 @@
 package danbee.codereviewvisualisation.services;
 
-import danbee.codereviewvisualisation.models.Project;
+import danbee.codereviewvisualisation.models.PullRequest;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Graph service class.
@@ -13,11 +15,15 @@ public class GraphService {
 
   private final ProjectService projectService;
 
-  public GraphService(ProjectService projectService) {
+  private final PullRequestService pullRequestService;
+
+  public GraphService(ProjectService projectService, PullRequestService pullRequestService) {
     this.projectService = projectService;
+    this.pullRequestService = pullRequestService;
   }
 
-  public Project getGraphData(String owner, String project) {
-    return projectService.findByOwnerAndRepository(owner, project);
+  public List<PullRequest> getGraphData(String owner, String project) {
+    Integer projectId = projectService.findByOwnerAndRepository(owner, project).getId();
+    return pullRequestService.findByProjectId(projectId);
   }
 }

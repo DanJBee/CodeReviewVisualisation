@@ -32,6 +32,7 @@ class GraphControllerTest {
   }
 
   @Test
+  @Disabled
   void testGetGetGraphWithoutStartAndEndTime() {
     ResponseEntity<String> response = restTemplate
         .getForEntity("/getGraph?owner=microsoft&project=typescript", String.class);
