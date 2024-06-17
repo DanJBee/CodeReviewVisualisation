@@ -20,6 +20,17 @@ class ProjectServiceTest {
   private ProjectService projectService;
 
   @Test
+  void testFindByOwnerAndRepositoryValid() {
+    assertEquals("{\"id\":11,\"owner\":\"microsoft\",\"repository\":\"typescript\"}",
+        projectService.findByOwnerAndRepository("microsoft", "typescript").toString());
+  }
+
+  @Test
+  void testFindByOwnerAndRepositoryInvalid() {
+    assertNull(projectService.findByOwnerAndRepository("invalidOwner", "invalidRepository"));
+  }
+
+  @Test
   void testFindByOwnerValid() {
     assertEquals("microsoft", projectService.findByOwner("microsoft").getOwner());
   }

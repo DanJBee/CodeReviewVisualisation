@@ -20,6 +20,10 @@ public class ProjectService {
     this.projectRepository = projectRepository;
   }
 
+  public Project findByOwnerAndRepository(String owner, String repository) {
+    return projectRepository.findByOwnerAndRepository(owner, repository);
+  }
+
   public Project findByOwner(String owner) {
     return projectRepository.findByOwner(owner);
   }

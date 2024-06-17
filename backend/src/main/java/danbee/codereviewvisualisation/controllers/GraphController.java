@@ -1,5 +1,7 @@
 package danbee.codereviewvisualisation.controllers;
 
+import danbee.codereviewvisualisation.models.Project;
+import danbee.codereviewvisualisation.services.GraphService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,6 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping
 public class GraphController {
+
+  private final GraphService graphService;
+
+  public GraphController(GraphService graphService) {
+    this.graphService = graphService;
+  }
 
   /**
    * Index GET method.
@@ -34,37 +42,10 @@ public class GraphController {
    * @return the pull request graph information for 'microsoft/typescript'
    */
   @GetMapping("/getGraph")
-  public String getGraph(@RequestParam String owner,
-                         @RequestParam String project,
-                         @RequestParam(required = false) String start,
-                         @RequestParam(required = false) String end) {
-    if (start != null && end == null) {
-      return "Hello "
-          + owner
-          + " you are the owner of project "
-          + project
-          + " at the start time of "
-          + start
-          + "!";
-    } else if (start == null && end != null) {
-      return "Hello "
-          + owner
-          + " you are the owner of project "
-          + project
-          + " at the end time of "
-          + end
-          + "!";
-    } else if (start != null) {
-      return "Hello "
-          + owner
-          + " you are the owner of project "
-          + project
-          + " at the start time of "
-          + start
-          + " and an end time of "
-          + end
-          + "!";
-    }
-    return "Hello " + owner + " you are the owner of project " + project + "!";
+  public Project getGraph(@RequestParam String owner,
+                          @RequestParam String project,
+                          @RequestParam(required = false) String start,
+                          @RequestParam(required = false) String end) {
+    return graphService.getGraphData(owner, project);
   }
 }

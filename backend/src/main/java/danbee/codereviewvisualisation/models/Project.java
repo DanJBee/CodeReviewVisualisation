@@ -1,5 +1,7 @@
 package danbee.codereviewvisualisation.models;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
 
 /**
@@ -51,5 +53,21 @@ public class Project {
 
   public void setRepository(String repository) {
     this.repository = repository;
+  }
+
+  /**
+   * Project toString method.
+   *
+   * @return the Project object mapped as a JSON object
+   */
+  @Override
+  public String toString() {
+    ObjectMapper mapper = new ObjectMapper();
+    try {
+      return mapper.writeValueAsString(this);
+    } catch (JsonProcessingException exception) {
+      exception.getMessage();
+      return super.toString();
+    }
   }
 }
