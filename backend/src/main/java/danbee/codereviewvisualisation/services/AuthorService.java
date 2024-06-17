@@ -1,6 +1,7 @@
 package danbee.codereviewvisualisation.services;
 
 import danbee.codereviewvisualisation.models.Author;
+import danbee.codereviewvisualisation.repositories.AuthorRepository;
 import org.springframework.stereotype.Service;
 
 /**

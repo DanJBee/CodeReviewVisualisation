@@ -1,4 +1,4 @@
-package danbee.codereviewvisualisation.services;
+package danbee.codereviewvisualisation.repositories;
 
 import danbee.codereviewvisualisation.models.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;

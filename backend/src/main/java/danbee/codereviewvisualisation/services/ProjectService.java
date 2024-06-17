@@ -1,6 +1,7 @@
 package danbee.codereviewvisualisation.services;
 
 import danbee.codereviewvisualisation.models.Project;
+import danbee.codereviewvisualisation.repositories.ProjectRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

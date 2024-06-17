@@ -1,6 +1,7 @@
 package danbee.codereviewvisualisation.services;
 
 import danbee.codereviewvisualisation.models.PullRequest;
+import danbee.codereviewvisualisation.repositories.PullRequestRepository;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;

@@ -1,6 +1,7 @@
 package danbee.codereviewvisualisation.services;
 
 import danbee.codereviewvisualisation.models.Comment;
+import danbee.codereviewvisualisation.repositories.CommentRepository;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
