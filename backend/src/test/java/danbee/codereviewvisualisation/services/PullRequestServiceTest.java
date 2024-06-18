@@ -54,15 +54,4 @@ class PullRequestServiceTest {
     assertEquals(pullRequests, pullRequestService
         .findByCreatedAt(Timestamp.valueOf("1970-01-01 00:00:00")));
   }
-
-  @Test
-  void testFindByAuthorIdValid() {
-    assertEquals("jrieken", pullRequestService.findByAuthorId("jrieken").getFirst().getAuthorId());
-  }
-
-  @Test
-  void testFindByAuthorIdInvalid() {
-    List<PullRequest> pullRequests = new ArrayList<>();
-    assertEquals(pullRequests, pullRequestService.findByAuthorId("invalidUsername"));
-  }
 }

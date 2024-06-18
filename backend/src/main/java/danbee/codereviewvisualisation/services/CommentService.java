@@ -25,13 +25,13 @@ public class CommentService {
     return commentRepository.findAll();
   }
 
-  public List<Comment> findByNumber(Long number) {
-    return commentRepository.findByNumber(number);
-  }
+//  public List<Comment> findByNumber(Long number) {
+//    return commentRepository.findByNumber(number);
+//  }
 
-  public List<Comment> findByAuthorId(String authorId) {
-    return commentRepository.findByAuthorId(authorId);
-  }
+//  public List<Comment> findByAuthorId(String authorId) {
+//    return commentRepository.findByAuthorId(authorId);
+//  }
 
   public List<Comment> findByCreatedAt(Timestamp timestamp) {
     return commentRepository.findByCreatedAt(timestamp);

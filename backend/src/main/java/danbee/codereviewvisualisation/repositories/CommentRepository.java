@@ -14,13 +14,13 @@ import java.util.List;
  */
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-  List<Comment> findByNumber(Long number);
+//  List<Comment> findByNumber(Long number);
 
-  List<Comment> findByAuthorId(String authorId);
+//  List<Comment> findByAuthorId(String authorId);
 
   List<Comment> findByCreatedAt(Timestamp timestamp);
 
-  @Query(value = "SELECT COUNT(author_id) FROM authors WHERE author_id = :authorId;",
+  @Query(value = "SELECT COUNT(author_id) FROM comments WHERE author_id = :authorId;",
       nativeQuery = true)
   Long findCountOfAuthorId(String authorId);
 

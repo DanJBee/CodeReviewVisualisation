@@ -2,10 +2,7 @@ package danbee.codereviewvisualisation.controllers;
 
 import danbee.codereviewvisualisation.models.Graph;
 import danbee.codereviewvisualisation.services.GraphService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Graph controller class.
@@ -27,6 +24,7 @@ public class GraphController {
    *
    * @return the index page
    */
+  @CrossOrigin(origins = "http://localhost:5173")
   @GetMapping
   public String index() {
     return "Welcome to the Code Review Visualisation!";
