@@ -17,7 +17,9 @@ const graph = () => {
 
   return async (selection: any) => {
     // Collects a JSON response from the 'mock.json' file
-    const response: Data | undefined = await axios.get('/mock.json');
+    const response: Data | undefined = await axios.get(
+      'http://localhost:8080/getGraph?owner=microsoft&project=typescript',
+    );
 
     // If there is no response then return
     if (!response) return;

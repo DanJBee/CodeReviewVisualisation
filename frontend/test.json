@@ -1,0 +1,153 @@
+{
+  "nodes": {
+    "zhengbli": {
+      "size": 0,
+      "authorId": "zhengbli",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/1171301?u=a03944fc8d4dec9e3cb735326621c7a6a5d81e91&v=4",
+      "typeName": "User"
+    },
+    "jwbay": {
+      "size": 0,
+      "authorId": "jwbay",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/1320447?u=a59b2050281676ef89dce9586cb7e9f745233279&v=4",
+      "typeName": "User"
+    },
+    "saschanaz": {
+      "size": 0,
+      "authorId": "saschanaz",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/3396686?v=4",
+      "typeName": "User"
+    },
+    "jrieken": {
+      "size": 1,
+      "authorId": "jrieken",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/1794099?u=fd4a2d1f49f071ea5b9c3e9097fb9e36218b15af&v=4",
+      "typeName": "User"
+    },
+    "sandersn": {
+      "size": 0,
+      "authorId": "sandersn",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/293473?u=2e3c9ccdfc791f67f7cd298b78f889ddf10f32a1&v=4",
+      "typeName": "User"
+    },
+    "YuichiNukiyama": {
+      "size": 0,
+      "authorId": "YuichiNukiyama",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/9623009?u=aa89c15cdc48560dc190b21aa16191039bec22c2&v=4",
+      "typeName": "User"
+    },
+    "RyanCavanaugh": {
+      "size": 0,
+      "authorId": "RyanCavanaugh",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/6685088?u=dd7d4af6a697fcc985ba4b2a1d6a55354590d8ef&v=4",
+      "typeName": "User"
+    },
+    "DanielRosenwasser": {
+      "size": 0,
+      "authorId": "DanielRosenwasser",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/972891?u=5a4dfe64fb09433dfa589b588361f04231144416&v=4",
+      "typeName": "User"
+    },
+    "chancancode": {
+      "size": 0,
+      "authorId": "chancancode",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/55829?u=ffc0d45f6f409208b3edc122e950d69bb2c81bc5&v=4",
+      "typeName": "User"
+    },
+    "maiermic": {
+      "size": 0,
+      "authorId": "maiermic",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/8530117?v=4",
+      "typeName": "User"
+    },
+    "CyrusNajmabadi": {
+      "size": 0,
+      "authorId": "CyrusNajmabadi",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/4564579?u=744d247288b5e0d09a4a7e07a89bf7238cdf6eed&v=4",
+      "typeName": "User"
+    },
+    "ahejlsberg": {
+      "size": 0,
+      "authorId": "ahejlsberg",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/4226954?u=6dd0c7bfce622156519ec2bd85582b1175cab851&v=4",
+      "typeName": "User"
+    },
+    "paulvanbrenk": {
+      "size": 0,
+      "authorId": "paulvanbrenk",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/5273975?u=065ba59cc1f7674a6cc57fd8394f45e07283714d&v=4",
+      "typeName": "User"
+    },
+    "sheetalkamat": {
+      "size": 0,
+      "authorId": "sheetalkamat",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/8052792?u=e70e58003f656f585fe4981b51a95c490d08ca32&v=4",
+      "typeName": "User"
+    },
+    "rbuckton": {
+      "size": 0,
+      "authorId": "rbuckton",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/3902892?u=60d348bd92c50a6954affdbbd7908c9872b9a584&v=4",
+      "typeName": "User"
+    },
+    "vladima": {
+      "size": 0,
+      "authorId": "vladima",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/8052307?u=104b524c7d0585c9c2e2375df23c46e000db7ad0&v=4",
+      "typeName": "User"
+    },
+    "Ghost": {
+      "size": 0,
+      "authorId": "Ghost",
+      "avatarUrl": "https://example.com",
+      "typeName": "User"
+    },
+    "yortus": {
+      "size": 0,
+      "authorId": "yortus",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/1252361?v=4",
+      "typeName": "User"
+    },
+    "joshaber": {
+      "size": 0,
+      "authorId": "joshaber",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/13760?u=badc6a89af3b00a480e77c5814883d65a05fe3b8&v=4",
+      "typeName": "User"
+    },
+    "gcnew": {
+      "size": 0,
+      "authorId": "gcnew",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/4066840?u=53246947c7c6cb62f05ba7e80be0a6bd506beb28&v=4",
+      "typeName": "User"
+    },
+    "yuit": {
+      "size": 0,
+      "authorId": "yuit",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/489742?u=fa87374744355e9b1003647afc5051d2f501800e&v=4",
+      "typeName": "User"
+    },
+    "weswigham": {
+      "size": 0,
+      "authorId": "weswigham",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/2932786?u=6d08f43f236a4be3ed20f7e810b1b1219bec10c4&v=4",
+      "typeName": "User"
+    }
+  },
+  "links": {
+    "jrieken:::jrieken": {
+      "source": {
+        "size": 0,
+        "authorId": "jrieken",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/1794099?u=fd4a2d1f49f071ea5b9c3e9097fb9e36218b15af&v=4",
+        "typeName": "User"
+      },
+      "target": {
+        "size": 0,
+        "authorId": "jrieken",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/1794099?u=fd4a2d1f49f071ea5b9c3e9097fb9e36218b15af&v=4",
+        "typeName": "User"
+      },
+      "thickness": 1
+    }
+  }
+}
