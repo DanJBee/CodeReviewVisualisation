@@ -57,7 +57,7 @@ const graph = () => {
       .selectAll()
       .data(nodes)
       .join('circle')
-      .attr('r', (d: Node) => d.size) // this number controls the size of each node
+      .attr('r', (d: Node) => Math.sqrt(d.size)) // this number controls the size of each node
       // sets an individual ID for each node to ensure the images' height/width are the correct
       // dimensions
       .attr('fill', (d: Node) => `url(#image-${d.id})`);
