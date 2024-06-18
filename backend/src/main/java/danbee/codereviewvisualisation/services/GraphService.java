@@ -1,13 +1,9 @@
 package danbee.codereviewvisualisation.services;
 
-import danbee.codereviewvisualisation.models.Author;
-import danbee.codereviewvisualisation.models.Graph;
-import danbee.codereviewvisualisation.models.Link;
-import danbee.codereviewvisualisation.models.Node;
+import danbee.codereviewvisualisation.models.*;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Graph service class.
@@ -17,18 +13,13 @@ import java.util.List;
 @Service
 public class GraphService {
 
-  private final AuthorService authorService;
-
-  private final CommentService commentService;
+  private final PullRequestService pullRequestService;
 
   /**
    * Graph service controller method.
-   *
-   * @param authorService the author service
    */
-  public GraphService(AuthorService authorService, CommentService commentService) {
-    this.authorService = authorService;
-    this.commentService = commentService;
+  public GraphService(PullRequestService pullRequestService) {
+    this.pullRequestService = pullRequestService;
   }
 
   /**
@@ -39,13 +30,70 @@ public class GraphService {
    * @return the graph data
    */
   public Graph getGraphData(String owner, String project) {
-    List<Node> nodes = new ArrayList<>();
-    List<Author> authors = authorService.findAll();
-    for (Author author : authors) {
-      Long size = commentService.findCountOfAuthorId(author.getAuthorId());
-      nodes.add(new Node(author.getAuthorId(), author.getAvatarUrl(), author.getTypeName(), size));
+    List<PullRequest> pullRequests = pullRequestService.find100();
+    Map<String, Node> nodes = new HashMap<>();
+    Map<String, Link> links = new HashMap<>();
+
+    for (PullRequest pullRequest : pullRequests) {
+      if (!nodes.containsKey(pullRequest.getAuthor().getAuthorId())) {
+        nodes.put(pullRequest.getAuthor().getAuthorId(),
+            new Node(
+                pullRequest.getAuthor().getAuthorId(),
+                pullRequest.getAuthor().getAvatarUrl(),
+                pullRequest.getAuthor().getTypeName(),
+                0L)
+        );
+
+        for (Comment comment : pullRequest.getComments()) {
+          if (!nodes.containsKey(comment.getAuthor().getAuthorId())) {
+            nodes.put(comment.getAuthor().getAuthorId(),
+                new Node(
+                    comment.getAuthor().getAuthorId(),
+                    comment.getAuthor().getAvatarUrl(),
+                    comment.getAuthor().getTypeName(),
+                    0L));
+          }
+
+          // Increase the number of comments for the node with the given author ID
+          Node node = nodes.get(comment.getAuthor().getAuthorId());
+          node.setSize(node.getSize() + 1);
+
+          final String splitter = ":::";
+
+          // Increase the number of links for the node with the given author ID
+          List<String> sortedAuthors = Arrays.asList(
+              pullRequest.getAuthor().getAuthorId(),
+              comment.getAuthor().getAuthorId()
+          );
+          Collections.sort(sortedAuthors);
+          String pair = String.join(splitter, sortedAuthors);
+          if (!links.containsKey(pair)) {
+            links.put(pair, new Link(
+                new Node(
+                    sortedAuthors.get(0),
+                    pullRequest.getAuthor().getAvatarUrl(),
+                    pullRequest.getAuthor().getTypeName(),
+                    0L
+                ),
+                new Node(
+                    sortedAuthors.get(1),
+                    comment.getAuthor().getAvatarUrl(),
+                    comment.getAuthor().getTypeName(),
+                    0L
+                ),
+                0));
+          }
+          Link link = links.get(pair);
+          link.setThickness(link.getThickness() + 1);
+        }
+      }
     }
-    List<Link> links = new ArrayList<>();
+//    List<Author> authors = authorService.findAll();
+//    for (Author author : authors) {
+//      Long size = commentService.findCountOfAuthorId(author.getAuthorId());
+//      nodes.add(new Node(author.getAuthorId(), author.getAvatarUrl(), author.getTypeName(), size));
+//    }
+//    List<Link> links = new ArrayList<>();
     // TODO: Fix links
     //    List<Comment> comments = commentService.findAll();
     //    for (Comment comment : comments) {

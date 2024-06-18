@@ -21,6 +21,14 @@ public class PullRequestService {
     this.pullRequestRepository = pullRequestRepository;
   }
 
+  public List<PullRequest> findAll() {
+    return pullRequestRepository.findAll();
+  }
+
+  public List<PullRequest> find100() {
+    return pullRequestRepository.find100();
+  }
+
   public PullRequest findByNumber(Long number) {
     return pullRequestRepository.findByNumber(number);
   }
@@ -31,9 +39,5 @@ public class PullRequestService {
 
   public List<PullRequest> findByCreatedAt(Timestamp timestamp) {
     return pullRequestRepository.findByCreatedAt(timestamp);
-  }
-
-  public List<PullRequest> findByAuthorId(String authorId) {
-    return pullRequestRepository.findByAuthorId(authorId);
   }
 }

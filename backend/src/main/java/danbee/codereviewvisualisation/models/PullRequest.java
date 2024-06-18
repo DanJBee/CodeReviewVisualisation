@@ -3,6 +3,8 @@ package danbee.codereviewvisualisation.models;
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Pull request entity class.
@@ -23,7 +25,12 @@ public class PullRequest {
 
   private Timestamp createdAt;
 
-  private String authorId;
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "author_id")
+  private Author author;
+
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "pullRequest")
+  private List<Comment> comments;
 
   public PullRequest() {
   }
@@ -34,13 +41,12 @@ public class PullRequest {
    * @param number    the pull request number
    * @param projectId the pull request project ID
    * @param createdAt the pull request creation timestamp
-   * @param authorId  the pull request author ID
    */
-  public PullRequest(Long number, Integer projectId, Timestamp createdAt, String authorId) {
+  public PullRequest(Long number, Integer projectId, Timestamp createdAt, List<Comment> comments) {
     this.number = number;
     this.projectId = projectId;
     this.createdAt = createdAt;
-    this.authorId = authorId;
+    this.comments = new ArrayList<>();
   }
 
   public Long getId() {
@@ -71,11 +77,15 @@ public class PullRequest {
     this.createdAt = createdAt;
   }
 
-  public String getAuthorId() {
-    return authorId;
+  public Author getAuthor() {
+    return author;
   }
 
-  public void setAuthorId(String authorId) {
-    this.authorId = authorId;
+  public void setAuthor(Author author) {
+    this.author = author;
+  }
+
+  public List<Comment> getComments() {
+    return comments;
   }
 }

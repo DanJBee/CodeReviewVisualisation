@@ -4,6 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -11,12 +13,14 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class PullRequestTest {
 
   private final Timestamp timestamp = new Timestamp(1);
-  
+
+  private final List<Comment> comments = new ArrayList<>();
+
   private PullRequest pullRequest;
 
   @BeforeEach
   void setUp() {
-    pullRequest = new PullRequest(1L, 2, timestamp, "microsoft");
+    pullRequest = new PullRequest(1L, 2, timestamp, comments);
   }
 
   @Test
@@ -25,7 +29,7 @@ class PullRequestTest {
     assertEquals(pullRequest.getNumber(), 1L);
     assertEquals(pullRequest.getProjectId(), 2);
     assertEquals(pullRequest.getCreatedAt(), timestamp);
-    assertEquals(pullRequest.getAuthorId(), "microsoft");
+    assertEquals(pullRequest.getComments(), comments);
   }
 
   @Test
@@ -34,12 +38,11 @@ class PullRequestTest {
     pullRequest.setProjectId(3);
     Timestamp newTimestamp = new Timestamp(4);
     pullRequest.setCreatedAt(newTimestamp);
-    pullRequest.setAuthorId("facebook");
 
     assertNull(pullRequest.getId());
     assertEquals(pullRequest.getNumber(), 2L);
     assertEquals(pullRequest.getProjectId(), 3);
     assertEquals(pullRequest.getCreatedAt(), newTimestamp);
-    assertEquals(pullRequest.getAuthorId(), "facebook");
+    assertEquals(pullRequest.getComments(), comments);
   }
 }

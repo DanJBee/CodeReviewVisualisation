@@ -14,5 +14,4 @@ public class CodeReviewVisualisationApplication {
   public static void main(String[] args) {
     SpringApplication.run(CodeReviewVisualisationApplication.class, args);
   }
-
 }

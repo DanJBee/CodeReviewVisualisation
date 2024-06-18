@@ -1,6 +1,6 @@
 package danbee.codereviewvisualisation.models;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * Graph (Data) class.
@@ -8,10 +8,10 @@ import java.util.List;
  * @author Dan Bee
  */
 public class Graph {
-  
-  private List<Node> nodes;
 
-  private List<Link> links;
+  private Map<String, Node> nodes;
+
+  private Map<String, Link> links;
 
   /**
    * Graph constructor method.
@@ -19,24 +19,24 @@ public class Graph {
    * @param nodes the nodes in the graph
    * @param links the links between the nodes in the graph
    */
-  public Graph(List<Node> nodes, List<Link> links) {
+  public Graph(Map<String, Node> nodes, Map<String, Link> links) {
     this.nodes = nodes;
     this.links = links;
   }
 
-  public List<Node> getNodes() {
+  public Map<String, Node> getNodes() {
     return nodes;
   }
 
-  public void setNodes(List<Node> nodes) {
+  public void setNodes(Map<String, Node> nodes) {
     this.nodes = nodes;
   }
 
-  public List<Link> getLinks() {
+  public Map<String, Link> getLinks() {
     return links;
   }
 
-  public void setLinks(List<Link> links) {
+  public void setLinks(Map<String, Link> links) {
     this.links = links;
   }
 }
