@@ -13,19 +13,15 @@ public class Node {
 
   private String avatarUrl;
 
-  private String typeName;
-
   /**
    * Node constructor method.
    *
    * @param authorId  the author's ID
    * @param avatarUrl the author's avatar URL
-   * @param typeName  the author's type name
    */
-  public Node(String authorId, String avatarUrl, String typeName, Long size) {
+  public Node(String authorId, String avatarUrl, Long size) {
     this.authorId = authorId;
     this.avatarUrl = avatarUrl;
-    this.typeName = typeName;
     this.size = size;
   }
 
@@ -44,15 +40,7 @@ public class Node {
   public void setAvatarUrl(String avatarUrl) {
     this.avatarUrl = avatarUrl;
   }
-
-  public String getTypeName() {
-    return typeName;
-  }
-
-  public void setTypeName(String typeName) {
-    this.typeName = typeName;
-  }
-
+  
   public Long getSize() {
     return size;
   }

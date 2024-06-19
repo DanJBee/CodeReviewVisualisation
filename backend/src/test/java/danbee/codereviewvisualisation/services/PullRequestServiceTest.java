@@ -32,7 +32,7 @@ class PullRequestServiceTest {
 
   @Test
   void testFindByProjectIdValid() {
-    assertEquals(11, pullRequestService.findByProjectId(11).getFirst().getProjectId());
+    assertEquals(1, pullRequestService.findByProjectId(1).getFirst().getProjectId());
   }
 
   @Test

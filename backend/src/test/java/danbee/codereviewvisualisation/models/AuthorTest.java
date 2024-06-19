@@ -20,24 +20,20 @@ class AuthorTest {
     Author emptyAuthor = new Author();
     assertNull(emptyAuthor.getAuthorId());
     assertNull(emptyAuthor.getAuthorId());
-    assertNull(emptyAuthor.getTypeName());
   }
 
   @Test
   void testGetters() {
     assertEquals(author.getAuthorId(), "microsoft");
     assertEquals(author.getAvatarUrl(), "https://example.com");
-    assertEquals(author.getTypeName(), "User");
   }
 
   @Test
   void testSetters() {
     author.setAuthorId("facebook");
     author.setAuthorAvatarUrl("https://example2.com");
-    author.setTypeName("Bot");
 
     assertEquals(author.getAuthorId(), "facebook");
     assertEquals(author.getAvatarUrl(), "https://example2.com");
-    assertEquals(author.getTypeName(), "Bot");
   }
 }
