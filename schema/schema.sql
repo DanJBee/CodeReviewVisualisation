@@ -37,11 +37,11 @@ create table pull_requests
 
 create table comments
 (
-    id         bigint primary key auto_increment,
-    number     bigint,
-    author_id  varchar(100) not null,
-    created_at timestamp    not null,
+    id           bigint primary key auto_increment,
+    pull_request bigint,
+    author_id    varchar(100) not null,
+    created_at   timestamp    not null,
     index comments_author_id_index (author_id),
-    index comments_number_index (number),
-    foreign key number_fk (number) references pull_requests (number)
+    index comments_number_index (pull_request),
+    foreign key number_fk (pull_request) references pull_requests (id)
 );
