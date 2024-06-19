@@ -83,21 +83,18 @@ def insert_pull_request(
     db_cursor.execute(pull_requests_sql, pull_requests_values)
 
 
-# Defines a function that inserts a comment into the comments table with cursor, number, author_id,
-# & created_at parameters
+# Defines a function that inserts a comment into the comments table with cursor, author_id, & created_at parameters
 def insert_comment(db_cursor, author_id_value, created_at_date):
     # Get the last inserted pull request number
-    pull_request_number_sql_query = "SELECT number FROM pull_requests;"
+    pull_request_number_sql_query = "SELECT id FROM pull_requests ORDER BY id DESC;"
     cursor.execute(pull_request_number_sql_query)
     last_inserted_pull_request_number = cursor.fetchone()
 
-    # Clear the result before executing the next SQL query
+    # Clear the result set before executing the next SQL query
     cursor.fetchall()
 
-    # If the author is a deleted user, then add "Ghost" value for author_id
-    comments_sql_deleted_user_query = (
-        "INSERT INTO comments (number, author_id, created_at) VALUES (%s, %s, %s);"
-    )
+    # If the author is a deleted user, then a "Ghost" value is used for author_id
+    comments_sql_deleted_user_query = "INSERT INTO comments (pull_request, author_id, created_at) VALUES (%s, %s, %s);"
     comments_deleted_user_values = (
         last_inserted_pull_request_number[0],
         author_id_value,
