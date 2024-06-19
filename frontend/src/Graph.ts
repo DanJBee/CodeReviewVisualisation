@@ -3,9 +3,15 @@
 import {
   drag,
   forceCenter,
+  forceCollide,
   forceLink,
   forceManyBody,
   forceSimulation,
+  max,
+  min,
+  scaleLinear,
+  scaleSqrt,
+  zoom,
 } from 'd3';
 import axios from 'axios';
 import { Data, Link, Node } from './Types';
@@ -31,23 +37,73 @@ const graph = () => {
     const links = data.links.map((d: Link) => ({ ...d }));
     const nodes = data.nodes.map((d: Node) => ({ ...d }));
 
+    // Creates a map of nodes by the author ID
+    const nodeMap = new Map(nodes.map((node: Node) => [node.authorId, node]));
+
+    // Updates the source & target properties of the links between the nodes in the graph
+    links.forEach((link: Link) => {
+      const sourceNode: Node | undefined = nodeMap.get(link.source.authorId);
+      const targetNode: Node | undefined = nodeMap.get(link.target.authorId);
+      const newLink: Link = link;
+
+      if (sourceNode && targetNode) {
+        newLink.source = sourceNode;
+        newLink.target = targetNode;
+      }
+    });
+
     // Defines the svg element that the graph will be within
     const svg = selection
       .append('svg')
       .attr('height', height)
       .attr('width', width)
-      .attr('viewBox', [50, 10, width / 2, height / 2])
-      .attr('style', 'max-width: 100%; height: auto;');
+      .attr('viewBox', [0, 0, width / 2, height / 2])
+      .attr('style', 'max-width: 100%; height: auto;')
+      .call(
+        zoom().on('zoom', (event) => {
+          svg.attr('transform', event.transform);
+        }),
+      );
+
+    // Defines the minimum & maximum thickness of the links between the nodes in the graph
+    const minThickness: number | undefined = min(
+      links,
+      (d: Link) => d.thickness,
+    );
+    const maxThickness: number | undefined = max(
+      links,
+      (d: Link) => d.thickness,
+    );
+
+    // Defines a scale for the thickness of the links between the nodes in the graph
+    const scaleThickness = scaleSqrt()
+      .domain([minThickness ?? 1, maxThickness ?? 10])
+      .range([0.01, 5]);
 
     // Defines the link between each node in the graph
     const link = svg
       .append('g')
       .attr('stroke', '#999')
-      .attr('stroke-opacity', 1.5) // this number controls the thickness of each link
+      .attr('stroke-opacity', 1.5)
       .selectAll()
       .data(links)
       .join('line')
-      .attr('stroke-width', (d: Link) => Math.sqrt(d.thickness));
+      .attr('stroke-width', (d: Link) => scaleThickness(d.thickness)); // this number controls the thickness of each link
+
+    // Defines the minimum & maximum sizes for the nodes in the graph
+    const minSize: number | undefined = min(
+      nodes.filter((d: Node) => d.size !== undefined),
+      (d: Node) => d.size,
+    );
+    const maxSize: number | undefined = max(
+      nodes.filter((d: Node) => d.size !== undefined),
+      (d: Node) => d.size,
+    );
+
+    // Defines a scale for the sizes of the nodes in the graph
+    const scaleSize = scaleLinear()
+      .domain([minSize ?? 1, maxSize ?? 4000])
+      .range([5, 50]);
 
     // Defines each individual node in the graph
     const node = svg
@@ -57,10 +113,10 @@ const graph = () => {
       .selectAll()
       .data(nodes)
       .join('circle')
-      .attr('r', (d: Node) => Math.sqrt(d.size)) // this number controls the size of each node
+      .attr('r', (d: Node) => scaleSize(d.size)) // this number controls the size of each node
       // sets an individual ID for each node to ensure the images' height/width are the correct
       // dimensions
-      .attr('fill', (d: Node) => `url(#image-${d.id})`);
+      .attr('fill', (d: Node) => `url(#image-${d.authorId})`);
 
     // Sets the position attribute of the links & nodes in the graph each time the nodes 'ticks'
     function ticked() {
@@ -77,10 +133,14 @@ const graph = () => {
     const simulation = forceSimulation(nodes)
       .force(
         'link',
-        forceLink(links).id((d: any) => d.id),
+        forceLink(links).id((d: any) => d.authorId),
       )
       .force('charge', forceManyBody())
-      .force('centre', forceCenter(width / 4 + 20, height / 4 + 45))
+      .force('centre', forceCenter(width / 4, height / 4))
+      .force(
+        'collide',
+        forceCollide().radius((d: any) => scaleSize(d.size) + 1),
+      )
       .on('tick', ticked);
 
     // Reheats the simulation when the drag starts & fix the subject's i.e. the node's position
@@ -117,7 +177,7 @@ const graph = () => {
       .data(nodes)
       .enter()
       .append('pattern')
-      .attr('id', (d: Node) => `image-${d.id}`)
+      .attr('id', (d: Node) => `image-${d.authorId}`)
       .attr('x', '0')
       .attr('y', '0')
       .attr('height', '1')
@@ -128,15 +188,12 @@ const graph = () => {
       .append('image')
       .attr('x', '0')
       .attr('y', '0')
-      .attr('height', (d: Node) => d.size * 2) // double the radius value
-      .attr('width', (d: Node) => d.size * 2) // double the radius value
-      .attr(
-        'xlink:href',
-        'https://avatars.githubusercontent.com/u/22572315?v=4', // this value controls the image on the nodes in the graph
-      );
+      .attr('height', (d: Node) => scaleSize(d.size) * 2) // double the radius value
+      .attr('width', (d: Node) => scaleSize(d.size) * 2) // double the radius value
+      .attr('xlink:href', (d: Node) => d.avatarUrl); // this value controls the image on the nodes in the graph
 
     // Appends a title to each node
-    node.append('title').text((d: any) => d.id);
+    node.append('title').text((d: Node) => d.authorId);
 
     // Applies the drag physics to each node in the graph
     node.call(

@@ -47,4 +47,4 @@ create table comments
 );
 
 INSERT INTO authors
-VALUES ('Ghost', 'https://example.com', 'User');
+VALUES ('Ghost', 'https://avatars.githubusercontent.com/u/9919?s=200&v=4', 'User');

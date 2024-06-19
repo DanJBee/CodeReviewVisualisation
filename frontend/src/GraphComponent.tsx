@@ -6,7 +6,7 @@ import graph from './Graph';
 
 function GraphComponent() {
   // Removes the overflow from the body of the page
-  const body = select('body');
+  const body = select('body').attr('style', 'overflow: hidden;');
 
   // Generates the force-directed graph so it appears on the screen
   graph(body).then(() => {});
