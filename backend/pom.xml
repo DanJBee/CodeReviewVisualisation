@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>danbee</groupId>
-    <artifactId>backend</artifactId>
+    <artifactId>codereviewvisualiation</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>backend</name>
-    <description>Backend for Code Review Visualisation Project.</description>
+    <name>codereviewvisualiation</name>
+    <description>Code Review Visualisation Project.</description>
     <properties>
         <java.version>22</java.version>
     </properties>

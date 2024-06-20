@@ -1,4 +1,4 @@
-package danbee.frontend;
+package danbee.codereviewvisualisation;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,5 +14,4 @@ public class CodeReviewVisualisationApplication {
   public static void main(String[] args) {
     SpringApplication.run(CodeReviewVisualisationApplication.class, args);
   }
-
 }

@@ -1,7 +1,8 @@
 import { SimulationLinkDatum, SimulationNodeDatum } from 'd3';
 
 export interface Node extends SimulationNodeDatum {
-  id: string;
+  authorId: string;
+  avatarUrl: string;
   size: number;
 }
 
