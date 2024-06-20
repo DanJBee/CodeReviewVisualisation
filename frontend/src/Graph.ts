@@ -74,7 +74,7 @@ const graph = () => {
       .attr('height', height)
       .attr('width', width)
       .attr('viewBox', [0, 0, width / 2, height / 2])
-      .attr('style', 'max-width: 100%; height: auto;')
+      .attr('style', 'max-width: 100%; height: auto; overflow: visible;')
       .call(
         zoom().on('zoom', (event) => {
           svg.attr('transform', event.transform);
