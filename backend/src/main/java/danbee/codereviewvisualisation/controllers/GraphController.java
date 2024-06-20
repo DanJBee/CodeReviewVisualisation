@@ -44,6 +44,6 @@ public class GraphController {
                         @RequestParam String project,
                         @RequestParam(required = false) String start,
                         @RequestParam(required = false) String end) {
-    return graphService.getGraphData(owner, project);
+    return graphService.getGraphData(owner, project, start, end);
   }
 }

@@ -14,8 +14,10 @@ import java.util.List;
  */
 public interface PullRequestRepository extends JpaRepository<PullRequest, Long> {
 
-  @Query(value = "SELECT * FROM pull_requests LIMIT 100;", nativeQuery = true)
-  List<PullRequest> find100();
+  @Query(value = "SELECT * FROM pull_requests WHERE created_at BETWEEN :start AND :end "
+      + "AND project_id = :id;",
+      nativeQuery = true)
+  List<PullRequest> findPullRequests(Timestamp start, Timestamp end, Integer id);
 
   PullRequest findByNumber(Long number);
 

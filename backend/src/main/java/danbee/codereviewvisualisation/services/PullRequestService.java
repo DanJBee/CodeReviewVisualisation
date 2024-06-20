@@ -21,12 +21,10 @@ public class PullRequestService {
     this.pullRequestRepository = pullRequestRepository;
   }
 
-  public List<PullRequest> findAll() {
-    return pullRequestRepository.findAll();
-  }
-
-  public List<PullRequest> find100() {
-    return pullRequestRepository.find100();
+  public List<PullRequest> findPullRequestsByProjectId(Timestamp start,
+                                                       Timestamp end,
+                                                       Integer id) {
+    return pullRequestRepository.findPullRequests(start, end, id);
   }
 
   public PullRequest findByNumber(Long number) {

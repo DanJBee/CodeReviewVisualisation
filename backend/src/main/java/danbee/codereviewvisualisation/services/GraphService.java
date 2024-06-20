@@ -3,6 +3,8 @@ package danbee.codereviewvisualisation.services;
 import danbee.codereviewvisualisation.models.*;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,12 +19,14 @@ import java.util.Optional;
 public class GraphService {
 
   private final PullRequestService pullRequestService;
+  private final ProjectService projectService;
 
   /**
    * Graph service controller method.
    */
-  public GraphService(PullRequestService pullRequestService) {
+  public GraphService(PullRequestService pullRequestService, ProjectService projectService) {
     this.pullRequestService = pullRequestService;
+    this.projectService = projectService;
   }
 
   /**
@@ -32,8 +36,26 @@ public class GraphService {
    * @param project the project name
    * @return the graph data
    */
-  public Graph getGraphData(String owner, String project) {
-    List<PullRequest> pullRequests = pullRequestService.findAll();
+  public Graph getGraphData(String owner, String project, String start, String end) {
+    Integer id = projectService.findByOwnerAndRepository(owner, project).getId();
+
+    if (start == null || end == null) {
+      Instant now = Instant.now();
+      Instant nowMonthAgo = now.minusSeconds(60 * 60 * 24 * 30);
+
+      start = nowMonthAgo.toString();
+      end = now.toString();
+    }
+
+    Timestamp startTimestamp = Timestamp.from(Instant.parse(start));
+    Timestamp endTimestamp = Timestamp.from(Instant.parse(end));
+
+    List<PullRequest> pullRequests = pullRequestService
+        .findPullRequestsByProjectId(
+            startTimestamp,
+            endTimestamp,
+            id
+        );
     List<Node> nodes = new ArrayList<>();
     List<Link> links = new ArrayList<>();
     for (PullRequest pullRequest : pullRequests) {
