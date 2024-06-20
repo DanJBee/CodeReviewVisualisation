@@ -1,28 +1,44 @@
 import { DatePicker } from '@mui/x-date-pickers';
-import { useState } from 'react';
 import moment, { Moment } from 'moment';
+import { useContext } from 'react';
+import { TimePeriodSelectorContext } from './TimePeriodSelectorState';
 
 function TimePeriodSelectorComponent() {
-  const [startDate, setStartDate] = useState<Moment | null>(
-    moment('2014-07-08'),
-  );
-  const [endDate, setEndDate] = useState<Moment | null>(moment(new Date()));
+  const timePeriodSelectorState = useContext(TimePeriodSelectorContext);
+
+  const handleStartDateChange = (newStartDate: Moment | null) => {
+    if (timePeriodSelectorState?.setState) {
+      timePeriodSelectorState.setState((prevState) => ({
+        ...prevState,
+        startDate: newStartDate,
+      }));
+    }
+  };
+
+  const handleEndDateChange = (newEndDate: Moment | null) => {
+    if (timePeriodSelectorState?.setState) {
+      timePeriodSelectorState.setState((prevState) => ({
+        ...prevState,
+        endDate: newEndDate,
+      }));
+    }
+  };
 
   return (
     <div className="container">
       <DatePicker
         className="date-picker"
         label="Start date"
-        value={startDate}
-        onChange={(newStartDate) => setStartDate(newStartDate)}
+        value={timePeriodSelectorState?.state.startDate}
+        onChange={(newStartDate) => handleStartDateChange(newStartDate)}
         minDate={moment('2014-07-08')}
         maxDate={moment(new Date())}
       />
       <DatePicker
         className="date-picker"
         label="End date"
-        value={endDate}
-        onChange={(newEndDate) => setEndDate(newEndDate)}
+        value={timePeriodSelectorState?.state.endDate}
+        onChange={(newEndDate) => handleEndDateChange(newEndDate)}
         minDate={moment('2014-07-08')}
         maxDate={moment(new Date())}
       />

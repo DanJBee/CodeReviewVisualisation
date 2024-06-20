@@ -14,17 +14,32 @@ import {
   zoom,
 } from 'd3';
 import axios from 'axios';
+import moment from 'moment';
 import { Data, Link, Node } from './Types';
+import { TimePeriodSelectorContextType } from './TimePeriodSelectorState';
 
 const graph = () => {
   // Defines height & width values
   const height = window.innerHeight;
   const width = window.innerWidth;
 
-  return async (selection: any) => {
+  return async (
+    selection: any,
+    timePeriodSelectorContext: TimePeriodSelectorContextType | undefined,
+  ) => {
+    // Removes the old graph
+    selection.selectAll('.graph').remove();
+
+    const startDate = moment(
+      timePeriodSelectorContext?.state.startDate,
+    ).toISOString();
+    const endDate = moment(
+      timePeriodSelectorContext?.state.endDate,
+    ).toISOString();
+
     // Collects a JSON response from the 'mock.json' file
     const response: Data | undefined = await axios.get(
-      'http://localhost:8080/getGraph?owner=microsoft&project=typescript',
+      `http://localhost:8080/getGraph?owner=microsoft&project=typescript&start=${startDate}&end=${endDate}`,
     );
 
     // If there is no response then return
@@ -55,6 +70,7 @@ const graph = () => {
     // Defines the svg element that the graph will be within
     const svg = selection
       .append('svg')
+      .attr('class', 'graph')
       .attr('height', height)
       .attr('width', width)
       .attr('viewBox', [0, 0, width / 2, height / 2])
