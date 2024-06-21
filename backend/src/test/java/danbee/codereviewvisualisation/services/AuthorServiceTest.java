@@ -1,6 +1,8 @@
 package danbee.codereviewvisualisation.services;
 
 import danbee.codereviewvisualisation.models.Author;
+import danbee.codereviewvisualisation.repositories.AuthorRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,25 +21,37 @@ class AuthorServiceTest {
   @Autowired
   private AuthorService authorService;
 
+  @Autowired
+  private AuthorRepository authorRepository;
+
+  @BeforeEach
+  void beforeEach() {
+    authorRepository.deleteAll();
+
+    Author author = new Author("tester",
+        "https://avatars.githubusercontent.com/u/4294069?u=a8f5a39abb0c0cefce2d9cca29a0733d1af3ed77&v=4");
+    authorRepository.save(author);
+  }
+
   @Test
   void testFindAll() {
     List<Author> authors = authorService.findAll();
     String authorId = authors.getFirst().getAuthorId();
-    assertEquals("0o001", authorId);
+    assertEquals("tester", authorId);
     String avatarUrl = authors.getFirst().getAvatarUrl();
-    assertEquals("https://avatars.githubusercontent.com/u/4294069?u=a8f5a39abb0c0cefce2d9cca29a0733d1af3ed77&v=4", avatarUrl);
+    assertEquals(
+        "https://avatars.githubusercontent.com/u/4294069?u=a8f5a39abb0c0cefce2d9cca29a0733d1af3ed77&v=4",
+        avatarUrl);
   }
 
   @Test
   void testFindByAuthorIdValid() {
-    assertEquals("0o001", authorService
-        .findByAuthorId("0o001")
-        .getAuthorId());
+    assertEquals("tester", authorService.findByAuthorId("tester").getAuthorId());
   }
 
   @Test
   void testFindByAuthorIdInvalid() {
-    assertThrows(NoSuchElementException.class, () -> authorService
-        .findByAuthorId("invalidUsername"));
+    assertThrows(NoSuchElementException.class,
+        () -> authorService.findByAuthorId("invalidUsername"));
   }
 }

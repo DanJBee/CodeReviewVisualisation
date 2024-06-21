@@ -1,6 +1,8 @@
 package danbee.codereviewvisualisation.services;
 
 import danbee.codereviewvisualisation.models.Project;
+import danbee.codereviewvisualisation.repositories.ProjectRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,6 +20,17 @@ class ProjectServiceTest {
 
   @Autowired
   private ProjectService projectService;
+
+  @Autowired
+  private ProjectRepository projectRepository;
+
+  @BeforeEach
+  void beforeEach() {
+    projectRepository.deleteAllAndResetAutoIncrement();
+
+    Project project = new Project("microsoft", "typescript");
+    projectRepository.save(project);
+  }
 
   @Test
   void testFindByOwnerAndRepositoryValid() {

@@ -1,6 +1,8 @@
 package danbee.codereviewvisualisation.services;
 
 import danbee.codereviewvisualisation.models.PullRequest;
+import danbee.codereviewvisualisation.repositories.PullRequestRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +21,18 @@ class PullRequestServiceTest {
 
   @Autowired
   private PullRequestService pullRequestService;
+
+  @Autowired
+  private PullRequestRepository pullRequestRepository;
+
+  @BeforeEach
+  void before() {
+    pullRequestRepository.deleteAll();
+
+    PullRequest pullRequest =
+        new PullRequest(1000L, 1, Timestamp.valueOf("2014-10-30 15:15:03"), null);
+    pullRequestRepository.save(pullRequest);
+  }
 
   @Test
   void testFindByNumberValid() {
@@ -43,6 +57,7 @@ class PullRequestServiceTest {
 
   @Test
   void testFindByCreatedAtValid() {
+
     assertEquals("2014-10-30 15:15:03.0", pullRequestService
         .findByCreatedAt(Timestamp.valueOf("2014-10-30 15:15:03"))
         .getFirst().getCreatedAt().toString());
