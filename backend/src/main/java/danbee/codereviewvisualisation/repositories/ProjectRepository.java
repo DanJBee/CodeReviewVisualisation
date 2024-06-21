@@ -2,7 +2,8 @@ package danbee.codereviewvisualisation.repositories;
 
 import danbee.codereviewvisualisation.models.Project;
 import org.springframework.data.jpa.repository.JpaRepository;
-
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 /**
@@ -17,4 +18,10 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
   Project findByOwner(String owner);
 
   List<Project> findByRepository(String repository);
+
+  // Added for tests!
+  // Method to delete all records and reset auto-increment in MySQL
+  @Modifying
+  @Query(value = "TRUNCATE TABLE projects", nativeQuery = true)
+  void deleteAllAndResetAutoIncrement();
 }
