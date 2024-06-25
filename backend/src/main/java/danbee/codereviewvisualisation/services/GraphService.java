@@ -19,6 +19,7 @@ import java.util.Optional;
 public class GraphService {
 
   private final PullRequestService pullRequestService;
+
   private final ProjectService projectService;
 
   /**
@@ -34,6 +35,8 @@ public class GraphService {
    *
    * @param owner   the owner of the project
    * @param project the project name
+   * @param start   the start time of the graph data
+   * @param end     the end time of the graph data
    * @return the graph data
    */
   public Graph getGraphData(String owner, String project, String start, String end) {

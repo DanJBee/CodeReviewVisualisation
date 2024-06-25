@@ -1,6 +1,8 @@
 package danbee.codereviewvisualisation.services;
 
+import danbee.codereviewvisualisation.models.Comment;
 import danbee.codereviewvisualisation.models.PullRequest;
+import danbee.codereviewvisualisation.repositories.CommentRepository;
 import danbee.codereviewvisualisation.repositories.PullRequestRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 @SpringBootTest
 @Transactional
@@ -25,48 +26,36 @@ class PullRequestServiceTest {
   @Autowired
   private PullRequestRepository pullRequestRepository;
 
+  @Autowired
+  private CommentRepository commentRepository;
+
   @BeforeEach
-  void before() {
+  void beforeEach() {
     pullRequestRepository.deleteAll();
 
+    commentRepository.deleteAll();
+
+    List<Comment> comments = new ArrayList<>();
+
     PullRequest pullRequest =
-        new PullRequest(1000L, 1, Timestamp.valueOf("2014-10-30 15:15:03"), null);
+        new PullRequest(1000L, 1, Timestamp.valueOf("2014-10-30 15:15:03"), comments);
     pullRequestRepository.save(pullRequest);
+
+    Comment comment = new Comment(Timestamp.valueOf("2014-10-30 16:15:03"), pullRequest);
+    comments.add(comment);
+    commentRepository.save(comment);
   }
 
   @Test
-  void testFindByNumberValid() {
-    assertEquals(1000L, pullRequestService.findByNumber(1000L).getNumber());
-  }
-
-  @Test
-  void testFindByNumberInvalid() {
-    assertNull(pullRequestService.findByNumber(0L));
-  }
-
-  @Test
-  void testFindByProjectIdValid() {
-    assertEquals(1, pullRequestService.findByProjectId(1).getFirst().getProjectId());
-  }
-
-  @Test
-  void testFindByProjectIdInValid() {
-    List<PullRequest> projects = new ArrayList<>();
-    assertEquals(projects, pullRequestService.findByProjectId(0));
-  }
-
-  @Test
-  void testFindByCreatedAtValid() {
-
-    assertEquals("2014-10-30 15:15:03.0", pullRequestService
-        .findByCreatedAt(Timestamp.valueOf("2014-10-30 15:15:03"))
-        .getFirst().getCreatedAt().toString());
-  }
-
-  @Test
-  void testFindByCreatedAtInvalid() {
-    List<PullRequest> pullRequests = new ArrayList<>();
-    assertEquals(pullRequests, pullRequestService
-        .findByCreatedAt(Timestamp.valueOf("1970-01-01 00:00:00")));
+  void testFindPullRequestsByProjectIdValid() {
+    List<PullRequest> pullRequests = pullRequestService.findPullRequestsByProjectId(
+        Timestamp.valueOf("2014-10-30 15:15:03"),
+        Timestamp.valueOf("2014-10-30 15:15:03"),
+        1);
+    PullRequest pullRequest = pullRequests.getFirst();
+    assertEquals(1000L, pullRequest.getNumber());
+    assertEquals(1, pullRequest.getProjectId());
+    assertEquals(Timestamp.valueOf("2014-10-30 15:15:03"), pullRequest.getCreatedAt());
+    assertEquals(1, pullRequest.getComments().size());
   }
 }

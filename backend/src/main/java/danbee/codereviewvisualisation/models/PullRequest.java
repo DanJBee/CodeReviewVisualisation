@@ -3,7 +3,6 @@ package danbee.codereviewvisualisation.models;
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,7 +45,7 @@ public class PullRequest {
     this.number = number;
     this.projectId = projectId;
     this.createdAt = createdAt;
-    this.comments = new ArrayList<>();
+    this.comments = comments;
   }
 
   public Long getId() {

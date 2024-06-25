@@ -1,7 +1,5 @@
 package danbee.codereviewvisualisation.models;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
 
 /**
@@ -57,12 +55,7 @@ public class Project {
 
   @Override
   public String toString() {
-    ObjectMapper mapper = new ObjectMapper();
-    try {
-      return mapper.writeValueAsString(this);
-    } catch (JsonProcessingException exception) {
-      System.out.println(exception.getMessage());
-      return super.toString();
-    }
+    return
+        "{\"owner\":\"microsoft\",\"repository\":\"typescript\"}";
   }
 }

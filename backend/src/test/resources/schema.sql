@@ -34,7 +34,7 @@ create table comments
     pull_request bigint,
     author_id    varchar(100) not null,
     created_at   timestamp    not null,
-    foreign key (id) references pull_requests (id)
+    foreign key (pull_request) references pull_requests (id)
 );
 
 CREATE INDEX projects_owner_index ON projects (owner);

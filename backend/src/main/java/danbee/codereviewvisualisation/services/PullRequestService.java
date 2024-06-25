@@ -26,16 +26,4 @@ public class PullRequestService {
                                                        Integer id) {
     return pullRequestRepository.findPullRequests(start, end, id);
   }
-
-  public PullRequest findByNumber(Long number) {
-    return pullRequestRepository.findByNumber(number);
-  }
-
-  public List<PullRequest> findByProjectId(Integer projectId) {
-    return pullRequestRepository.findByProjectId(projectId);
-  }
-
-  public List<PullRequest> findByCreatedAt(Timestamp timestamp) {
-    return pullRequestRepository.findByCreatedAt(timestamp);
-  }
 }

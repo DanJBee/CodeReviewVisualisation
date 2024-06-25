@@ -1,16 +1,28 @@
 package danbee.codereviewvisualisation.controllers;
 
-import com.jayway.jsonpath.DocumentContext;
-import com.jayway.jsonpath.JsonPath;
-import org.junit.jupiter.api.Disabled;
+import danbee.codereviewvisualisation.models.*;
+import danbee.codereviewvisualisation.repositories.ProjectRepository;
+import danbee.codereviewvisualisation.repositories.PullRequestRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Graph controller test class.
@@ -18,10 +30,51 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Dan Bee
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Transactional
 class GraphControllerTest {
 
   @Autowired
   private TestRestTemplate restTemplate;
+
+  @Autowired
+  private ProjectRepository projectRepository;
+
+  @Autowired
+  private PullRequestRepository pullRequestRepository;
+  @Autowired
+  private GraphController graphController;
+
+  @BeforeEach
+  void beforeEach() {
+    projectRepository.deleteAllAndResetAutoIncrement();
+
+    Project project = new Project("microsoft", "typescript");
+    projectRepository.save(project);
+
+    pullRequestRepository.deleteAll();
+
+    Instant now = Instant.now().plusSeconds(3600);
+    ZonedDateTime zonedDateTime = now.atZone(ZoneId.of("UTC"));
+
+    Timestamp timestamp = Timestamp.from(zonedDateTime.toInstant());
+    ZonedDateTime timestampZonedDateTime = timestamp.toInstant().atZone(ZoneId.of("UTC"));
+    Timestamp formattedTimestamp = Timestamp.valueOf(timestampZonedDateTime.format(
+        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SS")
+    ));
+
+    Author author = new Author("author", "avatar_url");
+    PullRequest pullRequest;
+    List<Comment> comments = new ArrayList<>();
+    // Make the comment creation date an hour after the pull request creation date
+    Comment comment = new Comment(Timestamp.from(formattedTimestamp.toInstant()
+        .plus(1, ChronoUnit.HOURS)), null);
+    comment.setAuthor(author);
+    comments.add(comment);
+    pullRequest = new PullRequest(1000L, 1, formattedTimestamp, comments);
+    pullRequest.setAuthor(author);
+    comment.setPullRequest(pullRequest);
+    pullRequestRepository.save(pullRequest);
+  }
 
   @Test
   void testGetIndex() {
@@ -34,72 +87,17 @@ class GraphControllerTest {
   }
 
   @Test
-  @Disabled
-  void testGetGetGraphWithoutStartAndEndTime() {
-    ResponseEntity<String> response = restTemplate
-        .getForEntity("/getGraph?owner=microsoft&project=typescript", String.class);
-    assertThat(response.getStatusCode())
-        .isEqualTo(HttpStatus.OK);
-    DocumentContext documentContext = JsonPath.parse(response.getBody());
-    Integer id = documentContext.read("$[0].id");
-    assertThat(id)
-        .isEqualTo(1079);
-    Integer number = documentContext.read("$[0].number");
-    assertThat(number)
-        .isEqualTo(1000);
-    Integer projectId = documentContext.read("$[0].projectId");
-    assertThat(projectId)
-        .isEqualTo(11);
-    String createdAt = documentContext.read("$[0].createdAt");
-    assertThat(createdAt)
-        .isEqualTo("2014-10-30T15:15:03.000+00:00");
-    String authorId = documentContext.read("$[0].authorId");
-    assertThat(authorId)
-        .isEqualTo("jrieken");
+  void testGetGetGraphValid() {
+    Graph graph = graphController.getGraph("microsoft", "typescript", null, null);
+    assertThat(graph.getNodes().size())
+        .isEqualTo(1);
+    assertThat(graph.getLinks().size())
+        .isEqualTo(1);
   }
 
   @Test
-  @Disabled
-  void testGetGetGraphWithBothStartAndEndTime() {
-    ResponseEntity<String> response = restTemplate
-        .getForEntity(
-            "/getGraph?owner=microsoft&project=typescript&start=2024-05-21T15:16:07.257Z"
-                + "&end=2024-05-21T15:16:07.257Z", String.class);
-    assertThat(response.getStatusCode())
-        .isEqualTo(HttpStatus.OK);
-    assertThat(response.getBody())
-        .isEqualTo(
-            "Hello microsoft you are the owner of project typescript at the start"
-                + " time of 2024-05-21T15:16:07.257Z and an end time of 2024-05-21T15:16:07.257Z!");
-  }
-
-  @Test
-  @Disabled
-  void testGetGetGraphWithOnlyStartTime() {
-    ResponseEntity<String> response = restTemplate
-        .getForEntity(
-            "/getGraph?owner=microsoft&project=typescript&start=2024-05-21T15:16:07.257Z",
-            String.class);
-    assertThat(response.getStatusCode())
-        .isEqualTo(HttpStatus.OK);
-    assertThat(response.getBody())
-        .isEqualTo(
-            "Hello microsoft you are the owner of project typescript at the start"
-                + " time of 2024-05-21T15:16:07.257Z!");
-  }
-
-  @Test
-  @Disabled
-  void testGetGetGraphWithOnlyEndTime() {
-    ResponseEntity<String> response = restTemplate
-        .getForEntity(
-            "/getGraph?owner=microsoft&project=typescript&end=2024-05-21T15:16:07.257Z",
-            String.class);
-    assertThat(response.getStatusCode())
-        .isEqualTo(HttpStatus.OK);
-    assertThat(response.getBody())
-        .isEqualTo(
-            "Hello microsoft you are the owner of project typescript at the end"
-                + " time of 2024-05-21T15:16:07.257Z!");
+  void testGetGetGraphInvalid() {
+    assertThrows(NullPointerException.class, () ->
+        graphController.getGraph("invalidOwner", "invalidProject", null, null));
   }
 }

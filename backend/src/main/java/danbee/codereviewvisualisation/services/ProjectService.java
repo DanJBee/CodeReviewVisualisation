@@ -4,8 +4,6 @@ import danbee.codereviewvisualisation.models.Project;
 import danbee.codereviewvisualisation.repositories.ProjectRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 /**
  * Project service class.
  *
@@ -22,13 +20,5 @@ public class ProjectService {
 
   public Project findByOwnerAndRepository(String owner, String repository) {
     return projectRepository.findByOwnerAndRepository(owner, repository);
-  }
-
-  public Project findByOwner(String owner) {
-    return projectRepository.findByOwner(owner);
-  }
-
-  public List<Project> findByRepository(String repository) {
-    return projectRepository.findByRepository(repository);
   }
 }
