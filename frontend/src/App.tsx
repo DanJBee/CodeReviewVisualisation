@@ -9,6 +9,7 @@ import {
 } from './TimePeriodSelectorState';
 import GraphComponent from './GraphComponent';
 import TimePeriodSelectorComponent from './TimePeriodSelectorComponent';
+import TimeButtonsComponent from './TimeButtonsComponent';
 
 const initialState: TimePeriodSelectorState = {
   startDate: moment(new Date().setMonth(new Date().getMonth() - 1)),
@@ -27,6 +28,7 @@ function App() {
       <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale="en-gb">
         <TimePeriodSelectorComponent />
       </LocalizationProvider>
+      <TimeButtonsComponent />
     </TimePeriodSelectorContext.Provider>
   );
 }
