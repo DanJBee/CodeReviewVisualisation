@@ -5,164 +5,247 @@
 
 %%%%%%%%%%%%%%%%%%%%%%
 %%% Input project details
-\def\studentname{Student's first and last name}
-\def\reportyear{Year}
-\def\projecttitle{Project Title}
-\def\supervisorname{Supervisor Name}
-\def\degree{BSc (Hons) in Computer Science}
-\def\fullOrHalfUnit{Full Unit} % indicate if you are doing the project as a Full Unit or Half Unit
-\def\finalOrInterim{Final Report} % indicate if this document is your Final Report or Interim Report
+\newcommand{\studentname}{Daniel Bee}
+\newcommand{\reportyear}{2024}
+\newcommand{\projecttitle}{Visualisation of the Code Review Process}
+\newcommand{\supervisorname}{DongGyun Han}
+\newcommand{\degree}{BSc (Hons) in Computer Science}
+\newcommand{\fullOrHalfUnit}{UROP} % indicate if you are doing the project as a Full Unit or Half Unit
+\newcommand{\finalOrInterim}{Report} % indicate if this document is your Final Report or Interim Report
 
 \begin{document}
 
-\maketitle
+    \maketitle
 
-%%%%%%%%%%%%%%%%%%%%%%
-%%% Declaration
+    %%%%%%%%%%%%%%%%%%%%%%
+    %%% Declaration
 
-\chapter*{Declaration}
+    \chapter*{Declaration}
 
-This report has been prepared on the basis of my own work. Where other published and unpublished source materials have been used, these have been acknowledged.
+    This report has been prepared on the basis of my own work.
+    Where other published and unpublished source materials have been used, these have been acknowledged.
 
-\vskip3em
+    \vskip3em
 
-Word Count: 
+    Word Count: TBC
 
-\vskip3em
+    \vskip3em
 
-Student Name: \studentname
+    Student Name: \studentname
 
-\vskip3em
+    \vskip3em
 
-Date of Submission: 
+    Date of Submission: TBC
 
-\vskip3em
+    \vskip3em
 
-Signature:
+    Signature: Daniel Bee
 
-\newpage
+    \newpage
 
-%%%%%%%%%%%%%%%%%%%%%%
-%%% Table of Contents
-\tableofcontents\pdfbookmark[0]{Table of Contents}{toc}\newpage
+    %%%%%%%%%%%%%%%%%%%%%%
+    %%% Table of Contents
+    \tableofcontents\pdfbookmark[0]{Table of Contents}{toc}
 
-%%%%%%%%%%%%%%%%%%%%%%
-%%% Your Abstract here
+    \newpage
 
-\begin{abstract}
+    %%%%%%%%%%%%%%%%%%%%%%
 
-This document serves as a layout and formatting template for your project report. It does not tell you how to write it, or what it should contain. It explains how it should be formatted and typeset. Please refer to your project booklet for information about report sizes, contents and rules.
+    \begin{abstract}
 
-\textbf{\textit{NOTE: in your report, you should replace this with an appropriate Abstract for your project report.}}
+        This report covers the design and development cycle of the \("\)Visualising Interactions Between Developers During Code Review\("\) UROP project.
+        This includes the thought processes throughout the project,
+        as well as the many challenges that were faced along the way and how these were dealt with.
+        There are four primary milestones that were allocated and scheduled for this project:
+        Crawler, Database, Frontend, and Backend.
+        Firstly,
+        the Crawler milestone was where pull request information from the TypeScript GitHub repository from Microsoft was fetched via the GitHub GraphQL API\@.
+        Secondly,
+        the Database milestone was the process
+        of designing an appropriate relational database schema
+        to hold this newly retrieved pull request information for easier analysis.
+        Thirdly,
+        the Frontend milestone was where mock data was inputted into a forced-directed graph powered by D3.js
+        and React to replace this mock data with the pull request information from the relational database later on.
+        Fourthly, and finally, the Backend milestone was the section of the project where everything came together.
+        During this milestone,
+        the frontend graph was linked to the backend API endpoint
+        to allow data to be transferred to a callback from axios,
+        a promise-based HTTP client for browsers and node.js.
 
-\end{abstract}
-\newpage
+    \end{abstract}
 
-%%%%%%%%%%%%%%%%%%%%%%
-%%% Project Spec
+    %%%%%%%%%%%%%%%%%%%%%%
+    %%% Project Spec
 
-\chapter*{Project Specification}
-\addcontentsline{toc}{chapter}{Project Specification}
-Your project specification goes here.
+    \chapter*{Project Specification}
+    \addcontentsline{toc}{chapter}{Project Specification}
 
-%%%%%%%%%%%%%%%%%%%%%%
-%%% Introduction
-\chapter{Introduction}
+    The UROP project aims to create a full stack,
+    web-based system that allows users to view the relationships between developers during the Code Review process.
+    Python is used to code the initial crawling stage of the project,
+    making use of the requests pip library
+    to make calls to the GitHub GraphQL API endpoint with an appropriate template string.
+    Python is also used in the migration stage of the project
+    to move the newly acquired pull request information from individual JSON files to an efficient relational database,
+    using the mysql-connector-python pip library to perform this.
+    The frontend handles the visualising of the data itself, and is primarily coded in TypeScript,
+    whilst the backend, coded in Java, makes queries to a local relational database to consummate the visualisation.
+    Axios comes in handy for the frontend stage of the project to make the call to the backend API endpoint,
+    and allows users to easily add parameters to a callback.
+    D3.js is an invaluable tool in deciphering the response Axios receives from that callback,
+    and subsequently produces the final visualisation the user sees.
+    Lastly,
+    Spring Boot was vital
+    in allowing easy development of the REST API building blocks that were essential to the development of the project.
+    This is particularly clear
+    when Spring Boot becomes
+    linked to the relational database
+    containing the pull request information since Spring Boot makes it incredibly simple
+    to make queries or to mutate the data inside the database tables,
+    if necessary.
 
-The project report is a very important part of your project and its preparation and presentation should be of extremely high quality. Remember that a significant portion of the marks for your project are awarded for this report. 
-
-The format of the final report is fixed by the template of this document and the Department of Computer Science suggests its usage. 
-
-While this may sound like a rather prescriptive approach to report writing, it is introduced for the following reasons:
-\begin{enumerate}
- \item The template allows students to focus on the critical task of producing clear and concise content, instead of being distracted by font settings and paragraph spacing. 
- \item By providing a comprehensive template the Department benefits from a consistent and professional look to its internal project reports.
-\end{enumerate}
-
-The remainder of this document briefly outlines the main components and their usage.
-
-A \textbf{final project report} is approximately 15,000 words and must include a word count. It is acceptable to have other material in appendixes.  
-Your \textbf{interim report} for the December Review meeting, even if it is a collection of reports, should have a total word count of about 5,000 words. 
-This should summarise the work you have done so far, with sections on the theory you have learnt and the code that you have written.
-
-Also remember that any details of report content and submission rules, as well as other deliverables, are defined in the project booklet~\cite{COHEN:2013}.
-
-\section{How to use this template}
-
-The simplest way to get started with your report is to save a copy of this document. 
-First change the values for the initial document definitions such as \verb|studentname| and \verb|reportyear| to match your details.
-Delete the unneeded sections and start adding your own sections using the styles provided.
-Before submission, remember to fill in the Declaration section fields.
-
-\chapter{Page Layout \& Size}
-
-The page size and margins have been set in this document. These should not be changed or adjusted. 
-
-In addition, page headers and footers have been included. They will be automatically filled in, so do not attempt to change their contents.
-
-\chapter{Headings}
-
-Your report will be structured as a collection of numbered sections at different levels of detail. For example, the heading to this section is a first-level heading and has been defined with a particular set of font and spacing characteristics. At the start of a new section, you need to select the appropriate \LaTeX{} command, \verb|\chapter| in this case.
-\section{Second Level Headings}
-Second level headings, like this one, are created by using the command \verb|\section|.
-\subsection{Third Level Headings}
-The heading for this subsection is a third level heading, which is obtained by using command \verb|\subsection|. In general, it is unlikely that fourth of fifth level headings will be required in your final report. Indeed it is more likely that if you do find yourself needing them, then your document structure is probably not ideal. So, try to stick to these three levels.
-\section{A Word on Numbering}
-You will notice that the main section headings in this document are all numbered in a hierarchical fashion. You don't have to worry about the numbering. It is all automatic as it has been built into the heading styles. Each time you create a new heading by selecting the appropriate style, the correct number will be assigned. 
+    %%%%%%%%%%%%%%%%%%%%%%
+    %%% Introduction
 
 
-\chapter{Presentation Issues}
+    \chapter{Introduction}\label{ch:introduction}
 
-\section{Figures, Charts and Tables}
+    Visualising complex and congested data is a challenge, no matter how well-versed a developer might be in APIs.
+    Therefore, to help aid in this process,
+    several APIs and frameworks can be used to help make the process easier and more efficient.
+    For instance, Spring Boot is used for the backend of the system.
+    This is because it Spring Boot makes programming REST APIs incredibly simple with its several layers of abstraction it implements.
+    In addition to this,
+    it is powered by Java which is a programming language that is universally used and appreciated by developers,
+    and thus making the project more accessible to contributors.
+    On the other hand, D3.js, React, Material UI are used for the frontend, in addition to GraphQL\@.
+    These APIs and frameworks are chosen for their simplicity and professional look.
+    GraphQL supplements the crawling process to collect the necessary data from GitHub.
+    Without this, the relational database would contain no data and migration would not be possible.
+    React and Material UI go hand-in-hand for polished and high-quality websites.
+    Moreover, these libraries give developers an immense array of tools for lots of different styles of project.
+    Finally,
+    D3.js is arguably the most important part of the project specification
+    since it is the library that encompasses the visualisation aspect of the project.
+    D3 is incredibly efficient to use, and yet so powerful in nature.
+    It can support thousands of nodes whilst seamlessly reading database from the backend in a matter of seconds.
 
-Most final reports will contain a mixture of figures and charts along with the main body of text. The figure caption should appear directly after the figure as seen in Figure~\ref{fig:logo} whereas a table caption should appear directly above the table. Figures, charts and tables should always be centered horizontally. 
-
-\begin{figure}[h]
-\centering
-\fboxsep 2mm
-\framebox{
-	\includegraphics[width=6cm]{logo} 
-}
-\caption{\label{fig:logo} Logo of RHUL.}
-\end{figure} 
-
-\section{Source Code}
-
-If you wish to print a short excerpt of your source code,  ensure that you are using a fixed-width sans-serif font such as the Courier font. By using the \verb|verbatim| environment your code will be properly indented and will appear as follows:
-
-\begin{verbatim}
-static public void main(String[] args) {
-  try  {
-    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-  }
-  catch(Exception e) {
-    e.printStackTrace();
-  }
-  new WelcomeApp();
-} 
-\end{verbatim}
-
-\chapter{References}
-
-Use one consistent system for citing works in the body of your report. Several such systems are in common use in textbooks and in conference and journal papers. Ensure that any works you cite are listed in the references section, and vice versa. 
-
-\chapter{Project Information and Rules}
-
-The details about how your project will be assessed, as well as the rules you must follow for this final project report, are detailed in the project booklet~\cite{COHEN:2013}.
-
-\textbf{You must read that document and strictly follow it.}
+    To summarise, the following APIs, frameworks,
+    and libraries are chosen to support the design and development of the project:
+    \begin{enumerate}
+        \item GraphQL
+        \item React
+        \item Material UI
+        \item D3.js
+        \item Spring Boot
+    \end{enumerate}
 
 
-%%%% ADD YOUR BIBLIOGRAPHY HERE
-\newpage
-\begin{thebibliography}{99}
-\addcontentsline{toc}{chapter}{Bibliography}
-\bibitem{COHEN:2013} Dave Cohen and Carlos Matos. \emph{Third Year Projects -- Rules and Guidelines}. Royal Holloway, University of London, 2013.
-\end{thebibliography}
-\label{endpage}
+    % Add visualisation screenshot later on (?)
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
+    \section{Project Prototype Screenshot}\label{sec:project-prototype-screenshot}
 
+    Most final reports will contain a mixture of figures and charts along with the main body of text.
+    The figure caption should appear directly after the figure as seen in Figure~\ref{fig:logo}
+    whereas a table caption should appear directly above the table.
+    Figures, charts, and tables should always be centered horizontally.
+
+    \begin{figure}[h]
+        \centering
+        \fboxsep 2mm
+        \framebox{
+            \includegraphics[width=6cm]{logo}
+        }
+        \caption{\label{fig:logo} Logo of RHUL.}
+    \end{figure}
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+    %%%%%%%%%%%%%%%%%%%%%
+    % Crawler
+
+
+    \chapter{Crawler}\label{ch:crawler}
+
+    Crawling the necessary information was the very first task for the project.
+    To do this, the GitHub GraphQL API was used.
+    The code for this milestone was split up into three Python files.
+    The first one was the main crawl.py file
+    containing the code for making the API calls to the GitHub GraphQL API endpoint.
+    The second one was the logger.py file to initialise the logger,
+    so appropriate messages could be outputted to the console.
+    The second and final one was the split.py file that split each individual crawled pull request into its own JSON file.
+    The logger.py and split.py files were relatively straight forward to code and test,
+    since they both performed simple functions.
+    However, the crawl.py was a lot more complex in nature and, thus, was more problematic to write.
+    This was the first problem encountered during this milestone.
+
+    In fact, there are two versions of this crawl.py file that have to be written during development.
+    The first version is one that does not store the \("\)cursor\("\) value of the last pull request that it fetches,
+    so it is not as efficient.
+    A \("\)cursor\("\) value is effectively the unique identifier of each pull request as it is being fetched -
+    it is NOT the ID of the pull request itself.
+    The common issue with this first version of the crawler is
+    that it uses up the 5,000 API calls per hour that a user gets using the GitHub GraphQL API\@.
+    It also does this without retrieving the necessary amount of data (in this case, over 10,000 pull requests).
+    As a result of this, the second version does store the \("\)cursor\("\) value of the last pull request that it fetches,
+    and thus is a lot more efficient with its API calls.
+    Only 1,000–2,000 API calls are required when using this second, improved version of the crawler,
+    compared to all 5,000 API calls when using the original version.
+
+    The second problem encountered during this milestone was formatting
+    and structuring the query string that would be sent as part of the callback to the GitHub GraphQL API endpoint.
+    The format of this query string has
+    to be very precise for the endpoint to accept it and not report back errors during compilation.
+    After adjusting the formatting of this query string, the crawler does eventually function as expected.
+
+    Overall, the final,
+    improved crawler file
+    that is produced uses the requests pip library to make a customised callback to the GitHub GraphQL API endpoint,
+    using its own built-in methods,
+    and uses the response from this callback
+    to generate a collection of JSON files containing 10 pull requests per file.
+    The crawler can accommodate for a single repository as input,
+    as well as a dictionary of key-value pairs linking the owner of a repository with the repository's name.
+    As this crawl file is running,
+    messages are outputted to the user in the console using the logger that was initialised earlier on.
+    These files can then be read by the split.py file to make a JSON file for each pull request,
+    ready for the next milestone of the project: Database.
+
+    %%%%%%%%%%%%%%%%%%%
+    % Database
+
+
+    \chapter{Database}\label{ch:database}
+
+    Test
+
+    %%%%%%%%%%%%%%%%%%%
+    % Frontend
+
+
+    \chapter{Frontend}\label{ch:frontend}
+
+    Test
+
+    %%%%%%%%%%%%%%%%%%%
+    % Backend
+
+
+    \chapter{Backend}\label{ch:backend}
+
+    Test
+
+    %%%%%%%%%%%%%%%%%%%
+    % Conclusion
+
+
+    \chapter{Conclusion}\label{ch:conclusion}
+
+    Test
+
+    \label{ch:endpage}
 \end{document}
-
-\end{article}

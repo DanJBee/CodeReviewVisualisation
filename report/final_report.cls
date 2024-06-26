@@ -1,9 +1,9 @@
 \ProvidesClass{final_report}
 \LoadClass[11pt, titlepage]{report}
-\usepackage[paperwidth=21cm,paperheight=29.7cm,includehead,headheight=1.5cm,pdftex,hmargin={3cm,2.5cm},vmargin={0cm,2cm},]{geometry} 
+\usepackage[paperwidth=21cm,paperheight=29.7cm,includehead,headheight=1.5cm,pdftex,hmargin={3cm,2.5cm},vmargin={0cm,2cm},]{geometry}
 \usepackage{fancyhdr}
 \setlength{\headheight}{1.5cm}
-\setlength{\parindent}{0cm} 
+\setlength{\parindent}{0cm}
 \renewcommand{\baselinestretch}{1.2}
 \parskip=1em
 
@@ -21,9 +21,9 @@
 
 
 \def\ps@plain{%
-      \let\@oddhead\@empty
-      \def\@oddfoot{\normalfont\hfil\small\textsf{Page \thepage~of~\pageref{endpage}}\hfil}%
-      \def\@evenfoot{\normalfont\hfil\small\textsf{Page \thepage~of~\pageref{endpage}}\hfil}}
+    \let\@oddhead\@empty
+    \def\@oddfoot{\normalfont\hfil\small\textsf{Page \thepage~of~\pageref{ch:endpage}}\hfil}%
+    \def\@evenfoot{\normalfont\hfil\small\textsf{Page \thepage~of~\pageref{ch:endpage}}\hfil}}
 
 
 \renewcommand{\normalsize}{\fontsize{11pt}{11pt}\selectfont}
@@ -67,30 +67,30 @@
 %}
 
 \renewcommand\chapter{
-\if@openright\cleardoublepage\else\clearpage\fi
-                    \thispagestyle{plain}%
-                    \global\@topnum\z@
-                    \@afterindentfalse
-                    \secdef\@chapter\@schapter}
+    \if@openright\cleardoublepage\else\clearpage\fi
+    \thispagestyle{plain}%
+    \global\@topnum\z@
+    \@afterindentfalse
+    \secdef\@chapter\@schapter}
 
 %% Chapter headings should be at the top of the page.
 \def\@makechapterhead#1{%
-  { \parindent \z@ \raggedright \normalfont
+        { \parindent \z@ \raggedright \normalfont
     %\centering
     \ifnum \c@secnumdepth >\m@ne
-        \huge\textsf{\@chapapp\space \thechapter:}
-        % \par\nobreak
-        %\vskip 20\p@
+    \huge\textsf{\@chapapp\space \thechapter:}
+    % \par\nobreak
+    %\vskip 20\p@
     \fi
     \interlinepenalty\@M
     \huge \bfseries \textsf{#1}\par\nobreak
 %    \rule{5cm}{0.5pt}
     \vskip 20\p@
-  } }
-  
+    } }
+
 \def\@makeschapterhead#1{%
-  %\vspace*{50\p@}%
-  { \parindent \z@ \raggedright
+        %\vspace*{50\p@}%
+        { \parindent \z@ \raggedright
     %\centering
     \normalfont
     \interlinepenalty\@M
@@ -98,16 +98,16 @@
 %    \rule{5cm}{0.5pt}
     \vskip 20\p@
 
-  }}
-  
- \renewenvironment{abstract}{%
-      \chapter*{\abstractname}%
-      \addcontentsline{toc}{chapter}{\abstractname}
- }
-     
-     
-\makeatletter
-\renewcommand{\l@chapter}{\bfseries\@dottedtocline{1}{0em}{2.3em}}
+    }}
+
+\renewenvironment{abstract}{%
+    \chapter*{\abstractname}%
+    \addcontentsline{toc}{chapter}{\abstractname}
+    }
+
+
+        \makeatletter
+        \renewcommand{\l@chapter}{\bfseries\@dottedtocline{1}{0em}{2.3em}}
 \renewcommand{\l@section}{\normalfont\@dottedtocline{2}{2em}{2.3em}}
 \renewcommand{\l@subsection}{\normalfont\@dottedtocline{3}{2em}{2.3em}}
 \renewcommand{\l@subsubsection}{\normalfont\@dottedtocline{4}{2em}{2.3em}}
@@ -115,29 +115,29 @@
 
 \def\maketitle{\begin{titlepage}
 %\thispagestyle{empty}
-\pagenumbering{gobble}
-\thispagestyle{myheadings}
-\markright{ \hfill \textnormal{\footnotesize{\studentname, \reportyear}} \hfill }
-\let\footnotesize\small \let\footnoterule\relax \setcounter{page}{0}
-\null
-\vfil
-\begin{center}
-\title{Final Year Project Report}\\[0.25cm]
-\Large \textbf{\fullOrHalfUnit~-~\finalOrInterim}\\[0.5cm]\rule{4cm}{1pt}\\[0.7cm]
-\title{\textbf{\projecttitle}}\\[1cm]
-\author{\LARGE \studentname}\\[0.5cm]\rule{4cm}{1pt}\\[0.5cm]
-\textsf{\Large  A report submitted in part fulfilment of the degree of\\[0.5cm]
-\textbf{\degree}}\\[0.5cm]
-\textsf{\Large  \textbf{Supervisor:}  \supervisorname}\\[2cm]
-\includegraphics[height=5cm]{logo}\\[2cm]
-\textsf{\Large Department of Computer Science\\
-Royal Holloway, University of London\\\vfill
-\normalsize \today}
-\end{center}
-\vfil
-\null
+                   \pagenumbering{gobble}
+                   \thispagestyle{myheadings}
+                   \markright{ \hfill \textnormal{\footnotesize{\studentname, \reportyear}} \hfill }
+                   \let\footnotesize\small \let\footnoterule\relax \setcounter{page}{0}
+                   \null
+                   \vfil
+                   \begin{center}
+                       \title{UROP Project Report}\\[0.25cm]
+                       \Large \textbf{\fullOrHalfUnit~-~\finalOrInterim}\\[0.5cm]\rule{4cm}{1pt}\\[0.7cm]
+                       \title{\textbf{\projecttitle}}\\[1cm]
+                       \author{\LARGE \studentname}\\[0.5cm]\rule{4cm}{1pt}\\[0.5cm]
+                       \textsf{\Large  A report submitted in part fulfilment of the scholarship of\\[0.5cm]
+                       \textbf{\degree}}\\[0.5cm]
+                       \textsf{\Large  \textbf{Supervisor:}  \supervisorname}\\[2cm]
+                       \includegraphics[height=5cm]{logo}\\[2cm]
+                       \textsf{\Large Department of Computer Science\\
+                       Royal Holloway, University of London\\\vfill
+                       \normalsize \today}
+                   \end{center}
+                   \vfil
+                   \null
 \end{titlepage}
-\pagenumbering{arabic}
+    \pagenumbering{arabic}
 }
 
 \pagestyle{fancyplain}
