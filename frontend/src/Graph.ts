@@ -94,7 +94,7 @@ const graph = () => {
     // Defines a scale for the thickness of the links between the nodes in the graph
     const scaleThickness = scaleSqrt()
       .domain([minThickness ?? 1, maxThickness ?? 10])
-      .range([0.01, 5]);
+      .range([0.5, 5]);
 
     // Defines the link between each node in the graph
     const link = svg
