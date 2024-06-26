@@ -31,8 +31,8 @@ create table pull_requests
     index pull_requests_author_id_index (author_id),
     index pull_requests_id_index (project_id),
     index pull_requests_number_index (number),
-    foreign key project_id_fk (project_id) references projects (id),
-    foreign key author_id_fk (author_id) references authors (author_id)
+    foreign key (project_id) references projects (id),
+    foreign key (author_id) references authors (author_id)
 );
 
 create table comments
@@ -43,7 +43,7 @@ create table comments
     created_at   timestamp    not null,
     index comments_author_id_index (author_id),
     index comments_number_index (pull_request),
-    foreign key number_fk (pull_request) references pull_requests (id)
+    foreign key (pull_request) references pull_requests (id)
 );
 
 INSERT INTO authors
