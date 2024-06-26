@@ -9,3 +9,10 @@
     cursor: pointer;
     width: 250px;
 }
+
+#time-button {
+    position: fixed;
+    right: 0;
+    bottom: 70px;
+    z-index: 9999;
+}
