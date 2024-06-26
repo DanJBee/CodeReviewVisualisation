@@ -7,14 +7,18 @@ create table projects
 (
     id         int primary key auto_increment,
     owner      varchar(100) not null,
-    repository varchar(100) not null
+    repository varchar(100) not null,
+    index projects_owner_index (owner),
+    index projects_repository_index (repository)
 );
 
 create table authors
 (
     author_id         varchar(100) primary key,
     author_avatar_url varchar(100) not null,
-    type_name         varchar(100) not null
+    type_name         varchar(100) not null,
+    index author_id_index (author_id),
+    index author_type_name_index (type_name)
 );
 
 create table pull_requests
@@ -24,8 +28,11 @@ create table pull_requests
     project_id int,
     created_at timestamp not null,
     author_id  varchar(100),
-    foreign key (project_id) references projects (id),
-    foreign key (author_id) references authors (author_id)
+    index pull_requests_author_id_index (author_id),
+    index pull_requests_id_index (project_id),
+    index pull_requests_number_index (number),
+    foreign key project_id_fk (project_id) references projects (id),
+    foreign key author_id_fk (author_id) references authors (author_id)
 );
 
 create table comments
@@ -34,9 +41,10 @@ create table comments
     pull_request bigint,
     author_id    varchar(100) not null,
     created_at   timestamp    not null,
-    foreign key (pull_request) references pull_requests (id)
+    index comments_author_id_index (author_id),
+    index comments_number_index (pull_request),
+    foreign key number_fk (pull_request) references pull_requests (id)
 );
 
-CREATE INDEX projects_owner_index ON projects (owner);
-CREATE INDEX projects_repository_index ON projects (repository);
-CREATE INDEX author_id_index ON authors (author_id);
+INSERT INTO authors
+VALUES ('Ghost', 'https://avatars.githubusercontent.com/u/9919?s=200&v=4', 'User');
