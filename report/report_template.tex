@@ -35,7 +35,7 @@
 
     \vskip3em
 
-    Date of Submission: TBC
+    Date of Submission: 28th June 2024
 
     \vskip3em
 
@@ -129,7 +129,7 @@
     D3.js is arguably the most important part of the project specification
     since it is the library that encompasses the visualisation aspect of the project.
     D3 is incredibly efficient to use, and yet so powerful in nature.
-    It can support thousands of nodes whilst seamlessly reading database from the backend in a matter of seconds.
+    It can support thousands of nodes whilst seamlessly reading a database from the backend in a matter of seconds.
 
     To summarise, the following APIs, frameworks,
     and libraries are chosen to support the design and development of the project:
@@ -142,7 +142,7 @@
     \end{enumerate}
 
 
-    % Add visualisation screenshot later on (?)
+    % Add visualisation final product screenshot later on
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -184,16 +184,16 @@
     This was the first problem encountered during this milestone.
 
     In fact, there are two versions of this crawl.py file that have to be written during development.
-    The first version is one that does not store the \("\)cursor\("\) value of the last pull request that it fetches,
+    The first version is one that does not store the ``cursor'' value of the last pull request that it fetches,
     so it is not as efficient.
-    A \("\)cursor\("\) value is effectively the unique identifier of each pull request as it is being fetched -
+    A ``cursor'' value is effectively the unique identifier of each pull request as it is being fetched -
     it is NOT the ID of the pull request itself.
     The common issue with this first version of the crawler is
     that it uses up the 5,000 API calls per hour that a user gets using the GitHub GraphQL API\@.
     It also does this without retrieving the necessary amount of data (in this case, over 10,000 pull requests).
-    As a result of this, the second version does store the \("\)cursor\("\) value of the last pull request that it fetches,
+    As a result of this, the second version does store the ``cursor'' value of the last pull request that it fetches,
     and thus is a lot more efficient with its API calls.
-    Only 1,000–2,000 API calls are required when using this second, improved version of the crawler,
+    Only 1,000--2,000 API calls are required when using this second, improved version of the crawler,
     compared to all 5,000 API calls when using the original version.
 
     The second problem encountered during this milestone was formatting
@@ -202,10 +202,7 @@
     to be very precise for the endpoint to accept it and not report back errors during compilation.
     After adjusting the formatting of this query string, the crawler does eventually function as expected.
 
-    Overall, the final,
-    improved crawler file
-    that is produced uses the requests pip library to make a customised callback to the GitHub GraphQL API endpoint,
-    using its own built-in methods,
+    Overall, the final, improved crawler file uses the requests pip library to make a callback to the GitHub GraphQL API,
     and uses the response from this callback
     to generate a collection of JSON files containing 10 pull requests per file.
     The crawler can accommodate for a single repository as input,
@@ -220,30 +217,27 @@
 
 
     \chapter{Database}\label{ch:database}
-
-    Test
+    \input{database}
 
     %%%%%%%%%%%%%%%%%%%
     % Frontend
 
 
     \chapter{Frontend}\label{ch:frontend}
-
-    Test
+    \input{frontend}
 
     %%%%%%%%%%%%%%%%%%%
     % Backend
 
 
     \chapter{Backend}\label{ch:backend}
-
-    Test
+    \input{backend}
 
     %%%%%%%%%%%%%%%%%%%
-    % Conclusion
+    % Reflection
 
 
-    \chapter{Conclusion}\label{ch:conclusion}
+    \chapter{Reflection}\label{ch:reflection}
 
     Test
 

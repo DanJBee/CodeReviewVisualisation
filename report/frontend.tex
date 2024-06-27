@@ -1,0 +1,126 @@
+The third stage of the project was the frontend.
+This was a vital stage is actually producing a functioning visualisation
+that would later be backed by the relational database content.
+Four sections were outlined for this stage: JavaScript vs TypeScript,
+ESLint \&Prettier, developer relationship algorithm, \&applying D3.js.
+
+
+\section{JavaScript vs TypeScript}\label{sec:javascript-vs-typescript}
+
+The first choice that had to be made was what programming language should be used for the project.
+The two candidates for this were: JavaScript and TypeScript.
+Firstly, JavaScript was and will always be incredibly well-known in the frontend development community,
+making it the common go-to option.
+However, the lack of object-oriented programming concepts and tooling support makes it less enticing.
+For instance, being able to detect errors early on in a large project will be beneficial in the long-term,
+which is one of the many features that TypeScript has to offer over JavaScript.
+In contrast, TypeScript is purely statically typed which enhances error detection and, thus, ultimately, code quality.
+Additionally, TypeScript supports the latest ECMAScript features whilst also be a direct subsidiary of JavaScript,
+meaning that it supports all of its features by default.
+The primary downside to choosing TypeScript is the learning curve for amateur developers
+who are not used to typing statically.
+There are also extra compilation steps that are required to fully implement this static typing feature,
+therefore creating extra overhead as well.
+Regardless of this,
+TypeScript was ultimately chosen as the frontend programming language for this project due to its cutting-edge nature and abundance of features superior to JavaScript.
+
+
+\section{ESLint \& Prettier}\label{sec:eslint-&-prettier}
+
+ESLint and Prettier were invaluable tools for the frontend development of this project.
+ESLint is a styling tool that, through static typing analysis,
+reports any compilation errors before the compilation process actually begins.
+For this project,
+the airbnb and airbnb-typescript ESLint configurations were used
+to ensure all the project code matched industry-level standards.
+All the necessary rules are stored inside a .eslintrc.cjs file.
+
+The complete ESLint configuration file is shown below:
+
+\begin{verbatim}
+    module.exports = {
+      root: true,
+      env: {browser: true, es2020: true},
+      extends: [
+        'eslint:recommended',
+        'plugin:@typescript-eslint/recommended',
+        'plugin:react-hooks/recommended',
+        'airbnb',
+        'airbnb-typescript',
+        'plugin:react/jsx-runtime',
+      ],
+      ignorePatterns: ['dist', '.eslintrc.cjs', 'vite.config.ts'],
+      parser: '@typescript-eslint/parser',
+      parserOptions: {
+        project: './tsconfig.json',
+      },
+      plugins: ['react-refresh'],
+      rules: {
+        'react-refresh/only-export-components': [
+          'warn',
+          {allowConstantExport: true},
+        ],
+        'linebreak-style': [
+          'error',
+          (process.platform === 'win32' ? 'windows' : 'unix')
+        ]
+      },
+    }
+\end{verbatim}
+
+Additional attributes such as extends, parserOptions,
+and linebreak-style are used
+to customise the configuration to work correctly with all the project's installed dependencies.
+
+On top of that, Prettier is also used.
+This tool focuses more on the formatting of the project code rather than the styling of it.
+Thus, the readability of the code is more accessible and the project is easier to contribute to in industry.
+A bonus of using Prettier is that, unlike ESLint,
+it does not require a separate configuration file to function correctly.
+In fact, the project just used to default Prettier settings without a separate configuration being necessary.
+
+
+\section{Developer relationship algorithm}\label{sec:developer-relationship-algorithm}
+
+A crucial part of the frontend stage was establishing
+how the visualisation would associate development with their contributions to a project's pull requests.
+The visualisation worked by determining the size of a node
+(i.e.\ a developer) by how many comments they made on the individual project.
+The links between nodes (i.e.\ other developers)
+were created when one developer responded to another developer's comment on the SAME pull request.
+The thickness of these links between nodes (i.e.\ other developers)
+was determined by how many comments two developments made between each other on the SAME pull request.
+
+With that context in mind, the relationship between developers was determined in the following way:
+
+\begin{enumerate}
+    \item The system begins by initialising a list of pull requests, nodes, and links (to structure the graph).
+    \item
+    All the pull requests (that are stored within the relational database) are stored in the pull request list.
+    \item For each pull request, if the author of the pull request is not already a node that exists in the graph (i.e.\ not a member of the nodes list), then add it with a size of zero.
+    \item For each comment in each pull request, if the author of the comment is not already a node that exists in the graph (i.e.\ not a member of the nodes list), then add it with a size of zero.
+    \item If they do exist, then increment the size of that node by one.
+    \item Store the author of the pull request and the author of the comment in a list, and sort this list.
+    \item If this pair of users (in the list) is not already in the links list, then add them with a thickness of zero.
+    \item Otherwise, increment the thickness between the pair of users by one.
+\end{enumerate}
+
+
+\section{Applying D3.js}\label{sec:applying-d3.js}
+
+The final step of the frontend milestone was to apply D3.js to have a visualisation that users can actually view.
+For the use case of the project, a force-directed graph was chosen as the appropriate D3 component.
+This was due to the easy ability to add nodes and links in a JSON format that could be easily retrieved from the backend API endpoint.
+An important point to mention is that the backend API endpoint was only callable thanks to the axios npm library.
+Axios allowed the API endpoint to be called and receive and store the response in a single variable, with a ``data'' attribute being used to retrieve it.
+The previously mentioned developer relationship algorithm was what provided the data compatible with the force-directed graph.
+In particular, this required a JSON response with ``nodes'' and ``links'' objects, respectively.
+These objects also required their own specific attributes, such as size for ``nodes'' and thickness for ``links''.
+Several D3 forces and physics-related components were applied to make the visualisation successful due to the structure of the graph itself.
+With some sizes and thicknesses being inconsistent with each other (depending on the time period scale that was chosen), making sure the physics of the graph was smooth was important.
+It took some testing and trial-and-error to ensure that the physics were professional-looking but also practical, but eventually everything came into place.
+One major benefit to using D3 was how it seamlessly applied normalisation and scaling to quantitative scales.
+For instance, a separate function was required to normalise and scale the thickness of each link between nodes since at first they were too varying in size.
+This was needed in other numerical aspects of the graph as well.
+Another surprise when finally bringing the frontend together was how efficient the performance was when all the nodes were added to the graph.
+Despite load times reaching upwards of one minute, the graph component was stable enough to be usable despite thousands of nodes being present.
