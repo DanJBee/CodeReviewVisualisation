@@ -4,9 +4,6 @@ that would later be backed by the relational database content.
 Four sections were outlined for this stage: JavaScript vs TypeScript,
 ESLint \&Prettier, developer relationship algorithm, \&applying D3.js.
 
-
-\section{JavaScript vs TypeScript}\label{sec:javascript-vs-typescript}
-
 The first choice that had to be made was what programming language should be used for the project.
 The two candidates for this were: JavaScript and TypeScript.
 Firstly, JavaScript was and will always be incredibly well-known in the frontend development community,
@@ -23,9 +20,6 @@ There are also extra compilation steps that are required to fully implement this
 therefore creating extra overhead as well.
 Regardless of this,
 TypeScript was ultimately chosen as the frontend programming language for this project due to its cutting-edge nature and abundance of features superior to JavaScript.
-
-
-\section{ESLint \& Prettier}\label{sec:eslint-&-prettier}
 
 ESLint and Prettier were invaluable tools for the frontend development of this project.
 ESLint is a styling tool that, through static typing analysis,
@@ -79,9 +73,6 @@ A bonus of using Prettier is that, unlike ESLint,
 it does not require a separate configuration file to function correctly.
 In fact, the project just used to default Prettier settings without a separate configuration being necessary.
 
-
-\section{Developer relationship algorithm}\label{sec:developer-relationship-algorithm}
-
 A crucial part of the frontend stage was establishing
 how the visualisation would associate development with their contributions to a project's pull requests.
 The visualisation worked by determining the size of a node
@@ -104,9 +95,6 @@ With that context in mind, the relationship between developers was determined in
     \item If this pair of users (in the list) is not already in the links list, then add them with a thickness of zero.
     \item Otherwise, increment the thickness between the pair of users by one.
 \end{enumerate}
-
-
-\section{Applying D3.js}\label{sec:applying-d3.js}
 
 The final step of the frontend milestone was to apply D3.js to have a visualisation that users can actually view.
 For the use case of the project, a force-directed graph was chosen as the appropriate D3 component.

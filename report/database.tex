@@ -2,9 +2,6 @@ The next stage of the project was designing a suitable database schema and then 
 This milestone was split into multiple parts: choosing the most suitable database solution,
 designing the database schema itself, and migration.
 
-
-\section{Database Solution}\label{sec:database-solution}
-
 The first step in this milestone was choosing the most suitable database solution
 that was also most applicable to the use case of this project.
 Three candidates were considered: MySQL, PostgreSQL, and MariaDB\@.
@@ -29,9 +26,6 @@ However, this was not a major concern for development since the pull request dat
 so the performance impacts would not be very noticeable.
 Taking into account all the pros and cons, MariaDB was the ultimate choice for the project's database solution due to the overwhelming praise from the community and the plethora of features.
 
-
-\section{Database Schema}\label{sec:database-schema}
-
 The second step was designing a database schema
 to store the pull request information that had been crawled in the previous stage.
 Initially, the idea was to have two tables: one for pull requests themselves,
@@ -50,7 +44,6 @@ Regardless of the issues this may have caused later on,
 it was a worthy investment of the milestone since it made backend data retrieval a lot better later on.
 A full image of the complete schema in the form of an ER diagram is shown in the Figure~\ref{fig:schema}.
 
-% Will be replaced with figure of ER diagram later on (!!!)
 \begin{figure}[h]
     \centering
     \fboxsep 2mm
@@ -59,9 +52,6 @@ A full image of the complete schema in the form of an ER diagram is shown in the
     }
     \caption{\label{fig:schema} ER diagram of final database schema.}
 \end{figure}
-
-
-\section{Migration}\label{sec:migration}
 
 After the schema itself had been formed, the third and final step was storing the data.
 This, of course, could not be done manually due to the immense amount of data that was crawled

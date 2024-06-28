@@ -11,9 +11,6 @@ since they both performed simple functions.
 However, the crawl.py was a lot more complex in nature and, thus, was more problematic to write.
 This was the first problem encountered during this milestone.
 
-
-\section{Development of the crawl.py file}\label{sec:development-of-the-crawl.py-file}
-
 In fact, there are two versions of this crawl.py file that have to be written during development.
 The first version is one that does not store the ``cursor'' value of the last pull request that it fetches,
 so it is not as efficient.
@@ -27,17 +24,11 @@ and thus is a lot more efficient with its API calls.
 Only 1,000--2,000 API calls are required when using this second, improved version of the crawler,
 compared to all 5,000 API calls when using the original version.
 
-
-\section{Formatting of the query string}\label{sec:formatting-of-the-query-string}
-
 The second problem encountered during this milestone was formatting
 and structuring the query string that would be sent as part of the callback to the GitHub GraphQL API endpoint.
 The format of this query string has
 to be very precise for the endpoint to accept it and not report back errors during compilation.
 After adjusting the formatting of this query string, the crawler does eventually function as expected.
-
-
-\section{Summary}\label{sec:summary}
 
 Overall, the final, improved crawler file uses the requests pip library to make a callback to the GitHub GraphQL API, so it can generate a collection of JSON files containing 10 pull requests per file.
 The crawler can accommodate for a single repository as input,

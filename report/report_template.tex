@@ -2,23 +2,17 @@
 \usepackage{graphicx}
 \usepackage{hyperref}
 
-
-%%%%%%%%%%%%%%%%%%%%%%
-%%% Input project details
 \newcommand{\studentname}{Daniel Bee}
 \newcommand{\reportyear}{2024}
 \newcommand{\projecttitle}{Visualisation of the Code Review Process}
 \newcommand{\supervisorname}{DongGyun Han}
 \newcommand{\degree}{BSc (Hons) in Computer Science}
-\newcommand{\fullOrHalfUnit}{UROP} % indicate if you are doing the project as a Full Unit or Half Unit
-\newcommand{\finalOrInterim}{Report} % indicate if this document is your Final Report or Interim Report
+\newcommand{\fullOrHalfUnit}{UROP}
+\newcommand{\finalOrInterim}{Report}
 
 \begin{document}
 
     \maketitle
-
-    %%%%%%%%%%%%%%%%%%%%%%
-    %%% Declaration
 
     \chapter*{Declaration}
 
@@ -27,7 +21,7 @@
 
     \vskip3em
 
-    Word Count: 5,831
+    Word Count: 3,838
 
     \vskip3em
 
@@ -43,63 +37,29 @@
 
     \newpage
 
-    %%%%%%%%%%%%%%%%%%%%%%
-    %%% Table of Contents
-    \tableofcontents\pdfbookmark[0]{Table of Contents}{toc}
-
     \newpage
-
-    %%%%%%%%%%%%%%%%%%%%%%
-
-    \begin{abstract}
-
-        This report covers the design and development cycle of the \("\)Visualising Interactions Between Developers During Code Review\("\) UROP project.
-        This includes the thought processes throughout the project,
-        as well as the many challenges that were faced along the way and how these were dealt with.
-        There are four primary milestones that were allocated and scheduled for this project:
-        Crawler, Database, Frontend, and Backend.
-        Firstly,
-        the Crawler milestone was where pull request information from the TypeScript GitHub repository from Microsoft was fetched via the GitHub GraphQL API\@.
-        Secondly,
-        the Database milestone was the process
-        of designing an appropriate relational database schema
-        to hold this newly retrieved pull request information for easier analysis.
-        Thirdly,
-        the Frontend milestone was where mock data was inputted into a forced-directed graph powered by D3.js
-        and React to replace this mock data with the pull request information from the relational database later on.
-        Fourthly, and finally, the Backend milestone was the section of the project where everything came together.
-        During this milestone,
-        the frontend graph was linked to the backend API endpoint
-        to allow data to be transferred to a callback from axios,
-        a promise-based HTTP client for browsers and node.js.
-
-    \end{abstract}
-
-    %%%%%%%%%%%%%%%%%%%%%%
-    %%% Project Spec
-
-    \chapter*{Project Specification}
-    \addcontentsline{toc}{chapter}{Project Specification}
-    \input{project-specification}
 
 
     \chapter{Introduction}\label{ch:introduction}
     \input{introduction}
 
 
-    \chapter{Crawler}\label{ch:crawler}
+    \chapter{Development}\label{ch:development}
+
+
+    \section{Crawler}\label{sec:crawler}
     \input{crawler}
 
 
-    \chapter{Database}\label{ch:database}
+    \section{Database}\label{sec:database}
     \input{database}
 
 
-    \chapter{Frontend}\label{ch:frontend}
+    \section{Frontend}\label{sec:frontend}
     \input{frontend}
 
 
-    \chapter{Backend}\label{ch:backend}
+    \section{Backend}\label{sec:backend}
     \input{backend}
 
 

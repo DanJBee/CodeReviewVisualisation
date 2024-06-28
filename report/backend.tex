@@ -5,9 +5,6 @@ rather than placeholder mock data.
 Due to the gravity of this milestone, it is, of course, split into several stages:
 the power of Spring Boot, implementing the API endpoint itself, and (unit) testing.
 
-
-\section{The power of Spring Boot}\label{sec:the-power-of-spring-boot}
-
 Without Spring Boot, there would have been a lot more work in implementing the API endpoint.
 Spring Boot was incredibly powerful in terms of what was achieved with such little code.
 All that was needed was the instantiation of two list objects
@@ -22,9 +19,6 @@ Hence, request parameters, within the URL of the endpoint itself, were used to p
 A start and end timestamp were optional parameters, implemented through two Material UI Date Time Pickers in the frontend system.
 From the use of Java functions to perform endpoint actions, this made testing very straightforward later on.
 
-
-\section{Implementing the API endpoint itself}\label{sec:implementing-the-api-endpoint-itself}
-
 Implementing the actual API endpoint itself was easier said than done, primarily due to the complex nature of the algorithm powering the relationship between developers.
 For the algorithm to be implemented properly, three new objects had to be created in the backend: Node, Link, and Graph.
 The Node class stored author information for every pull request that was stored in the pull requests table in the relational database alongside a numerical size value.
@@ -33,9 +27,6 @@ The Link class stored the associated developers who communicated through a comme
 This numerical thickness value is based on the number of comments made between two developers on the SAME pull request(s).
 Finally, the Graph class stored a list of Nodes and Links respectively in the form of two ArrayList objects.
 This Graph class is what was actually returned by the API endpoint, resulting in the carefully structured JSON response.
-
-
-\section{Testing}\label{sec:testing}
 
 Testing was of lower priority when developing the backend system of the project, however, it was still an important aspect.
 Regardless of whether users only viewed the visualisation, it was still paramount that all tests passed with adequate test coverage.
