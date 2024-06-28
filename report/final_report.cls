@@ -22,8 +22,8 @@
 
 \def\ps@plain{%
     \let\@oddhead\@empty
-    \def\@oddfoot{\normalfont\hfil\small\textsf{Page \thepage~of~\pageref{ch:endpage}}\hfil}%
-    \def\@evenfoot{\normalfont\hfil\small\textsf{Page \thepage~of~\pageref{ch:endpage}}\hfil}}
+    \def\@oddfoot{\normalfont\hfil\small\textsf{Page \thepage~of~\pageref{itm:endpage}}\hfil}%
+    \def\@evenfoot{\normalfont\hfil\small\textsf{Page \thepage~of~\pageref{itm:endpage}}\hfil}}
 
 
 \renewcommand{\normalsize}{\fontsize{11pt}{11pt}\selectfont}
