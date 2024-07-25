@@ -146,7 +146,6 @@
 %% The abstract is a short summary of the work to be presented in the
 %% article.
 \begin{abstract}
-  The act of code review (also known as a pull request) is a code change auditing technique performed by developers that are not authors of the original code change(s).
     Recent studies have demonstrated diverse benefits of code review.
     For example, Bacchelli and Bird reported that code review is effective to share knowledge between developers to improve code changes. % (REFERENCE HERE)
     This paper aims to outline how this operation can be assembled into an asynchronous, seamless visualisation that can be used to gauge the relationships between different developers in a given project.
@@ -239,9 +238,44 @@ To summarise, the following technologies were chosen to complement the design an
 \section{Background}
 \label{sec:background}
 
+There are several niche topics covered in this paper that are best summarised in this section.
+For instance, one may ask: what is code review?
+Or what is a pull request?
+Code review (also known as a pull request) is a code change auditing technique performed by developers that are not authors of the original code change(s).
+Contributors and fellow developers can then leave feedback on these changes and either approve or deny them, perhaps even adding or removing code of their own.
+This definition is a critical part of the project since it builds the foundation of the purpose behind the system that is being built.
+Additionally, one can wonder how the visualisation behind the project will function behind the scenes.
+From the start of the project, D3.js was always the main target for powering the visualisation and making it interactive for end-users.
+In particular, the force-directed graph from the Observable Examples page. % REFERENCE HERE
+This structure (?) takes data in the form of a JSON file containing two objects: nodes and links.
+These two objects combine to make a interactive, attractive, and connected graph showing the relationships between contributors on a given project.
+In the case of this project, Microsoft's TypeScript GitHub repository was chosen as the target repository for the initial prototype.
+TypeScript's repository contained over 17,000 pull requests which made it an adequate test sample of the graph visualisation.
+Moreover, the phrase REST API is a new term in the web development space and stands for: Representational State Transfer.
+An API following this model (?) allows for state modification of objects and data on the web to transfer back to the client server (i.e.\ the end-user). % REFERENCE HERE (https://www.astera.com/type/blog/rest-api-definition/#:~:text=Full%20form%20of%20REST%20API,state%20to%20the%20client%20system.)
 
 \section{Visualisation}
 \label{sec:design}
+
+A screenshot of the initial project prototype is shown in Figure~\ref{fig:initial-prototype}.
+
+\begin{figure}[h]
+    \centering
+    \fboxsep 2mm
+    \framebox{
+        \includegraphics[width=8cm]{initial-prototype}
+    }
+    \caption{\label{fig:initial-prototype} Initial project prototype screenshot image.}
+\end{figure}
+
+The blue buttons on the bottom right-hand corner of Figure~\ref{fig:initial-prototype} allow users to add or subtract chunks of time from the time selection period.
+By default, the time period is set between the current date and a month from the current date.
+Furthermore, users can select precise dates for the time selection via the Material UI Date Time Picker. % REFERENCE HERE (MATERIAL UI DATE TIME PICKER DOCUMENTATION)
+An extra feature that was accommodated was the ability to pan and zoom around the graph structure via holding down the left mouse button.
+On top of that, hovering the mouse cursor over any node within the graph displays a tooltip containing the developer's GitHub username.
+Plus, every node's image cover is the profile picture of the developer that the node represents.
+The size of each node is calculated based on the number of pull requests that developer has made on the project overall.
+The thickness of each link between the nodes is measured based on the number of comments on the SAME pull requests between those two developers.
 
 \section{Related Work}
 \label{sec:relatedWork}
