@@ -148,7 +148,7 @@
 \begin{abstract}
     Recent studies have demonstrated diverse benefits of code review.
     For example, Bacchelli and Bird reported that code review is effective to share knowledge between developers to improve code changes. % (REFERENCE HERE)
-    This paper aims to outline how this operation can be assembled into an asynchronous, seamless visualisation that can be used to gauge the relationships between different developers in a given project.
+    This paper aims to outline how this operation can be assembled into an asynchronous, seamless visualisation that can be used to gauge the interactions between different developers in a given project.
     The development of this final product was split into three stages:
 
     \begin{enumerate}
@@ -215,7 +215,7 @@ This allowed a callback to be made to the backend service to allow the frontend 
 Finally,
 D3.js was paramount
 for meeting the specifications for this project
-since it encompassed the visualisation representing the relationships between developers.
+since it encompassed the visualisation representing the interactions between developers.
 D3.js is incredibly efficient to use, and yet so powerful in what it can achieve.
 It was able to support thousands of nodes asynchronously whilst reading from a database from the backend in a matter of seconds.
 Lastly, testing was a crucial part of the development cycle that was incorporated from the very beginning.
@@ -247,12 +247,12 @@ This definition is a critical part of the project since it builds the foundation
 Additionally, one can wonder how the visualisation behind the project will function behind the scenes.
 From the start of the project, D3.js was always the main target for powering the visualisation and making it interactive for end-users.
 In particular, the force-directed graph from the Observable Examples page. % REFERENCE HERE
-This structure (?) takes data in the form of a JSON file containing two objects: nodes and links.
-These two objects combine to make a interactive, attractive, and connected graph showing the relationships between contributors on a given project.
+This structure takes data in the form of a JSON file containing two objects: nodes and links.
+These two objects combine to make a interactive, attractive, and connected graph showing the interactions between contributors on a given project.
 In the case of this project, Microsoft's TypeScript GitHub repository was chosen as the target repository for the initial prototype.
 TypeScript's repository contained over 17,000 pull requests which made it an adequate test sample of the graph visualisation.
 Moreover, the phrase REST API is a new term in the web development space and stands for: Representational State Transfer.
-An API following this model (?) allows for state modification of objects and data on the web to transfer back to the client server (i.e.\ the end-user). % REFERENCE HERE (https://www.astera.com/type/blog/rest-api-definition/#:~:text=Full%20form%20of%20REST%20API,state%20to%20the%20client%20system.)
+An API following this model allows for state modification of objects and data on the web to transfer back to the client server (i.e.\ the end-user). % REFERENCE HERE (https://www.astera.com/type/blog/rest-api-definition/#:~:text=Full%20form%20of%20REST%20API,state%20to%20the%20client%20system.)
 
 \section{Visualisation}
 \label{sec:design}
@@ -280,9 +280,30 @@ The thickness of each link between the nodes is measured based on the number of 
 \section{Related Work}
 \label{sec:relatedWork}
 
+When working in a development team for any kind of project, curating the best and most efficient workflow for team members is paramount.
+A visualisation can offer several benefits in clearly identifying the strengths and weaknesses in a team's interactions, dynamics, and workloads.
+Using data from GraphQL was useful in this decision since it was easy to crawl this data to scale if workloads are too one-sided, or if two team members are taking up too much of the work.
+Companies often struggle to find the right balance between allowing their developers to shine and burning them out, and it is even harder to figure out which one is taking place in a particular team.
+Having each node and link between nodes in the visualisation be scaled in size dependent on the crawled data provides a normalised dataset that is straightforward to track and monitor throughout development.
+In addition to this, the physics of the nodes within the graph mean that nodes that are connected often surround each other, especially if one node has several children.
+This behaviour is useful for noticing patterns of dependence in a team and results in early problems being resolved promptly without hindering the rest of the development cycle.
+On the other hand, if there are any nodes that have no links between any other developers, then they can be identified as someone not partaking appropriately in a teamwork environment.
+This can then be addressed by the team manager.
+Multiple projects are supported by the system by default (as a result of rigid database design), but it is challenging to crawl, split, and migrate all the necessary data manually.
+However, the visualisation that is created is only best applied in larger projects where more nodes and links are visible.
+Smaller projects will not be able to benefit from the graph analysis since they will most likely be aware of any team issues already that are simply consolidated in the visualisation.
 
 \section{Conclusion}
 \label{sec:conclusion}
+
+Visualising developer interactions in code reviews is a vital part of the development process to ensure efficient and healthy progress for a project.
+Through easy graph analysis, one can discover team dynamics and relationships that showcase the weaknesses in a team's workflows that can then be addressed by appropriate parties in a short timeframe.
+In this paper, the several components that make up the efficient web system that was built to power and support this visualisation will be broken down.
+Several technologies will be evaluated and explored that made the development of this project a lot faster than it otherwise would have been.
+The purpose and related work of the system will also be discussed.
+As future work, the plan is to make the system more automated and reduce the manual labour for the end-user during the crawling, splitting, and migration stages of the data collection phase.
+Graph propagation is another feature in plans to allow individual users to be the root of the graph and propagate to their contributor counterparts.
+Extension features also include node colour coding and project mixing and matching (i.e.\ multiple projects in a singular visualisation).
 
 %%
 %% The next two lines define the bibliography style to be used, and
