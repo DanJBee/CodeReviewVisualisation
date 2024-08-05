@@ -232,7 +232,7 @@ From the start of the project,
 D3.js was always the main target for powering the visualisation and making it interactive for end-users.
 In particular, the force-directed graph from the Observable Examples page~\cite{ForceDirectedGraph}.
 This structure takes data in the form of a JSON file containing two objects: nodes and links.
-These two objects combine to make a interactive, attractive,
+These two objects combine to make an interactive, attractive,
 and connected graph showing the interactions between contributors on a given project.
 
 
@@ -253,15 +253,16 @@ to transfer back to the client server
 \section{Related Work}
 \label{sec:relatedWork}
 
-% RELATED WORK EXAMPLES FOR REFERENCE LATER ON (PLEASE IGNORE!)
-% http://oscar-lab.org/paper/scis_14.pdf
-% https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=5428430
-% https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=5070503
-
 When working in a development team for any kind of project,
 curating the best and most efficient workflow for team members is paramount.
+Even with the recent disruption caused by the COVID-19 pandemic, there is little excuse for teams to not be working at a high productivity.
+This is reflected when Russo et al.
+said: \("\)Results suggest that the time
+software engineers spent doing specific activities from home was
+similar when working in the office\("\)\cite{RussoEtAl}.
 A visualisation can offer several benefits in clearly identifying the strengths and weaknesses in a team's interactions,
 dynamics, and workloads.
+A development team is effectively a microcosm of a social network, and graph structures have been great at encapsulating these as said by Majeed and Rauf: \("\)Recently, graphs have been extensively used in social networks (SNs) for many purposes related to modelling and analysis of the SN structures, SN operation modelling, SN user analysis, and many other related aspects\("\)\cite{MajeedAndRauf}.
 Using data from GraphQL was useful in this decision
 since it was easy to crawl this data to scale if workloads are too one-sided,
 or if two team members are taking up too much of the work.
@@ -288,6 +289,13 @@ the visualisation that is created is only best applied in larger projects where 
 Smaller projects will not be able
 to benefit from the graph analysis
 since they will most likely be aware of any team issues already that are simply consolidated in the visualisation.
+
+
+Lastly, it is important to consider the reasons for why a project may have inefficient workflow in their teams.
+For example, negative feedback from peers may result in developers in abandoning projects after only a few code reviews, leaving other teammates to pick up the pieces as Egelman et al.
+wrote: \("\)In the process, developers may have negative
+interpersonal interactions with their peers, which can lead to frustration and stress; these negative interactions may ultimately result
+in developers abandoning projects\("\)\cite{EgelmanEtAl}.
 
 \section{Conclusion}
 \label{sec:conclusion}
