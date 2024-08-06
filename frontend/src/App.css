@@ -16,3 +16,7 @@
     bottom: 70px;
     z-index: 9999;
 }
+
+image {
+    filter: blur(2px);
+}
