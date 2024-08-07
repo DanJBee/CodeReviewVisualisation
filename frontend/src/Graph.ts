@@ -39,7 +39,7 @@ const graph = () => {
 
     // Collects a JSON response from the 'mock.json' file
     const response: Data | undefined = await axios.get(
-      `http://localhost:8080/getGraph?owner=microsoft&project=typescript&start=${startDate}&end=${endDate}`,
+      `http://localhost:8080/getGraph/ChrisTitusTech/linutil?&start=${startDate}&end=${endDate}`,
     );
 
     // If there is no response then return
