@@ -39,9 +39,9 @@ public class GraphController {
    * @param end     the ending date of the chosen time window (optional)
    * @return the pull request graph information for 'microsoft/typescript'
    */
-  @GetMapping("/getGraph")
-  public Graph getGraph(@RequestParam String owner,
-                        @RequestParam String project,
+  @GetMapping("/getGraph/{owner}/{project}")
+  public Graph getGraph(@PathVariable String owner,
+                        @PathVariable String project,
                         @RequestParam(required = false) String start,
                         @RequestParam(required = false) String end) {
     return graphService.getGraphData(owner, project, start, end);
