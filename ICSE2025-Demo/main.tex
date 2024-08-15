@@ -47,6 +47,37 @@
 %%
 \documentclass[sigconf]{acmart}
 
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{cleveref}
+\usepackage{tabularx}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
 %% Rights management information.  This information is sent to you
 %% when you complete the rights form.  These commands have SAMPLE
 %% values in them; it is your responsibility as an author to replace
@@ -192,14 +223,14 @@
 \section{Introduction}
 \label{sec:introduction}
 
-Code review (also known as a pull request)
-is a code change auditing technique
-performed by software developers that are not authors of the original code change(s).
+
+Code review is a practice that all code changes are reviewed by one or more developers other than the change author themselves.
+Due to diverse benefits of code review, it has been widely adopted in both proprietary and open source projects.
+For example, previous studies have shown that it is useful for sharing knowledge and development context within a development team~\cite{Bacchelli13}.
+In addition, code review is helpful for improving software quality and design quality~\cite{McIntosh14, Morales15}.
 
 
-This technique has become very popular in recent years
-as it allows for robust and peer-reviewed code to be easily pushed to production.
-Human error can lead to inadequate and potentially dangerous code being applied to live products.
+
 
 
 A problem, however, is that it is challenging to understand how developers collaborate with each other.
@@ -246,9 +277,117 @@ An API following this model allows for state modification of objects and data on
 to transfer back to the client server
 (i.e.\ the end-user)~\cite{RESTAPIDefinition}.
 
-\section{Visualisation}
-\label{sec:design}
-\input{visualisation}
+\section{Visualisation Framework}
+\label{sec:framework}
+
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{diagram}
+  \caption{Overall framework}
+  \label{fig:framework}
+\end{figure}
+
+The visualisation framework consists of three components as shown in~\Cref{fig:framework}: Crawler, Migrator, and Visualiser.
+In this section, we explain the role of each component and implementation details.
+You can check the actual implementations on our replication package~\footnote{TODO: We need to create a GitHub repo and put the implementations there}.
+
+\subsection{Crawler}
+\label{sec:crawler}
+
+\begin{table}[h]
+	\caption{Data Properties}
+	\label{table:properties}
+	\centering
+	%\scriptsize
+  \small
+	\begin{tabularx}{\linewidth}{|l|X|}
+		\hline
+    Property & Description \\
+		\hline
+    {\tt number} & Numeric id for pull request \\
+    {\tt author.login} & Unique identifiers of developers \\
+    {\tt author.avatarUrl} & URL of developer profile picture \\
+    {\tt author.\_\_typename} & User type (either human user or bot) \\
+    {\tt createdAt} & Timestamp of PR/comment \\
+		\hline
+	\end{tabularx}
+\end{table}
+
+
+To visualise developer interactions, we need a large amount of pull request data.
+It will introduce huge traffics to code review platform if we request data whenever we need them.
+Such huge traffics potentially slow down the code review platform, so we do not query directly to the code review platform.
+Instead, we implemented a crawler that can crawl the latest code review data.
+The crawler leverages GitHub GraphQL API\footnote{\url{https://docs.github.com/en/graphql}} using Python.
+We constructed a query that retrieves {\tt author} and {\tt createdAt} properties of PRs and PR comments.
+\Cref{table:properties} explains the properties that we crawled.
+
+
+\subsection{Migrator}
+\label{sec:migrator}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{erd}
+  \caption{Entity Relationship Diagram}
+  \label{fig:framework}
+\end{figure}
+
+
+The data structure of GitHub GraphQL API response has multiple levels of hierarchy.
+This hierarchy data type is helpful to represent entire data in a project.
+However, visualising a hierarchy dataset introduces unnecessary navigation.
+
+
+
+\subsection{Visualiser}
+\label{sec:visualiser}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{initial-prototype}
+  \caption{An example of visualisation. We blurred the actual profile photos to protect developers' privacy}
+  \label{fig:snapshot}
+\end{figure}
+
+
+\section{Developer Interactions}
+\label{sec:algorithm}
+%\input{visualisation}
+
+\begin{minipage}{.95\linewidth}
+\begin{lstlisting}[language=Python, caption=Algorithm to extract interactions, label=algorithm]
+#Pull requests
+prs = []
+# The number of comments per developer.
+nodes = {}
+# The number of a developer pair within a PR.
+links = {} 
+
+for pr in prs:
+  for comment in pr.comments:
+    if pr.author == comment.author:
+      continue
+
+    nodes[comment.author] += 1
+
+    author_pair = [pr.author, comment.author]
+    author_pair.sort()
+    links[author_pair] += 1
+\end{lstlisting}
+\end{minipage}
+
+\Cref{algorithm} shows the algorithm to extract interactions from pull requests.
+When PRs (i.e., {\tt prs}) are given, the algorithm iterates all comments in the PRs.
+If the PR author and comment author are same, the algorithm does nothing.
+On the other hand, it increases the comment count (i.e., {\tt nodes}) by one.
+Please note that the number of comments will be used to represent the size of each developer node in our visualisation.
+In addition, we construct a list that contains both PR and comment authors, then increase the count by one.
+To avoid unnecessary duplicates (e.g., $\{John Doe, Jane Doe\}$ and $\{Jane Doe, John Doe\}$), we sort the list before increasing the count.
+The count of author pairs (i.e., {\tt links}) will be used to control the thickness between developer nodes in the visualisation. 
+
+
 
 \section{Related Work}
 \label{sec:relatedWork}
