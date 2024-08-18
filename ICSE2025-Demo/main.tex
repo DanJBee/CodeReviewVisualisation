@@ -289,6 +289,9 @@ to transfer back to the client server
 \end{figure}
 
 The visualisation framework consists of three components as shown in~\Cref{fig:framework}: Crawler, Migrator, and Visualiser.
+The crawler retrieves PRs and comments from GitHub.
+Then, migrator parse the data and store it to a database.
+Finally, a user can see a visualisation of a project via the web based visualiser.
 In this section, we explain the role of each component and implementation details.
 You can check the actual implementations on our replication package~\footnote{TODO: We need to create a GitHub repo and put the implementations there}.
 
@@ -319,7 +322,7 @@ To visualise developer interactions, we need a large amount of pull request data
 It will introduce huge traffics to code review platform if we request data whenever we need them.
 Such huge traffics potentially slow down the code review platform, so we do not query directly to the code review platform.
 Instead, we implemented a crawler that can crawl the latest code review data.
-The crawler leverages GitHub GraphQL API\footnote{\url{https://docs.github.com/en/graphql}} using Python.
+The crawler leverages GitHub GraphQL API\footnote{\url{https://docs.github.com/en/graphql}} and implemented in Python.
 We constructed a query that retrieves {\tt author} and {\tt createdAt} properties of PRs and PR comments.
 \Cref{table:properties} explains the properties that we crawled.
 
@@ -327,19 +330,25 @@ We constructed a query that retrieves {\tt author} and {\tt createdAt} propertie
 \subsection{Migrator}
 \label{sec:migrator}
 
+GraphQL is powerful approach handling large scale requests, but using GitHub GraphQL API directly for visualisation has three outstanding issues.
+First, GraphQL has additional types of nodes to optimise queries.
+For example, both PR and comment nodes should be surrounded by the {\tt edges} and {\tt node(s)} nodes which introduce unnecessary depth navigation.
+Second, GraphQL supports only limited conditional query.
+One of our visualiser's features supports visualising developer interactions within a specific time window.
+However, GraphQL does not support query that returns PRs that were authored within a specific date range.
+Last, traversing all PRs take time and require high computation power on the PR platform. 
+
 \begin{figure}[h]
   \centering
   \includegraphics[width=\linewidth]{erd}
   \caption{Entity Relationship Diagram}
-  \label{fig:framework}
+  \label{fig:erd}
 \end{figure}
 
-
-The data structure of GitHub GraphQL API response has multiple levels of hierarchy.
-This hierarchy data type is helpful to represent entire data in a project.
-However, visualising a hierarchy dataset introduces unnecessary navigation.
-
-
+To mitigate the issues, we implemented a migrator that migrates the crawled API responses to a relational database instance.
+\Cref{fig:erd} presents an entity relationship diagram of our database schema.
+The schema represents PRs and comments with the minimum subset of data that is required for visualisation.
+The migrator was also written in Python and we evaluated it with a MariaDB instance.
 
 \subsection{Visualiser}
 \label{sec:visualiser}
@@ -350,6 +359,19 @@ However, visualising a hierarchy dataset introduces unnecessary navigation.
   \caption{An example of visualisation. We blurred the actual profile photos to protect developers' privacy}
   \label{fig:snapshot}
 \end{figure}
+
+The visualiser is responsible for visualising developer interactions.
+Users can select a specific project and time window to visualise developer interactions.
+For example, a user can request the visualiser to visualise developer interactions in the TypeScript project for a week from 3rd June 2024.
+
+We implemented the visualiser as a web service that consists of two main components: backend and frontend.
+The backend component was implemented by using Java and Spring Framework.
+It mainly retrieves data from the database and serialise the data into a JSON string.
+The frontend component was implemented by using TypeScript and React Framework.
+Since developer interactions can be visualised as a graph, we adopted the Force-directed graph component\footnote{\url{https://observablehq.com/@d3/force-directed-graph/2}} in D3.
+
+
+
 
 
 \section{Developer Interactions}
