@@ -230,16 +230,21 @@ For example, previous studies have shown that it is useful for sharing knowledge
 In addition, code review is helpful for improving software quality and design quality~\cite{McIntosh14, Morales15}.
 
 
+Since code review requires reviews from human developers (other than the change author themselves), finding reviewers is a critical task in code review.
+To mitigate the issue, many studies proposed reviewer recommendation techniques~\cite{Thongtanunam15, Yu16}.
+These techniques recommend a group of developers for a given code review request.
 
+In this study, we propose a web service that visualises developer interaction in code reviews.
+Based on a given project, our technique provides a visualisation of developers within a given timeframe.
+We expect the visualisation helps a software development team to review the performance of their code review practices over time.
+They potentially identify a pair of developers who are struggling work each other.
+We also expect the visualisation help to plan how to pair developers to work together.
+They probably group the developers who actively communicate each other for boosting development speed.
+Alternatively, the can group the developers who have rarely worked together for leveraging fresh synergy between new combination.
+%Many recent studies have investigated the importance of social aspects in code review~\cite{Bosu17, Egelman20}.
+%For example, Egelman et al.~\cite{Egelman20} studied negative feelings about code review and how to predict them.
+%Although code review has diverse benefits, it may introduce interpersonal conflicts in the workplace~\cite{Egelman20}.
 
-
-A problem, however, is that it is challenging to understand how developers collaborate with each other.
-
-
-Visualising the interactions between developers with a graph could help mitigate the problem.
-
-
-Therefore, we propose a technique that can visualise interactions between developers.
 
 
 The technique consists of three main parts: a crawler, a migrator, and a visualiser.
@@ -380,14 +385,20 @@ Since developer interactions can be visualised as a graph, we adopted the Force-
 
 \begin{minipage}{.95\linewidth}
 \begin{lstlisting}[language=Python, caption=Algorithm to extract interactions, label=algorithm]
-#Pull requests
+# Pull requests must be provided
 prs = []
+# The timframe is optional parameters
+timeframe = (start_date, end_date)
+
 # The number of comments per developer.
 nodes = {}
 # The number of a developer pair within a PR.
 links = {} 
 
 for pr in prs:
+  if timeframe is given and pr is not within the timeframe:
+    continue
+
   for comment in pr.comments:
     if pr.author == comment.author:
       continue
@@ -401,14 +412,18 @@ for pr in prs:
 \end{minipage}
 
 \Cref{algorithm} shows the algorithm to extract interactions from pull requests.
-When PRs (i.e., {\tt prs}) are given, the algorithm iterates all comments in the PRs.
-If the PR author and comment author are same, the algorithm does nothing.
+When PRs are given, the algorithm iterates all PRs to extract information for the visualisation.
+If a timeframe is given to the algorithm, it only uses the PRs created within the timeframe.
+Otherwise, the algorithm leverages the given PRs.
+
+For the PRs included in the scope of the visualisation (i.e., no timeframe is given or PRs created within the timeframe), the algorithm iterates all comments in them.
+If the PR author and comment author are same, the algorithm skip the comment.
 On the other hand, it increases the comment count (i.e., {\tt nodes}) by one.
-Please note that the number of comments will be used to represent the size of each developer node in our visualisation.
+This approach helps us to extract the contributions by each developer based on the number of comments on PRs that were not authored by themselves.
+The number of comments will be used to represent the size of each developer node in our visualisation.
 In addition, we construct a list that contains both PR and comment authors, then increase the count by one.
 To avoid unnecessary duplicates (e.g., $\{John Doe, Jane Doe\}$ and $\{Jane Doe, John Doe\}$), we sort the list before increasing the count.
 The count of author pairs (i.e., {\tt links}) will be used to control the thickness between developer nodes in the visualisation. 
-
 
 
 \section{Related Work}
