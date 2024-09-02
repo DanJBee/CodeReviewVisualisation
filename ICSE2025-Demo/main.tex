@@ -51,11 +51,15 @@
 \usepackage{xcolor}
 \usepackage{cleveref}
 \usepackage{tabularx}
+\usepackage{xspace}
 
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
 \definecolor{codepurple}{rgb}{0.58,0,0.82}
 \definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+% TODO: Name the service
+\newcommand{\service}{{\tt SERVICENAME}\xspace}
 
 \lstdefinestyle{mystyle}{
     backgroundcolor=\color{backcolour},   
@@ -228,29 +232,31 @@ Code review is a practice that all code changes are reviewed by one or more deve
 Due to diverse benefits of code review, it has been widely adopted in both proprietary and open source projects.
 For example, previous studies have shown that it is useful for sharing knowledge and development context within a development team~\cite{Bacchelli13}.
 In addition, code review is helpful for improving software quality and design quality~\cite{McIntosh14, Morales15}.
+Because of the diverse benefits, the practice has been widely adopted in both open and proprietary software projects.
+GitHub's pull request\footnote{\url{https://docs.github.com/en/pull-requests}} is a representative example of code review.
 
 
-Since code review requires reviews from human developers (other than the change author themselves), finding reviewers is a critical task in code review.
+One of the most challenging parts of code review is to find peers to review code changes.
 To mitigate the issue, many studies proposed reviewer recommendation techniques~\cite{Thongtanunam15, Yu16}.
 These techniques recommend a group of developers for a given code review request.
+However, these techniques often limited to provide a guidance to individual code review requests rather than providing project wide guidances.
 
-In this study, we propose a web service that visualises developer interaction in code reviews.
+In this study, we propose a web service, \service, that visualises developer interaction during pull request in GitHub.
 Based on a given project, our technique provides a visualisation of developers within a given timeframe.
-We expect the visualisation helps a software development team to review the performance of their code review practices over time.
-They potentially identify a pair of developers who are struggling work each other.
+We expect the visualisation helps a software development team to understand the performance of their code review practices over time.
+They potentially identify a pair of developers who are struggling work each other (e.g., a pair of developers who rarely communicate each other).
 We also expect the visualisation help to plan how to pair developers to work together.
 They probably group the developers who actively communicate each other for boosting development speed.
-Alternatively, the can group the developers who have rarely worked together for leveraging fresh synergy between new combination.
-%Many recent studies have investigated the importance of social aspects in code review~\cite{Bosu17, Egelman20}.
-%For example, Egelman et al.~\cite{Egelman20} studied negative feelings about code review and how to predict them.
-%Although code review has diverse benefits, it may introduce interpersonal conflicts in the workplace~\cite{Egelman20}.
+Alternatively, they can group the developers who have rarely worked together for leveraging fresh synergy between new combination.
+
+\service  consists of three components: crawler, migrator, and visualiser.
+Since the visualisation requires multiple pull requests to comprehend the interactions, requesting such a large amount of data from GitHub could potentially be burdensome and slow.
+To avoid generating excessive traffic and response users request quickly, the crawler component retrieves pull request data from GitHub using the GitHub GraphQL API\footnote{\url{https://docs.github.com/en/graphql}}.
+Once the crawling is done, the migrator component process the crawled data and store them into a database.
+Finally, the visualiser component visualises how developers interact to each other during code review.
 
 
 
-The technique consists of three main parts: a crawler, a migrator, and a visualiser.
-
-
-We expect the technique can be applied and used in various ways in industry.
 
 \section{Background}
 \label{sec:background}
