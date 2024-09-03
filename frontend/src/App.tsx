@@ -1,15 +1,15 @@
-import { useMemo, useState } from 'react';
-import moment from 'moment';
-import 'moment/locale/en-gb';
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import { useMemo, useState } from "react";
+import moment from "moment";
+import "moment/locale/en-gb";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import {
   TimePeriodSelectorContext,
   TimePeriodSelectorState,
-} from './TimePeriodSelectorState';
-import GraphComponent from './GraphComponent';
-import TimePeriodSelectorComponent from './TimePeriodSelectorComponent';
-import TimeButtonsComponent from './TimeButtonsComponent';
+} from "./TimePeriodSelectorState";
+import GraphComponent from "./GraphComponent";
+import TimePeriodSelectorComponent from "./TimePeriodSelectorComponent";
+import TimeButtonsComponent from "./TimeButtonsComponent";
 
 const initialState: TimePeriodSelectorState = {
   startDate: moment(new Date().setMonth(new Date().getMonth() - 1)),
@@ -25,10 +25,12 @@ function App() {
   return (
     <TimePeriodSelectorContext.Provider value={contextValue}>
       <GraphComponent />
-      <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale="en-gb">
-        <TimePeriodSelectorComponent />
-      </LocalizationProvider>
-      <TimeButtonsComponent />
+      <div style={{ margin: "50px" }}>
+        <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale="en-gb">
+          <TimePeriodSelectorComponent />
+        </LocalizationProvider>
+        <TimeButtonsComponent />
+      </div>
     </TimePeriodSelectorContext.Provider>
   );
 }

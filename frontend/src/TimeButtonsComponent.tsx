@@ -1,8 +1,8 @@
-import './App.css';
-import { Button } from '@mui/material';
-import { useContext } from 'react';
-import moment from 'moment';
-import { TimePeriodSelectorContext } from './TimePeriodSelectorState';
+import "./App.css";
+import { Button, ButtonGroup } from "@mui/material";
+import { useContext } from "react";
+import moment from "moment";
+import { TimePeriodSelectorContext } from "./TimePeriodSelectorState";
 
 function TimeButtonsComponent() {
   const timePeriodSelectorState = useContext(TimePeriodSelectorContext);
@@ -11,7 +11,7 @@ function TimeButtonsComponent() {
     if (timePeriodSelectorState?.setState) {
       timePeriodSelectorState.setState((prevState) => ({
         ...prevState,
-        startDate: moment(prevState.startDate).subtract(1, 'year'),
+        startDate: moment(prevState.startDate).subtract(1, "year"),
       }));
     }
   };
@@ -20,7 +20,7 @@ function TimeButtonsComponent() {
     if (timePeriodSelectorState?.setState) {
       timePeriodSelectorState.setState((prevState) => ({
         ...prevState,
-        startDate: moment(prevState.startDate).add(1, 'year'),
+        startDate: moment(prevState.startDate).add(1, "year"),
       }));
     }
   };
@@ -29,7 +29,7 @@ function TimeButtonsComponent() {
     if (timePeriodSelectorState?.setState) {
       timePeriodSelectorState.setState((prevState) => ({
         ...prevState,
-        startDate: moment(prevState.startDate).subtract(1, 'month'),
+        startDate: moment(prevState.startDate).subtract(1, "month"),
       }));
     }
   };
@@ -38,7 +38,7 @@ function TimeButtonsComponent() {
     if (timePeriodSelectorState?.setState) {
       timePeriodSelectorState.setState((prevState) => ({
         ...prevState,
-        startDate: moment(prevState.startDate).add(1, 'month'),
+        startDate: moment(prevState.startDate).add(1, "month"),
       }));
     }
   };
@@ -47,61 +47,32 @@ function TimeButtonsComponent() {
     if (timePeriodSelectorState?.setState) {
       timePeriodSelectorState.setState((prevState) => ({
         ...prevState,
-        startDate: moment(prevState.startDate).subtract(1, 'day'),
+        startDate: moment(prevState.startDate).subtract(1, "day"),
       }));
     }
   };
 
   return (
-    <>
-      <Button
-        variant="contained"
-        id="time-button"
-        onClick={() => handleOneYearDecrease()}
-        style={{ right: 455 }}
-      >
-        -1 Year
-      </Button>
-      <Button
-        variant="contained"
-        id="time-button"
-        onClick={() => handleOneYearIncrease()}
-        style={{ right: 365 }}
-      >
-        +1 Year
-      </Button>
-      <Button
-        variant="contained"
-        id="time-button"
-        onClick={() => handleOneMonthDecrease()}
-        style={{ right: 265 }}
-      >
+    <ButtonGroup id="time-button" variant="contained">
+      <Button color="primary" onClick={() => handleOneYearDecrease()}>
         -1 Month
       </Button>
-      <Button
-        variant="contained"
-        id="time-button"
-        onClick={() => handleOneMonthIncrease()}
-        style={{ right: 160 }}
-      >
+      <Button color="primary" onClick={() => handleOneYearIncrease()}>
         +1 Month
       </Button>
-      <Button
-        variant="contained"
-        id="time-button"
-        onClick={() => handleOneDayDecrease()}
-        style={{ right: 80 }}
-      >
+      <Button color="success" onClick={() => handleOneMonthDecrease()}>
+        -1 Week
+      </Button>
+      <Button color="success" onClick={() => handleOneMonthIncrease()}>
+        +1 Week
+      </Button>
+      <Button color="warning" onClick={() => handleOneDayDecrease()}>
         -1 Day
       </Button>
-      <Button
-        variant="contained"
-        id="time-button"
-        onClick={() => handleOneMonthDecrease()}
-      >
+      <Button color="warning" onClick={() => handleOneMonthDecrease()}>
         +1 Day
       </Button>
-    </>
+    </ButtonGroup>
   );
 }
 
