@@ -256,37 +256,82 @@ Once the crawling is done, the migrator component process the crawled data and s
 Finally, the visualiser component visualises how developers interact to each other during code review.
 
 
+%\section{Background}
+%\label{sec:background}
+%
+%Code review (also known as a pull request)
+%is a code change auditing technique performed by developers that are not authors of the original code change(s).
+%Contributors and fellow developers can then leave feedback on these changes and either approve or deny them,
+%perhaps even adding or removing code of their own.
+%This definition is a critical part of the project
+%since it builds the foundation of the purpose behind the system that is being built.
+%
+%
+%Additionally, one can wonder how the visualisation behind the project will function behind the scenes.
+%From the start of the project,
+%D3.js was always the main target for powering the visualisation and making it interactive for end-users.
+%In particular, the force-directed graph from the Observable Examples page~\cite{ForceDirectedGraph}.
+%This structure takes data in the form of a JSON file containing two objects: nodes and links.
+%These two objects combine to make an interactive, attractive,
+%and connected graph showing the interactions between contributors on a given project.
+%
+%
+%In the case of this project,
+%Microsoft's TypeScript GitHub repository was chosen as the target repository for the initial prototype.
+%TypeScript's repository contained over 17,000 pull requests
+%which made it an adequate test sample of the graph visualisation.
+%Moreover, the phrase REST API is a new term in the web development space and stands for:
+%Representational State Transfer.
+%An API following this model allows for state modification of objects and data on the web
+%to transfer back to the client server
+%(i.e.\ the end-user)~\cite{RESTAPIDefinition}.
 
+\section{Developer Interactions}
+\label{sec:algorithm}
+%\input{visualisation}
 
-\section{Background}
-\label{sec:background}
+\begin{minipage}{.95\linewidth}
+\begin{lstlisting}[language=Python, caption=Algorithm to extract interactions, label=algorithm]
+# Pull requests must be provided
+prs = []
+# The timframe is optional parameters
+timeframe = (start_date, end_date)
 
-Code review (also known as a pull request)
-is a code change auditing technique performed by developers that are not authors of the original code change(s).
-Contributors and fellow developers can then leave feedback on these changes and either approve or deny them,
-perhaps even adding or removing code of their own.
-This definition is a critical part of the project
-since it builds the foundation of the purpose behind the system that is being built.
+# The number of comments per developer.
+nodes = {}
+# The number of a developer pair within a PR.
+links = {} 
 
+for pr in prs:
+  if timeframe is given and pr is not within the timeframe:
+    continue
 
-Additionally, one can wonder how the visualisation behind the project will function behind the scenes.
-From the start of the project,
-D3.js was always the main target for powering the visualisation and making it interactive for end-users.
-In particular, the force-directed graph from the Observable Examples page~\cite{ForceDirectedGraph}.
-This structure takes data in the form of a JSON file containing two objects: nodes and links.
-These two objects combine to make an interactive, attractive,
-and connected graph showing the interactions between contributors on a given project.
+  for comment in pr.comments:
+    if pr.author == comment.author:
+      continue
 
+    nodes[comment.author] += 1
 
-In the case of this project,
-Microsoft's TypeScript GitHub repository was chosen as the target repository for the initial prototype.
-TypeScript's repository contained over 17,000 pull requests
-which made it an adequate test sample of the graph visualisation.
-Moreover, the phrase REST API is a new term in the web development space and stands for:
-Representational State Transfer.
-An API following this model allows for state modification of objects and data on the web
-to transfer back to the client server
-(i.e.\ the end-user)~\cite{RESTAPIDefinition}.
+    author_pair = [pr.author, comment.author]
+    author_pair.sort()
+    links[author_pair] += 1
+\end{lstlisting}
+\end{minipage}
+
+\Cref{algorithm} shows the algorithm to extract interactions from pull requests.
+When PRs are given, the algorithm iterates all PRs to extract information for the visualisation.
+If a timeframe is given to the algorithm, it only uses the PRs created within the timeframe.
+Otherwise, the algorithm leverages the given PRs.
+
+For the PRs included in the scope of the visualisation (i.e., no timeframe is given or PRs created within the timeframe), the algorithm iterates all comments in them.
+If the PR author and comment author are same, the algorithm skip the comment.
+On the other hand, it increases the comment count (i.e., {\tt nodes}) by one.
+This approach helps us to extract the contributions by each developer based on the number of comments on PRs that were not authored by themselves.
+The number of comments will be used to represent the size of each developer node in our visualisation.
+In addition, we construct a list that contains both PR and comment authors, then increase the count by one.
+To avoid unnecessary duplicates (e.g., $\{John Doe, Jane Doe\}$ and $\{Jane Doe, John Doe\}$), we sort the list before increasing the count.
+The count of author pairs (i.e., {\tt links}) will be used to control the thickness between developer nodes in the visualisation. 
+
 
 \section{Visualisation Framework}
 \label{sec:framework}
@@ -377,59 +422,31 @@ For example, a user can request the visualiser to visualise developer interactio
 
 We implemented the visualiser as a web service that consists of two main components: backend and frontend.
 The backend component was implemented by using Java and Spring Framework.
-It mainly retrieves data from the database and serialise the data into a JSON string.
-The frontend component was implemented by using TypeScript and React Framework.
+It retrieves data from the database upon request and run the algorithm described in \Cref{sec:algorithm}.
+The results are serialised into a JSON string and return to the frontend.
+The frontend component is implemented by using TypeScript and React Framework.
 Since developer interactions can be visualised as a graph, we adopted the Force-directed graph component\footnote{\url{https://observablehq.com/@d3/force-directed-graph/2}} in D3.
 
+\Cref{fig:snapshot} shows an example of the visualisation.
+Based on the algorithm presented in \Cref{sec:algorithm}, the size of each node represents the number of comments written by each developer with their avatar image on GitHub.
+Please note that we blurred images on the paper, but real implementation shows clear images.
+The thickness of edges between nodes denote the number of comments shared by the two developers.
+To handle extremely large or small cases, we use normalised values for both nodes and edges.
 
 
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{date_controller}
+  \caption{Date Controller}
+  \label{fig:dateController}
+\end{figure}
+
+On the right bottom of the frontend, we put a date controller as shown in \Cref{fig:dateController}.
+The user can select specific date by clicking the date field.
+Once they select a pair of dates, they can easily update the date scope by clicking the buttons above.
+Whenever the dates updated, the graph visualisation is also dynamically updated.
 
 
-\section{Developer Interactions}
-\label{sec:algorithm}
-%\input{visualisation}
-
-\begin{minipage}{.95\linewidth}
-\begin{lstlisting}[language=Python, caption=Algorithm to extract interactions, label=algorithm]
-# Pull requests must be provided
-prs = []
-# The timframe is optional parameters
-timeframe = (start_date, end_date)
-
-# The number of comments per developer.
-nodes = {}
-# The number of a developer pair within a PR.
-links = {} 
-
-for pr in prs:
-  if timeframe is given and pr is not within the timeframe:
-    continue
-
-  for comment in pr.comments:
-    if pr.author == comment.author:
-      continue
-
-    nodes[comment.author] += 1
-
-    author_pair = [pr.author, comment.author]
-    author_pair.sort()
-    links[author_pair] += 1
-\end{lstlisting}
-\end{minipage}
-
-\Cref{algorithm} shows the algorithm to extract interactions from pull requests.
-When PRs are given, the algorithm iterates all PRs to extract information for the visualisation.
-If a timeframe is given to the algorithm, it only uses the PRs created within the timeframe.
-Otherwise, the algorithm leverages the given PRs.
-
-For the PRs included in the scope of the visualisation (i.e., no timeframe is given or PRs created within the timeframe), the algorithm iterates all comments in them.
-If the PR author and comment author are same, the algorithm skip the comment.
-On the other hand, it increases the comment count (i.e., {\tt nodes}) by one.
-This approach helps us to extract the contributions by each developer based on the number of comments on PRs that were not authored by themselves.
-The number of comments will be used to represent the size of each developer node in our visualisation.
-In addition, we construct a list that contains both PR and comment authors, then increase the count by one.
-To avoid unnecessary duplicates (e.g., $\{John Doe, Jane Doe\}$ and $\{Jane Doe, John Doe\}$), we sort the list before increasing the count.
-The count of author pairs (i.e., {\tt links}) will be used to control the thickness between developer nodes in the visualisation. 
 
 
 \section{Related Work}
