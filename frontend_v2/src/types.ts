@@ -17,3 +17,9 @@ export interface Data {
   links: Link[];
   data: Data;
 }
+
+export interface Project {
+  id: number;
+  owner: string;
+  repository: string;
+}

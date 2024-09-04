@@ -1,5 +1,6 @@
 import { DateTime } from "luxon";
 import { createSlice } from "@reduxjs/toolkit";
+import { DEFAULT_END_DATE } from "./config";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 export interface Timeframe {
@@ -8,8 +9,8 @@ export interface Timeframe {
 }
 
 const initialState: Timeframe = {
-  startDate: DateTime.now().minus({ weeks: 1 }).toISO(),
-  endDate: DateTime.now().toISO(),
+  startDate: DateTime.fromISO(DEFAULT_END_DATE).minus({ weeks: 1 }).toISO()!,
+  endDate: DateTime.fromISO(DEFAULT_END_DATE).toISO()!,
 };
 
 export const dateSlice = createSlice({
@@ -28,9 +29,9 @@ export const dateSlice = createSlice({
         .minus({ days: 1 })
         .toISO()!;
     },
-    getOneWeekFrame: (state) => {
+    getWeekFrame: (state, action: PayloadAction<number>) => {
       state.startDate = DateTime.fromISO(state.endDate)
-        .minus({ weeks: 1 })
+        .minus({ weeks: action.payload })
         .toISO()!;
     },
     getOneMonthFrame: (state) => {
@@ -41,11 +42,7 @@ export const dateSlice = createSlice({
   },
 });
 
-export const {
-  updateDates,
-  getOneDayFrame,
-  getOneWeekFrame,
-  getOneMonthFrame,
-} = dateSlice.actions;
+export const { updateDates, getOneDayFrame, getWeekFrame, getOneMonthFrame } =
+  dateSlice.actions;
 
 export default dateSlice.reducer;

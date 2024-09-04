@@ -8,18 +8,14 @@ import {
   ListItemButton,
   ListItemText,
 } from "@mui/material";
-
-interface Project {
-  id: number;
-  owner: string;
-  repository: string;
-}
+import { API_ENDPOINT } from "./config";
+import { Project } from "./types";
 
 export default function Projects() {
   const [projects, setProjects] = React.useState<Project[]>();
 
   React.useEffect(() => {
-    axios.get("http://localhost:8080/projects").then((response) => {
+    axios.get(`${API_ENDPOINT}/projects`).then((response) => {
       console.log(response.data);
       setProjects(response.data);
     });
