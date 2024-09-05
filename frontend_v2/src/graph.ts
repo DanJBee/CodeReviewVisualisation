@@ -52,18 +52,18 @@ const graph = () => {
       .call(
         zoom().on("zoom", (event) => {
           svg.attr("transform", event.transform);
-        })
+        }),
       )
       .append("g");
 
     // Defines the minimum & maximum thickness of the links between the nodes in the graph
     const minThickness: number | undefined = min(
       links,
-      (d: Link) => d.thickness
+      (d: Link) => d.thickness,
     );
     const maxThickness: number | undefined = max(
       links,
-      (d: Link) => d.thickness
+      (d: Link) => d.thickness,
     );
 
     // Defines a scale for the thickness of the links between the nodes in the graph
@@ -84,17 +84,17 @@ const graph = () => {
     // Defines the minimum & maximum sizes for the nodes in the graph
     const minSize: number | undefined = min(
       nodes.filter((d: Node) => d.size !== undefined),
-      (d: Node) => d.size
+      (d: Node) => d.size,
     );
     const maxSize: number | undefined = max(
       nodes.filter((d: Node) => d.size !== undefined),
-      (d: Node) => d.size
+      (d: Node) => d.size,
     );
 
     // Defines a scale for the sizes of the nodes in the graph
     const scaleSize = scaleLinear()
       .domain([minSize ?? 1, maxSize ?? 4000])
-      .range([5, 50]);
+      .range([7, 40]);
 
     // Defines each individual node in the graph
     const node = svg
@@ -124,13 +124,13 @@ const graph = () => {
     const simulation = forceSimulation(nodes)
       .force(
         "link",
-        forceLink(links).id((d: any) => d.authorId)
+        forceLink(links).id((d: any) => d.authorId),
       )
       .force("charge", forceManyBody())
       .force("centre", forceCenter(width / 2, height / 2))
       .force(
         "collide",
-        forceCollide().radius((d: any) => scaleSize(d.size) * 2)
+        forceCollide().radius((d: any) => scaleSize(d.size) * 2),
       )
       .on("tick", ticked);
 
@@ -181,14 +181,15 @@ const graph = () => {
       .attr("y", "0")
       .attr("height", (d: Node) => scaleSize(d.size) * 2) // double the radius value
       .attr("width", (d: Node) => scaleSize(d.size) * 2) // double the radius value
-      .attr("xlink:href", (d: Node) => d.avatarUrl); // this value controls the image on the nodes in the graph
+      .attr("xlink:href", (d: Node) => d.avatarUrl) // this value controls the image on the nodes in the graph
+      .attr("style", "filter: blur(2px);");
 
     // Appends a title to each node
     node.append("title").text((d: Node) => d.authorId);
 
     // Applies the drag physics to each node in the graph
     node.call(
-      drag().on("start", startDrag).on("drag", dragging).on("end", endDrag)
+      drag().on("start", startDrag).on("drag", dragging).on("end", endDrag),
     );
   };
 };
