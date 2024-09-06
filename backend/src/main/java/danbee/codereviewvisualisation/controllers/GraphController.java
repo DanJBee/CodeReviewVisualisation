@@ -1,8 +1,11 @@
 package danbee.codereviewvisualisation.controllers;
 
 import danbee.codereviewvisualisation.models.Graph;
+import danbee.codereviewvisualisation.models.Node;
 import danbee.codereviewvisualisation.services.GraphService;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Graph controller class.
@@ -44,6 +47,16 @@ public class GraphController {
                         @PathVariable String project,
                         @RequestParam(required = false) String start,
                         @RequestParam(required = false) String end) {
-    return graphService.getGraphData(owner, project, start, end);
+    Graph graph = graphService.getGraphData(owner, project, start, end);
+    List<Node> nodes = graph.getNodes();
+    Long maxSize = nodes.stream()
+        .mapToLong(Node::getSize)
+        .max()
+        .orElse(0L);
+    System.out.println(maxSize);
+    for (Node node : nodes) {
+      node.setSize(Math.max(20, node.getSize() / maxSize * 100));
+    }
+    return graph;
   }
 }
