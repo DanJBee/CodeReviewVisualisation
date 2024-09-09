@@ -127,7 +127,7 @@ const graph = () => {
         forceLink(links).id((d: any) => d.authorId),
       )
       .force("charge", forceManyBody())
-      .force("centre", forceCenter(width / 2, height / 2))
+      .force("centre", forceCenter(width / 4, height / 4))
       .force(
         "collide",
         forceCollide().radius((d: any) => scaleSize(d.size) * 2),
