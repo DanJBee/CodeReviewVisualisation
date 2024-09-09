@@ -8,10 +8,6 @@ import graph from "./graph";
 import { useParams } from "react-router-dom";
 import { API_ENDPOINT } from "./config";
 
-function formatDate(date: string) {
-  return `${DateTime.fromISO(date).toISO({ includeOffset: false })}Z`;
-}
-
 export default function Visualisation() {
   const { owner, project } = useParams<{
     owner: string;
@@ -24,9 +20,15 @@ export default function Visualisation() {
   React.useEffect(() => {
     axios
       .get(
-        `${API_ENDPOINT}/getGraph/${owner}/${project}?start=${formatDate(
-          dates.startDate
-        )}&end=${formatDate(dates.endDate)}`
+        `${API_ENDPOINT}/getGraph/${owner}/${project}?start=${
+          DateTime.fromISO(dates.startDate).toISO({
+            includeOffset: false,
+          }) + "Z"
+        }&end=${
+          DateTime.fromISO(dates.endDate).toISO({
+            includeOffset: false,
+          }) + "Z"
+        }`,
       )
       .then((response) => {
         graph(body, response.data);
