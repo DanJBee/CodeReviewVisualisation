@@ -41,7 +41,6 @@ export default function Controller() {
     const start = DateTime.fromISO(dates.startDate);
     const end = DateTime.fromISO(dates.endDate);
     const diff = end.diff(start, "days").days;
-    console.log(diff);
     setSliderDates([SLIDER_SIZE - diff, SLIDER_SIZE]);
   }, [dates]);
 
