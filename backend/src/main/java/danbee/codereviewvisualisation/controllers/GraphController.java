@@ -49,13 +49,12 @@ public class GraphController {
                         @RequestParam(required = false) String end) {
     Graph graph = graphService.getGraphData(owner, project, start, end);
     List<Node> nodes = graph.getNodes();
-    Long maxSize = nodes.stream()
+    long maxSize = nodes.stream()
         .mapToLong(Node::getSize)
         .max()
         .orElse(0L);
-    System.out.println(maxSize);
     for (Node node : nodes) {
-      node.setSize(Math.max(20, node.getSize() / maxSize * 100));
+      node.setSize(Math.max(20, (long) (Math.log(node.getSize()) / Math.log(maxSize) * 100)));
     }
     return graph;
   }
