@@ -62,21 +62,21 @@
 \newcommand{\service}{{\tt SERVICENAME}\xspace}
 
 \lstdefinestyle{mystyle}{
-    backgroundcolor=\color{backcolour},   
+    backgroundcolor=\color{backcolour},
     commentstyle=\color{codegreen},
     keywordstyle=\color{magenta},
     numberstyle=\tiny\color{codegray},
     stringstyle=\color{codepurple},
     basicstyle=\ttfamily\footnotesize,
-    breakatwhitespace=false,         
-    breaklines=true,                 
-    captionpos=b,                    
-    keepspaces=true,                 
-    numbers=left,                    
-    numbersep=5pt,                  
-    showspaces=false,                
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
     showstringspaces=false,
-    showtabs=false,                  
+    showtabs=false,
     tabsize=2
 }
 
@@ -330,7 +330,7 @@ This approach helps us to extract the contributions by each developer based on t
 The number of comments will be used to represent the size of each developer node in our visualisation.
 In addition, we construct a list that contains both PR and comment authors, then increase the count by one.
 To avoid unnecessary duplicates (e.g., $\{John Doe, Jane Doe\}$ and $\{Jane Doe, John Doe\}$), we sort the list before increasing the count.
-The count of author pairs (i.e., {\tt links}) will be used to control the thickness between developer nodes in the visualisation. 
+The count of author pairs (i.e., {\tt links}) will be used to control the thickness between developer nodes in the visualisation.
 
 
 \section{Visualisation Framework}
@@ -392,7 +392,7 @@ For example, both PR and comment nodes should be surrounded by the {\tt edges} a
 Second, GraphQL supports only limited conditional query.
 One of our visualiser's features supports visualising developer interactions within a specific time window.
 However, GraphQL does not support query that returns PRs that were authored within a specific date range.
-Last, traversing all PRs take time and require high computation power on the PR platform. 
+Last, traversing all PRs take time and require high computation power on the PR platform.
 
 \begin{figure}[h]
   \centering
@@ -495,6 +495,30 @@ For example, negative feedback from peers may result in developers in abandoning
 wrote: \("\)In the process, developers may have negative
 interpersonal interactions with their peers, which can lead to frustration and stress; these negative interactions may ultimately result
 in developers abandoning projects\("\)\cite{EgelmanEtAl}.
+
+
+\section{Use Cases}
+\label{sec:use-cases}
+
+We believe that our system has several use cases and real-world applications.
+For instance,
+it is paramount in identifying inequitable workloads in a development team.
+Our visualisation helps project managers identify members of the team who are reviewing or being reviewed more than others.
+This is proven in Malik, \("\)The statistical results showed that the agile practices of team autonomy and agile communication contributed to psychological empowerment that led to the innovative behaviour of agile teams\("\)\cite{malik2021agile}.
+In addition to this,
+it helps enhance developer recognition and motivation and reduce resentment between members of a team.
+John W. Koning Jr. says: \("\)\ldots lack of appropriate recognition and rewards can result \ldots or engineer resentment due to perceived unfair treatment\("\)\cite{koning1993three}.
+Furthermore,
+developers are encouraged to knowledge share more frequently as a result of information silos discovered through analysis of graph nodes.
+Moreover,
+the code review process can be optimised more thoroughly and the necessary improvements in team dynamics can be made.
+Gelbard and Carmerli claim that: \("\)Having higher levels of team dynamics was strongly associated with both forms of performance when the organization provided significant support to the project\("\)\cite{gelbard2009interactive}.
+Outside of team benefits,
+the visualisation also assists individual developers in evaluating their performance in a project and assessing whether they are putting in the adequate amount of work.
+Naturally, we believe developers will be more encouraged to work harder if they discover that their performance metrics are inferior to their colleagues.
+This is exemplified in Rasch and Tosi's study: \("\)High achievement needs were directly related to both effort and perceived performance,
+whereas self-esteem and locus of control have a direct relationship to perceived performance\("\)\cite{rasch1992factors}.
+
 
 \section{Conclusion}
 \label{sec:conclusion}
