@@ -1,6 +1,5 @@
 package uk.ac.rhul.cs.services;
 
-import danbee.codereviewvisualisation.models.*;
 import org.springframework.stereotype.Service;
 import uk.ac.rhul.cs.models.*;
 

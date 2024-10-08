@@ -1,6 +1,5 @@
 package uk.ac.rhul.cs.controllers;
 
-import danbee.codereviewvisualisation.models.*;
 import uk.ac.rhul.cs.models.*;
 import uk.ac.rhul.cs.repositories.ProjectRepository;
 import uk.ac.rhul.cs.repositories.PullRequestRepository;
