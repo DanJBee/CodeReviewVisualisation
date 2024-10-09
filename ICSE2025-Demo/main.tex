@@ -505,29 +505,20 @@ Moreover, the code review process can be optimised more thoroughly and the neces
 \section{Conclusion}
 \label{sec:conclusion}
 
-Visualising developer interactions in code reviews is a vital part of the development process
-to ensure efficient and healthy progress for a project.
-Through easy graph analysis,
-one can discover team dynamics and relationships
-that showcase the weaknesses in a team's workflows
-that can then be addressed by appropriate parties in a short timeframe.
+In this paper, we proposed \service, a web service that visualises developer interactions during code reviews.
+\service visualises developer activities and relationships during code reviews in a graph representation.
+Each node in the graph represents an individual developer, with the node size indicating the frequency of their contributions to code review discussions.
+Conversely, each edge represents a collaborative relationship between a pair of developers with the edge thickness denoting the frequency of their collaboration within the same PRs.
 
+To provide visualisation without any potential side effects (e.g., huge traffic to the code review platform), we have implemented three components: crawler, migrator and visualiser.
+Crawler leverages GitHub GraphQL API to retrieve PR data, including code review discussions, from GitHub.
+Then, migrator parses the retrieved data and store it in a database for flexible and faster querying.
+Finally, visualiser fetches the data from the database and generates a visualisation based on the specified time frame.
 
-In this paper,
-the several components
-that make up the efficient web system that was built to power and support this visualisation will be broken down.
-Several technologies will be evaluated and explored
-that made the development of this project a lot faster than it otherwise would have been.
-The purpose and related work of the system will also be discussed.
+As future work, we plan to conduct an empirical study to investigate the impact of the code review visualisation in practice.
+We anticipate our approach will provide a better understanding of code review practice.
+With the improved understanding, developers may be able to distribute heavy workloads more effectively among their peers or support hidden newcomers to onboard their projects. 
 
-
-As future work,
-the plan is to make the system more automated and reduce the manual labour for the end-user during the crawling,
-splitting, and migration stages of the data collection phase.
-Graph propagation is another feature in plans
-to allow individual users to be the root of the graph and propagate to their contributor counterparts.
-Extension features also include node colour coding and project mixing and matching
-(i.e.\ multiple projects in a singular visualisation).
 
 %%
 %% The next two lines define the bibliography style to be used, and
