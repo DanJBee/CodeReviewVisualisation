@@ -59,7 +59,7 @@
 \definecolor{backcolour}{rgb}{0.95,0.95,0.92}
 
 % TODO: Name the service
-\newcommand{\service}{{\tt SERVICENAME}\xspace}
+\newcommand{\service}{{\tt CRV}\xspace}
 
 \lstdefinestyle{mystyle}{
     backgroundcolor=\color{backcolour},
@@ -181,20 +181,23 @@
 %% The abstract is a short summary of the work to be presented in the
 %% article.
 \begin{abstract}
-    Recent studies have demonstrated diverse benefits of code review.
-    A common issue in the software development landscape is
-    that developers struggle to balance a project's workload with other members of their team,
-    resulting in burnout and inadequate code being pushed to production products.
-    Consequently, the developers who are putting in the most work often do not get the credit,
-    praise, and recognition that they deserve.
-    This paper aims to outline how this operation can be assembled into an asynchronous,
-    seamless visualisation that can be used to gauge the interactions between different developers in a given project.
-    The development of this final product was split into three parts: a crawler, a migrator, and a visualiser.
-    This visualisation technique will help companies improve their developers' workflows,
-    teamwork, and time management when developing a project by analysing the interactions between team members.
-    In addition to this,
-    the visualisation allows users to select specific time frames for which they want to see interactions,
-    and thus further enhancing its usability.
+
+Code review is an auditing process in which all changes reviewed by someone other than the author of the changes.
+Because of its diverse benefits, as demonstrated by multiple studies, it has been widely adopted in both industry and open source projects.
+Although many studies have proposed techniques to recommend reviewers who can audit changes, there is limited support for comprehending the existing review pairs (the pairs of the change authors and reviewers).
+Without this understanding, development teams may struggle to distribute their workloads effectively.
+For example, a development team might overlook a concentrated workload on a specific developer.
+In this case, the overall development process can slow down.
+Conversely, some developers submit code review requests (pull requests), but failed to receive attention from their colleagues.
+
+To help developers understand the existing review pairs, we propose \service (Code Review Visualiser).  
+\service visualises developers interactions during code reviews by quantifying their activities in a graph representation.
+In the graph, each node represents individual developer while the edges denote the relationships based on the discussions within the same code review requests.
+The size of node shows the number of total comments that a developer wrote in code review requests.
+The thickness of edge between two nodes represents the number of comments that two developers authored within the same code review requests.
+Since \service provides time window control, developers can understand their code review activities across different time frames.
+We expect that \service can help developers improve their code review practices by providing a better understanding of their current practices. 
+
 \end{abstract}
 
 %%
@@ -241,7 +244,8 @@ To mitigate the issue, many studies proposed reviewer recommendation techniques~
 These techniques recommend a group of developers for a given code review request.
 However, these techniques often limited to provide a guidance to individual code review requests rather than providing project wide guidances.
 
-In this study, we propose a web service, \service, that visualises developer interaction during pull request in GitHub.
+In this study, we propose a web service, \service (Code Review Visualiser), that visualises developer interaction during pull request in GitHub.
+Especially, \service visualises the frequency with which a developer involved in code reviews and how often a pair of developers discuss together within the same code review.
 Based on a given project, our technique provides a visualisation of developers within a given timeframe.
 We expect the visualisation helps a software development team to understand the performance of their code review practices over time.
 They potentially identify a pair of developers who are struggling work each other (e.g., a pair of developers who rarely communicate each other).
@@ -256,35 +260,11 @@ Once the crawling is done, the migrator component process the crawled data and s
 Finally, the visualiser component visualises how developers interact to each other during code review.
 
 
-%\section{Background}
-%\label{sec:background}
-%
-%Code review (also known as a pull request)
-%is a code change auditing technique performed by developers that are not authors of the original code change(s).
-%Contributors and fellow developers can then leave feedback on these changes and either approve or deny them,
-%perhaps even adding or removing code of their own.
-%This definition is a critical part of the project
-%since it builds the foundation of the purpose behind the system that is being built.
-%
-%
-%Additionally, one can wonder how the visualisation behind the project will function behind the scenes.
-%From the start of the project,
-%D3.js was always the main target for powering the visualisation and making it interactive for end-users.
-%In particular, the force-directed graph from the Observable Examples page~\cite{ForceDirectedGraph}.
-%This structure takes data in the form of a JSON file containing two objects: nodes and links.
-%These two objects combine to make an interactive, attractive,
-%and connected graph showing the interactions between contributors on a given project.
-%
-%
-%In the case of this project,
-%Microsoft's TypeScript GitHub repository was chosen as the target repository for the initial prototype.
-%TypeScript's repository contained over 17,000 pull requests
-%which made it an adequate test sample of the graph visualisation.
-%Moreover, the phrase REST API is a new term in the web development space and stands for:
-%Representational State Transfer.
-%An API following this model allows for state modification of objects and data on the web
-%to transfer back to the client server
-%(i.e.\ the end-user)~\cite{RESTAPIDefinition}.
+We expect \service can help developers improve their code review practices.
+For example, a development team can encourage a pair of developers to work together if the pair has collaborated on many code review requests.
+Alternatively, they can consider changing code review pairs to bring in a fresh perspective.
+
+
 
 \section{Developer Interactions}
 \label{sec:algorithm}
@@ -318,13 +298,13 @@ for pr in prs:
 \end{lstlisting}
 \end{minipage}
 
-\Cref{algorithm} shows the algorithm to extract interactions from pull requests.
+\Cref{algorithm} shows the algorithm to extract interactions from pull requests (PR).
 When PRs are given, the algorithm iterates all PRs to extract information for the visualisation.
 If a timeframe is given to the algorithm, it only uses the PRs created within the timeframe.
 Otherwise, the algorithm leverages the given PRs.
 
 For the PRs included in the scope of the visualisation (i.e., no timeframe is given or PRs created within the timeframe), the algorithm iterates all comments in them.
-If the PR author and comment author are same, the algorithm skip the comment.
+If the PR author and comment author are same, the algorithm skips the comment to avoid counting self-comments.
 On the other hand, it increases the comment count (i.e., {\tt nodes}) by one.
 This approach helps us to extract the contributions by each developer based on the number of comments on PRs that were not authored by themselves.
 The number of comments will be used to represent the size of each developer node in our visualisation.
@@ -349,7 +329,7 @@ The crawler retrieves PRs and comments from GitHub.
 Then, migrator parse the data and store it to a database.
 Finally, a user can see a visualisation of a project via the web based visualiser.
 In this section, we explain the role of each component and implementation details.
-You can check the actual implementations on our replication package~\footnote{TODO: We need to create a GitHub repo and put the implementations there}.
+The implementation details can be found in our replication package\footnote{\url{https://github.com/DanJBee/CodeReviewVisualisation}}.
 
 \subsection{Crawler}
 \label{sec:crawler}
@@ -380,7 +360,7 @@ Such huge traffics potentially slow down the code review platform, so we do not 
 Instead, we implemented a crawler that can crawl the latest code review data.
 The crawler leverages GitHub GraphQL API\footnote{\url{https://docs.github.com/en/graphql}} and implemented in Python.
 We constructed a query that retrieves {\tt author} and {\tt createdAt} properties of PRs and PR comments.
-\Cref{table:properties} explains the properties that we crawled.
+\Cref{table:properties} lists the properties that we crawled.
 
 
 \subsection{Migrator}
@@ -391,7 +371,7 @@ First, GraphQL has additional types of nodes to optimise queries.
 For example, both PR and comment nodes should be surrounded by the {\tt edges} and {\tt node(s)} nodes which introduce unnecessary depth navigation.
 Second, GraphQL supports only limited conditional query.
 One of our visualiser's features supports visualising developer interactions within a specific time window.
-However, GraphQL does not support query that returns PRs that were authored within a specific date range.
+However, GraphQL does not support query that returns PRs that were authored within a specific time range.
 Last, traversing all PRs take time and require high computation power on the PR platform.
 
 \begin{figure}[h]
@@ -404,7 +384,7 @@ Last, traversing all PRs take time and require high computation power on the PR 
 To mitigate the issues, we implemented a migrator that migrates the crawled API responses to a relational database instance.
 \Cref{fig:erd} presents an entity relationship diagram of our database schema.
 The schema represents PRs and comments with the minimum subset of data that is required for visualisation.
-The migrator was also written in Python and we evaluated it with a MariaDB instance.
+The migrator was also written in Python, and we evaluated it with a MariaDB instance\footnote{\url{https://mariadb.com}}.
 
 \subsection{Visualiser}
 \label{sec:visualiser}
@@ -425,12 +405,12 @@ The backend component was implemented by using Java and Spring Framework.
 It retrieves data from the database upon request and run the algorithm described in \Cref{sec:algorithm}.
 The results are serialised into a JSON string and return to the frontend.
 The frontend component is implemented by using TypeScript and React Framework.
-Since developer interactions can be visualised as a graph, we adopted the Force-directed graph component\footnote{\url{https://observablehq.com/@d3/force-directed-graph/2}} in D3.
+Since developer interactions can be visualised as a graph, we adopted the Force-directed graph component\footnote{\url{https://observablehq.com/@d3/force-directed-graph}} in D3.
 
 \Cref{fig:snapshot} shows an example of the visualisation.
 Based on the algorithm presented in \Cref{sec:algorithm}, the size of each node represents the number of comments written by each developer with their avatar image on GitHub.
 Please note that we blurred images on the paper, but real implementation shows clear images.
-The thickness of edges between nodes denote the number of comments shared by the two developers.
+The thickness of edges between nodes denote the number of comments shared by the two developers within the same PRs.
 To handle extremely large or small cases, we use normalised values for both nodes and edges.
 
 
@@ -452,16 +432,20 @@ Whenever the dates updated, the graph visualisation is also dynamically updated.
 \section{Related Work}
 \label{sec:relatedWork}
 
-When working in a development team for any kind of project,
-curating the best and most efficient workflow for team members is paramount.
+Hong et al.~\cite{Hong11} investigated developer social network (DSN) and its evolution.
+
+Thung et al.~\cite{Thung13} empirically studied social network structure in GitHub.
+
+Bock et al.~\cite{Bock23}
+
+Thongtanunam et al.~\cite{Thongtanunam15} reviewer recommendation.
+
+
+When working in a development team for any kind of project, curating the best and most efficient workflow for team members is paramount.
 Even with the recent disruption caused by the COVID-19 pandemic, there is little excuse for teams to not be working at a high productivity.
-This is reflected when Russo et al.
-said: \("\)Results suggest that the time
-software engineers spent doing specific activities from home was
-similar when working in the office\("\)\cite{RussoEtAl}.
-A visualisation can offer several benefits in clearly identifying the strengths and weaknesses in a team's interactions,
-dynamics, and workloads.
-A development team is effectively a microcosm of a social network, and graph structures have been great at encapsulating these as said by Majeed and Rauf: \("\)Recently, graphs have been extensively used in social networks (SNs) for many purposes related to modelling and analysis of the SN structures, SN operation modelling, SN user analysis, and many other related aspects\("\)\cite{MajeedAndRauf}.
+Russo et al. stated that ``Results suggest that the time software engineers spent doing specific activities from home was similar when working in the office''\cite{RussoEtAl}.
+A visualisation can offer several benefits in clearly identifying the strengths and weaknesses in a team's interactions, dynamics, and workloads.
+A development team is effectively a microcosm of a social network, and graph structures have been great at encapsulating these as said by Majeed and Rauf: ``Recently, graphs have been extensively used in social networks (SNs) for many purposes related to modelling and analysis of the SN structures, SN operation modelling, SN user analysis, and many other related aspects''\cite{MajeedAndRauf}.
 Using data from GraphQL was useful in this decision
 since it was easy to crawl this data to scale if workloads are too one-sided,
 or if two team members are taking up too much of the work.
@@ -471,8 +455,7 @@ Having each node and link between nodes in the visualisation be scaled in size d
 that is straightforward to track and monitor throughout development.
 
 
-In addition to this,
-the physics of the nodes within the graph mean that nodes that are connected often surround each other,
+In addition to this, the physics of the nodes within the graph mean that nodes that are connected often surround each other,
 especially if one node has several children.
 This behaviour is useful for noticing patterns of dependence in a team
 and results in early problems being resolved promptly without hindering the rest of the development cycle.
@@ -497,29 +480,26 @@ interpersonal interactions with their peers, which can lead to frustration and s
 in developers abandoning projects\("\)\cite{EgelmanEtAl}.
 
 
-\section{Use Cases}
+\section{Potential Use Cases}
 \label{sec:use-cases}
 
+
 We believe that our system has several use cases and real-world applications and will make it easier to make data-driven decisions for a project.
-For instance,
-it is paramount in identifying inequitable workloads in a development team.
-Our visualisation helps project managers identify members of the team who are reviewing or being reviewed more than others.
-This is proven in Malik, \("\)The statistical results showed that the agile practices of team autonomy and agile communication contributed to psychological empowerment that led to the innovative behaviour of agile teams\("\)\cite{malik2021agile}.
-In addition to this,
-it helps enhance developer recognition and motivation and reduce resentment between members of a team.
-The size of each developer's contributions (i.e.\ the size of the nodes in the graph) are a useful quantitative measure of the work balance within the team.
-John W. Koning Jr. says: \("\)\ldots lack of appropriate recognition and rewards can result \ldots or engineer resentment due to perceived unfair treatment\("\)\cite{koning1993three}.
-Furthermore,
-developers are encouraged to knowledge share more frequently as a result of information silos discovered through analysis of graph nodes.
+For instance, it is paramount in identifying inequitable workloads in a development team.
+Our visualisation helps developers identify members of the team who are reviewing or being reviewed more than others~\cite{malik2021agile}.
+
+Specifically, it can be a great help to open source projects.
+In~\Cref{fig:snapshot}, we can observe several independent nodes that are separated from the graph.
+These independent nodes in the visualisation indicate that they have contributed to the project, but no one has interacted with them during observed the time period.
+In our preliminary experiments, we repeatedly observed the independent developers who could not connect to the main graph network regardless of the length of timeframe.
+This likely indicates a potential scenario in which several newcomers joined the project, but no one welcomed them, leading them left.
+If the project developers recognise the issue via our visualisation, they could encourage the newcomers to stay involved in the project. 
+
+In addition, the visualisation could help enhance developer recognition and motivation and reduce resentment between members of a team.
+The size of each developer's contributions (i.e., the size of the nodes in the graph) are a useful quantitative measure of the work balance within the team~\cite{koning1993three}.
+Developers are encouraged to knowledge share more frequently as a result of information silos discovered through analysis of graph nodes.
 Node edge thicknesses help supplement how much intelligence is being shared between team members.
-Moreover,
-the code review process can be optimised more thoroughly and the necessary improvements in team dynamics can be made.
-Gelbard and Carmerli claim that: \("\)Having higher levels of team dynamics was strongly associated with both forms of performance when the organization provided significant support to the project\("\)\cite{gelbard2009interactive}.
-Outside of team benefits,
-the visualisation also assists individual developers in evaluating their performance in a project and assessing whether they are putting in the adequate amount of work.
-Naturally, we believe developers will be more encouraged to work harder if they discover that their performance metrics are inferior to their colleagues.
-This is exemplified in Rasch and Tosi's study: \("\)High achievement needs were directly related to both effort and perceived performance,
-whereas self-esteem and locus of control have a direct relationship to perceived performance\("\)\cite{rasch1992factors}.
+Moreover, the code review process can be optimised more thoroughly and the necessary improvements in team dynamics can be made\cite{gelbard2009interactive,rasch1992factors}.
 
 
 \section{Conclusion}
