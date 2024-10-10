@@ -188,7 +188,7 @@ Although many studies have proposed techniques to recommend reviewers who can au
 Without this understanding, development teams may struggle to distribute their workloads effectively.
 For example, a development team might overlook a concentrated workload on a specific developer.
 In this case, the overall development process can slow down.
-Conversely, some developers submit code review requests (pull requests), but failed to receive attention from their colleagues.
+On the other hand, some developers submit code review requests (pull requests), but fail to receive attention from their colleagues.
 
 To help developers understand the existing review pairs, we propose \service (Code Review Visualiser).  
 \service visualises developers interactions during code reviews by quantifying their activities in a graph representation.
@@ -432,52 +432,24 @@ Whenever the dates updated, the graph visualisation is also dynamically updated.
 \section{Related Work}
 \label{sec:relatedWork}
 
-Hong et al.~\cite{Hong11} investigated developer social network (DSN) and its evolution.
-
-Thung et al.~\cite{Thung13} empirically studied social network structure in GitHub.
-
-Bock et al.~\cite{Bock23}
-
-Thongtanunam et al.~\cite{Thongtanunam15} reviewer recommendation.
-
-
-When working in a development team for any kind of project, curating the best and most efficient workflow for team members is paramount.
-Even with the recent disruption caused by the COVID-19 pandemic, there is little excuse for teams to not be working at a high productivity.
-Russo et al. stated that ``Results suggest that the time software engineers spent doing specific activities from home was similar when working in the office''\cite{RussoEtAl}.
-A visualisation can offer several benefits in clearly identifying the strengths and weaknesses in a team's interactions, dynamics, and workloads.
-A development team is effectively a microcosm of a social network, and graph structures have been great at encapsulating these as said by Majeed and Rauf: ``Recently, graphs have been extensively used in social networks (SNs) for many purposes related to modelling and analysis of the SN structures, SN operation modelling, SN user analysis, and many other related aspects''\cite{MajeedAndRauf}.
-Using data from GraphQL was useful in this decision
-since it was easy to crawl this data to scale if workloads are too one-sided,
-or if two team members are taking up too much of the work.
-Companies often struggle to find the right balance between allowing their developers to shine and burning them out,
-and it is even harder to figure out which one is taking place in a particular team.
-Having each node and link between nodes in the visualisation be scaled in size dependent on the crawled data provides a normalised dataset
-that is straightforward to track and monitor throughout development.
+There have been many studies aimed at helping developers find code reviewers.
+Thongtanunam et al.~\cite{Thongtanunam15} argued that the developers working on large systems struggle to find appropriate reviewers.
+They assume that a developer who has previously changed the same file could be a good candidate as a reviewer, as they already understand the details of the file.
+Based on the assumption, they proposed a reviewer recommendation technique called RevFinder.
+Zanzani et al.~\cite{Zanjani16} also proposed an automated reviewer recommendation approach that leverages previously completed reviews.  
+These approaches are useful for developers to find potential reviewers.
+However, they do not provide insight of the current review practices.
+We believe our approach can provide additional information regarding the reviewer recommendation results.
 
 
-In addition to this, the physics of the nodes within the graph mean that nodes that are connected often surround each other,
-especially if one node has several children.
-This behaviour is useful for noticing patterns of dependence in a team
-and results in early problems being resolved promptly without hindering the rest of the development cycle.
-On the other hand, if there are any nodes that have no links between any other developers,
-then they can be identified as someone not partaking appropriately in a teamwork environment.
-This can then be addressed by the team manager.
-Multiple projects are supported by the system by default (as a result of rigid database design),
-but it is challenging to crawl, split, and migrate all the necessary data manually.
+In addition, many empirical studies have been conducted to understand developer interactions during software development.
+Hong et al.~\cite{Hong11} investigated developer social network (DSN) of Mozilla projects and its evolution.
+They also compared the structure of DSN with general social networks (GSNs) such as Facebook and Twitter.
+Thung et al.~\cite{Thung13} empirically studied social network structure on GitHub.
+They constructed developer-developer and project-project relationship graphs and identified influential developers and projects by using PageRank.
+However, their analysis was conducted at a project level, not at the code review level, and they did not provide a tool to visualise the graphs.
+Bock et al.~\cite{Bock23} proposed a method that automatically identifies core developers by using role permissions of privileged events triggered in GitHub issues and pull requests.
 
-
-However,
-the visualisation that is created is only best applied in larger projects where more nodes and links are visible.
-Smaller projects will not be able
-to benefit from the graph analysis
-since they will most likely be aware of any team issues already that are simply consolidated in the visualisation.
-
-
-Lastly, it is important to consider the reasons for why a project may have inefficient workflow in their teams.
-For example, negative feedback from peers may result in developers in abandoning projects after only a few code reviews, leaving other teammates to pick up the pieces as Egelman et al.
-wrote: \("\)In the process, developers may have negative
-interpersonal interactions with their peers, which can lead to frustration and stress; these negative interactions may ultimately result
-in developers abandoning projects\("\)\cite{EgelmanEtAl}.
 
 
 \section{Potential Use Cases}
@@ -491,9 +463,17 @@ Our visualisation helps developers identify members of the team who are reviewin
 Specifically, it can be a great help to open source projects.
 In~\Cref{fig:snapshot}, we can observe several independent nodes that are separated from the graph.
 These independent nodes in the visualisation indicate that they have contributed to the project, but no one has interacted with them during observed the time period.
-In our preliminary experiments, we repeatedly observed the independent developers who could not connect to the main graph network regardless of the length of timeframe.
+In our preliminary experiments with multiple projects, we repeatedly observed the independent developers who could not connect to the main graph network regardless of the length of timeframe.
 This likely indicates a potential scenario in which several newcomers joined the project, but no one welcomed them, leading them left.
 If the project developers recognise the issue via our visualisation, they could encourage the newcomers to stay involved in the project. 
+
+By using the visualisation, we expect developers can plan their code review practices in a better way.
+If the nodes show a star topology (i.e., a developer participated in all discussions, and there are no interactions between other peer developers) as shown in~\Cref{fig:snapshot}, the team can consider distributing the workload of the developer who located at the centre of the discussion and fostering discussions between peers.
+In this way, the development team can plan to manage potential risks if the core developer leaves the project.
+
+A development team can consider refreshing their code review practices based on the visualisation.
+If a pair of developers has been working together for a long time, the team could consider pairing them with a new developer who has worked on the same project, but rarely collaborates with them.
+These new pairings may help foster creativity among developers.
 
 In addition, the visualisation could help enhance developer recognition and motivation and reduce resentment between members of a team.
 The size of each developer's contributions (i.e., the size of the nodes in the graph) are a useful quantitative measure of the work balance within the team~\cite{koning1993three}.
@@ -516,8 +496,8 @@ Then, migrator parses the retrieved data and store it in a database for flexible
 Finally, visualiser fetches the data from the database and generates a visualisation based on the specified time frame.
 
 As future work, we plan to conduct an empirical study to investigate the impact of the code review visualisation in practice.
-We anticipate our approach will provide a better understanding of code review practice.
-With the improved understanding, developers may be able to distribute heavy workloads more effectively among their peers or support hidden newcomers to onboard their projects. 
+We anticipate our approach will lead to a better understanding of code review practice.
+With this improved understanding, developers may be able to distribute heavy workloads more effectively among their peers or foster the onboarding of hidden newcomers to their projects. 
 
 
 %%
