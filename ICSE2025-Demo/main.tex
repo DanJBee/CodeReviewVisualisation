@@ -184,7 +184,7 @@
 
 Code review is an auditing process in which all changes reviewed by someone other than the author of the changes.
 Because of its diverse benefits, as demonstrated by multiple studies, it has been widely adopted in both industry and open source projects.
-Although many studies have proposed techniques to recommend reviewers who can audit changes, there is limited support for comprehending the existing review pairs (the pairs of the change authors and reviewers).
+Various studies have proposed techniques to recommend reviewers who can audit changes, but there is limited support for comprehending the existing review pairs (the pairs of the change authors and reviewers).
 Without this understanding, development teams may struggle to distribute their workloads effectively.
 For example, a development team might overlook a concentrated workload on a specific developer.
 In this case, the overall development process can slow down.
@@ -195,7 +195,7 @@ To help developers understand the existing review pairs, we propose \service (Co
 In the graph, each node represents individual developer while the edges denote the relationships based on the discussions within the same code review requests.
 The size of node shows the number of total comments that a developer wrote in code review requests.
 The thickness of edge between two nodes represents the number of comments that two developers authored within the same code review requests.
-Since \service provides time window control, developers can understand their code review activities across different time frames.
+\service provides time window control, so developers can understand their code review activities across different time frames.
 We expect that \service can help developers improve their code review practices by providing a better understanding of their current practices. 
 The implementation of \service is available at \url{https://github.com/DanJBee/CodeReviewVisualisation} and a demo video is available at \url{https://youtu.be/uCTahRHHKkE}.
 
@@ -245,7 +245,7 @@ To mitigate the issue, many studies proposed reviewer recommendation techniques~
 These techniques recommend a group of developers for a given code review request.
 However, these techniques often limited to provide a guidance to individual code review requests rather than providing project wide guidances.
 
-In this study, we propose a web service, \service (Code Review Visualiser), that visualises developer interaction during pull request in GitHub.
+In this study, we propose a tool, \service (Code Review Visualiser), that visualises developer interaction during pull request in GitHub.
 Especially, \service visualises the frequency with which a developer involved in code reviews and how often a pair of developers discuss together within the same code review.
 Based on a given project, our technique provides a visualisation of developers within a given timeframe.
 We expect the visualisation helps a software development team to understand the performance of their code review practices over time.
@@ -367,7 +367,7 @@ We constructed a query that retrieves {\tt author} and {\tt createdAt} propertie
 \subsection{Migrator}
 \label{sec:migrator}
 
-GraphQL is powerful approach handling large scale requests, but using GitHub GraphQL API directly for visualisation has three outstanding issues.
+GraphQL is a powerful approach handling large scale requests, but using GitHub GraphQL API directly for visualisation has three outstanding issues.
 First, GraphQL has additional types of nodes to optimise queries.
 For example, both PR and comment nodes should be surrounded by the {\tt edges} and {\tt node(s)} nodes which introduce unnecessary depth navigation.
 Second, GraphQL supports only limited conditional query.
@@ -392,14 +392,15 @@ The migrator was also written in Python, and we evaluated it with a MariaDB inst
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=\linewidth]{initial-prototype}
+  %\includegraphics[width=\linewidth]{initial-prototype}
+  \includegraphics[width=\linewidth]{snapshot}
   \caption{An example of visualisation. We blurred the actual profile photos to protect developers' privacy}
   \label{fig:snapshot}
 \end{figure}
 
 The visualiser is responsible for visualising developer interactions.
 Users can select a specific project and time window to visualise developer interactions.
-For example, a user can request the visualiser to visualise developer interactions in the TypeScript project for a week from 3rd June 2024.
+For example, a user can request the visualiser to visualise developer interactions in the TypeScript project for a week from a specific date.
 
 We implemented the visualiser as a web service that consists of two main components: backend and frontend.
 The backend component was implemented by using Java and Spring Framework.
@@ -469,7 +470,7 @@ This likely indicates a potential scenario in which several newcomers joined the
 If the project developers recognise the issue via our visualisation, they could encourage the newcomers to stay involved in the project. 
 
 By using the visualisation, we expect developers can plan their code review practices in a better way.
-If the nodes show a star topology (i.e., a developer participated in all discussions, and there are no interactions between other peer developers) as shown in~\Cref{fig:snapshot}, the team can consider distributing the workload of the developer who located at the centre of the discussion and fostering discussions between peers.
+If the nodes show a star topology (i.e., a developer participated in all discussions, and there are no interactions between other peer developers), the team can consider distributing the workload of the developer who located at the centre of the discussion and fostering discussions between peers.
 In this way, the development team can plan to manage potential risks if the core developer leaves the project.
 
 A development team can consider refreshing their code review practices based on the visualisation.
@@ -486,10 +487,10 @@ Moreover, the code review process can be optimised more thoroughly and the neces
 \section{Conclusion}
 \label{sec:conclusion}
 
-In this paper, we proposed \service, a web service that visualises developer interactions during code reviews.
+In this paper, we proposed \service, a web based tool that visualises developer interactions during code reviews.
 \service visualises developer activities and relationships during code reviews in a graph representation.
 Each node in the graph represents an individual developer, with the node size indicating the frequency of their contributions to code review discussions.
-Conversely, each edge represents a collaborative relationship between a pair of developers with the edge thickness denoting the frequency of their collaboration within the same PRs.
+Each edge represents a collaborative relationship between a pair of developers with the edge thickness denoting the frequency of their collaboration within the same PRs.
 
 To provide visualisation without any potential side effects (e.g., huge traffic to the code review platform), we have implemented three components: crawler, migrator and visualiser.
 Crawler leverages GitHub GraphQL API to retrieve PR data, including code review discussions, from GitHub.
