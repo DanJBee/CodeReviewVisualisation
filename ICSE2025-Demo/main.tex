@@ -252,7 +252,7 @@ Alternatively, they can group the developers who have rarely worked together for
 \service  consists of three components: crawler, migrator, and visualiser.
 Since the visualisation requires multiple pull requests to comprehend the interactions, requesting such a large amount of data from GitHub could potentially be burdensome and slow.
 To avoid generating excessive traffic and response users request quickly, the crawler component retrieves pull request data from GitHub using the GitHub GraphQL API\footnote{\url{https://docs.github.com/en/graphql}}.
-Once the crawling is done, the migrator component process the crawled data and store them into a database.
+Once the crawling is done, the migrator component processes the crawled data and stores them into a database.
 Finally, the visualiser component visualises how developers interact to each other during code review.
 
 
@@ -346,7 +346,7 @@ The count of author pairs (i.e., {\tt links}) will be used to control the thickn
 
 The visualisation framework consists of three components as shown in~\Cref{fig:framework}: Crawler, Migrator, and Visualiser.
 The crawler retrieves PRs and comments from GitHub.
-Then, migrator parse the data and store it to a database.
+Then, migrator parses the data and stores it to a database.
 Finally, a user can see a visualisation of a project via the web based visualiser.
 In this section, we explain the role of each component and implementation details.
 You can check the actual implementations on our replication package~\footnote{TODO: We need to create a GitHub repo and put the implementations there}.
