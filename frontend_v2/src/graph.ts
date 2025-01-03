@@ -146,6 +146,24 @@ const graph = () => {
         }
       });
 
+      // Applies the same idea to the edges
+      link.each(function (currentLink: Link) {
+        const sourceAuthorId = currentLink.source.authorId;
+        const targetAuthorId = currentLink.target.authorId;
+        const sourceCount = authorCount[sourceAuthorId] || 0;
+        const targetCount = authorCount[targetAuthorId] || 0;
+        const averageCount = (sourceCount + targetCount) / 2;
+        const colourValue = averageCount / duration;
+      
+        if (averageCount == 1) {
+          select(this).style("stroke", "red");
+        } else if (averageCount == duration) {
+          select(this).style("stroke", "green");
+        } else {
+          select(this).style("stroke", colourScale(colourValue));
+        }
+      });
+
     // Sets the position attribute of the links & nodes in the graph each time the nodes 'ticks'
     function ticked() {
       link
