@@ -26,7 +26,7 @@ class GraphTest {
     nodes.add(node);
     Link link = new Link(sourceNode, targetNode, 4);
     links.add(link);
-    graph = new Graph(nodes, links);
+    graph = new Graph(nodes, links, 0L);
   }
 
   @Test

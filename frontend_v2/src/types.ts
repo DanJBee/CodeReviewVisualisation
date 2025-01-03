@@ -15,6 +15,7 @@ export interface Link extends SimulationLinkDatum<Node> {
 export interface Data {
   nodes: Node[];
   links: Link[];
+  duration: number;
   data: Data;
 }
 

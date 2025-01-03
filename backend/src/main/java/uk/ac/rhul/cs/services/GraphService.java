@@ -4,7 +4,10 @@ import org.springframework.stereotype.Service;
 import uk.ac.rhul.cs.models.*;
 
 import java.sql.Timestamp;
+import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -41,6 +44,7 @@ public class GraphService {
    */
   public Graph getGraphData(String owner, String project, String start, String end) {
     Integer id = projectService.findByOwnerAndRepository(owner, project).getId();
+    DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
 
     if (start == null || end == null) {
       Instant now = Instant.now();
@@ -49,6 +53,12 @@ public class GraphService {
       start = nowMonthAgo.toString();
       end = now.toString();
     }
+
+    LocalDateTime startDate = LocalDateTime.parse(start, formatter);
+    LocalDateTime endDate = LocalDateTime.parse(end, formatter);
+
+    Duration duration = Duration.between(startDate, endDate);
+    long durationInDays = duration.toDays();
 
     Timestamp startTimestamp = Timestamp.from(Instant.parse(start));
     Timestamp endTimestamp = Timestamp.from(Instant.parse(end));
@@ -145,6 +155,6 @@ public class GraphService {
       }
     }
 
-    return new Graph(nodes, links);
+    return new Graph(nodes, links, durationInDays);
   }
 }

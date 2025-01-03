@@ -13,15 +13,18 @@ public class Graph {
 
   private List<Link> links;
 
+  private long duration;
+
   /**
    * Graph constructor method.
    *
    * @param nodes the nodes in the graph
    * @param links the links between the nodes in the graph
    */
-  public Graph(List<Node> nodes, List<Link> links) {
+  public Graph(List<Node> nodes, List<Link> links, long duration) {
     this.nodes = nodes;
     this.links = links;
+    this.duration = duration;
   }
 
   public List<Node> getNodes() {
@@ -38,5 +41,13 @@ public class Graph {
 
   public void setLinks(List<Link> links) {
     this.links = links;
+  }
+
+  public long getDuration() {
+    return duration;
+  }
+
+  public void setDuration(long duration) {
+    this.duration = duration;
   }
 }

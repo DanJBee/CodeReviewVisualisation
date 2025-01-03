@@ -9,6 +9,7 @@ import {
   min,
   scaleLinear,
   scaleSqrt,
+  select,
   zoom,
 } from "d3";
 import { Data, Link, Node } from "./types";
@@ -25,6 +26,7 @@ const graph = () => {
     // Defines the links & nodes in the graph
     const links = data.links.map((d: Link) => ({ ...d }));
     const nodes = data.nodes.map((d: Node) => ({ ...d }));
+    const duration = data.duration;
 
     // Creates a map of nodes by the author ID
     const nodeMap = new Map(nodes.map((node: Node) => [node.authorId, node]));
@@ -108,6 +110,41 @@ const graph = () => {
       // sets an individual ID for each node to ensure the images' height/width are the correct
       // dimensions
       .attr("fill", (d: Node) => `url(#image-${d.authorId})`);
+
+      // Counts the number of times an author appears in the given timeframe
+      const authorCount: {[key: string]: number} = {};
+
+      links.forEach((link: Link) => {
+        const sourceAuthorId = link.source.authorId;
+        const targetAuthorId = link.target.authorId;
+
+        if (sourceAuthorId) {
+          authorCount[sourceAuthorId] = (authorCount[sourceAuthorId] || 0) + 1;
+        }
+
+        if (targetAuthorId) {
+          authorCount[targetAuthorId] = (authorCount[targetAuthorId] || 0) + 1;
+        }
+      });
+
+      console.log(authorCount);
+
+      const colourScale = scaleLinear<string>()
+      .domain([0, 0.5, 1])
+      .range(["red", "yellow", "green"]);
+
+      node.each(function (currentNode: Node) {
+        const authorId = currentNode.authorId;
+        const colourValue = authorCount[authorId] / duration;
+
+        if (authorCount[authorId] == 1) {
+          select(this).style("stroke", "red");
+        } else if (authorCount[authorId] == duration) {
+          select(this).style("stroke", "green");
+        } else {
+          select(this).style("stroke", colourScale(colourValue));
+        }
+      });
 
     // Sets the position attribute of the links & nodes in the graph each time the nodes 'ticks'
     function ticked() {
