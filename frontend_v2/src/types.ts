@@ -4,12 +4,14 @@ export interface Node extends SimulationNodeDatum {
   authorId: string;
   avatarUrl: string;
   size: number;
+  colourValue: number;
 }
 
 export interface Link extends SimulationLinkDatum<Node> {
   source: Node;
   target: Node;
   thickness: number;
+  colourValue: number;
 }
 
 export interface Data {

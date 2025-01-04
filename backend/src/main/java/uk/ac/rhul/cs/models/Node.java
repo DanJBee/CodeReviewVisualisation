@@ -1,5 +1,7 @@
 package uk.ac.rhul.cs.models;
 
+import java.beans.Transient;
+
 /**
  * Node class.
  *
@@ -12,6 +14,8 @@ public class Node {
   private String authorId;
 
   private String avatarUrl;
+
+  private transient double colourValue;
 
   /**
    * Node constructor method.
@@ -47,5 +51,13 @@ public class Node {
 
   public void setSize(Long size) {
     this.size = size;
+  }
+
+  public double getColourValue() {
+    return colourValue;
+  }
+
+  public void setColourValue(double colourValue) {
+    this.colourValue = colourValue;
   }
 }

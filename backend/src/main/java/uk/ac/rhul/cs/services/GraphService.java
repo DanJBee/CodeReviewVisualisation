@@ -10,7 +10,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -71,10 +73,14 @@ public class GraphService {
         );
     List<Node> nodes = new ArrayList<>();
     List<Link> links = new ArrayList<>();
+    Map<String, Integer> authorCount = new HashMap<>();
     for (PullRequest pullRequest : pullRequests) {
       if (pullRequest.getAuthor().getAuthorId().equals("typescript-bot")) {
         continue;
       }
+
+      authorCount.put(pullRequest.getAuthor().getAuthorId(),
+          authorCount.getOrDefault(pullRequest.getAuthor().getAuthorId(), 0) + 1);
 
       if (nodes.stream().noneMatch(node ->
           node.getAuthorId().equals(pullRequest.getAuthor().getAuthorId()))) {
@@ -94,6 +100,9 @@ public class GraphService {
         }
 
         if (comment.getAuthor() != null) {
+          authorCount.put(comment.getAuthor().getAuthorId(),
+              authorCount.getOrDefault(comment.getAuthor().getAuthorId(), 0) + 1);
+
           if (nodes.stream().noneMatch(node ->
               node.getAuthorId().equals(comment.getAuthor().getAuthorId()))) {
             nodes.add(
@@ -154,6 +163,28 @@ public class GraphService {
         }
       }
     }
+
+    for (Node node : nodes) {
+      String authorId = node.getAuthorId();
+      long count = authorCount.get(authorId);
+      double chosenColourValue = (double) count / durationInDays;
+      node.setColourValue(chosenColourValue);
+    }
+
+    for (Link link : links) {
+      String sourceAuthorId = link.getSource().getAuthorId();
+      String targetAuthorId = link.getTarget().getAuthorId();
+      long sourceCount = authorCount.get(sourceAuthorId);
+      System.out.println("source count: " + sourceCount);
+      long targetCount = authorCount.get(targetAuthorId);
+      System.out.println("target count: " + targetCount);
+      long averageCount = (sourceCount + targetCount) / 2;
+      double chosenColourValue = (double) averageCount / durationInDays;
+      System.out.println("chosen colour value: " + chosenColourValue);
+      link.setColourValue((double) chosenColourValue);
+    }
+
+    authorCount.forEach((authorId, count) -> System.out.println(authorId + ": " + count));
 
     return new Graph(nodes, links, durationInDays);
   }

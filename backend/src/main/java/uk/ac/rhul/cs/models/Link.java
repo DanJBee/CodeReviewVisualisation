@@ -1,5 +1,7 @@
 package uk.ac.rhul.cs.models;
 
+import java.beans.Transient;
+
 /**
  * Link class.
  *
@@ -12,6 +14,8 @@ public class Link {
   private Node target;
 
   private long thickness;
+
+  private transient double colourValue;
 
   /**
    * Link constructor method.
@@ -48,5 +52,13 @@ public class Link {
 
   public void setThickness(long thickness) {
     this.thickness = thickness;
+  }
+
+  public double getColourValue() {
+    return colourValue;
+  }
+
+  public void setColourValue(double colourValue) {
+    this.colourValue = colourValue;
   }
 }

@@ -135,7 +135,8 @@ const graph = () => {
 
       node.each(function (currentNode: Node) {
         const authorId = currentNode.authorId;
-        const colourValue = authorCount[authorId] / duration;
+        const colourValue = currentNode.colourValue;
+        console.log("colour value: " + colourValue);
 
         if (authorCount[authorId] == 1) {
           select(this).style("stroke", "red");
@@ -153,7 +154,7 @@ const graph = () => {
         const sourceCount = authorCount[sourceAuthorId] || 0;
         const targetCount = authorCount[targetAuthorId] || 0;
         const averageCount = (sourceCount + targetCount) / 2;
-        const colourValue = averageCount / duration;
+        const colourValue = currentLink.colourValue;
       
         if (averageCount == 1) {
           select(this).style("stroke", "red");
