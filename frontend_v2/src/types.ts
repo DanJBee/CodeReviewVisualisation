@@ -5,6 +5,7 @@ export interface Node extends SimulationNodeDatum {
   avatarUrl: string;
   size: number;
   colourValue: number;
+  count: number;
 }
 
 export interface Link extends SimulationLinkDatum<Node> {

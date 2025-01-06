@@ -17,6 +17,8 @@ public class Node {
 
   private transient double colourValue;
 
+  private transient int count;
+
   /**
    * Node constructor method.
    *
@@ -59,5 +61,13 @@ public class Node {
 
   public void setColourValue(double colourValue) {
     this.colourValue = colourValue;
+  }
+
+  public int getCount() {
+    return count;
+  }
+
+  public void setCount(int count) {
+    this.count = count;
   }
 }

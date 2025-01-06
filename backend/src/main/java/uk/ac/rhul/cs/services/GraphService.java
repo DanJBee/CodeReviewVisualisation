@@ -166,7 +166,8 @@ public class GraphService {
 
     for (Node node : nodes) {
       String authorId = node.getAuthorId();
-      long count = authorCount.get(authorId);
+      int count = authorCount.get(authorId);
+      node.setCount(count);
       double chosenColourValue = (double) count / durationInDays;
       node.setColourValue(chosenColourValue);
     }
@@ -174,9 +175,9 @@ public class GraphService {
     for (Link link : links) {
       String sourceAuthorId = link.getSource().getAuthorId();
       String targetAuthorId = link.getTarget().getAuthorId();
-      long sourceCount = authorCount.get(sourceAuthorId);
+      int sourceCount = authorCount.get(sourceAuthorId);
       System.out.println("source count: " + sourceCount);
-      long targetCount = authorCount.get(targetAuthorId);
+      int targetCount = authorCount.get(targetAuthorId);
       System.out.println("target count: " + targetCount);
       long averageCount = (sourceCount + targetCount) / 2;
       double chosenColourValue = (double) averageCount / durationInDays;

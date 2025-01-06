@@ -111,36 +111,18 @@ const graph = () => {
       // dimensions
       .attr("fill", (d: Node) => `url(#image-${d.authorId})`);
 
-      // Counts the number of times an author appears in the given timeframe
-      const authorCount: {[key: string]: number} = {};
-
-      links.forEach((link: Link) => {
-        const sourceAuthorId = link.source.authorId;
-        const targetAuthorId = link.target.authorId;
-
-        if (sourceAuthorId) {
-          authorCount[sourceAuthorId] = (authorCount[sourceAuthorId] || 0) + 1;
-        }
-
-        if (targetAuthorId) {
-          authorCount[targetAuthorId] = (authorCount[targetAuthorId] || 0) + 1;
-        }
-      });
-
-      console.log(authorCount);
-
       const colourScale = scaleLinear<string>()
       .domain([0, 0.5, 1])
       .range(["red", "yellow", "green"]);
 
       node.each(function (currentNode: Node) {
-        const authorId = currentNode.authorId;
+        const authorCount = currentNode.count;
         const colourValue = currentNode.colourValue;
         console.log("colour value: " + colourValue);
 
-        if (authorCount[authorId] == 1) {
+        if (authorCount == 1) {
           select(this).style("stroke", "red");
-        } else if (authorCount[authorId] == duration) {
+        } else if (authorCount == duration) {
           select(this).style("stroke", "green");
         } else {
           select(this).style("stroke", colourScale(colourValue));
@@ -149,12 +131,13 @@ const graph = () => {
 
       // Applies the same idea to the edges
       link.each(function (currentLink: Link) {
-        const sourceAuthorId = currentLink.source.authorId;
-        const targetAuthorId = currentLink.target.authorId;
-        const sourceCount = authorCount[sourceAuthorId] || 0;
-        const targetCount = authorCount[targetAuthorId] || 0;
-        const averageCount = (sourceCount + targetCount) / 2;
         const colourValue = currentLink.colourValue;
+        const sourceNode = currentLink.source;
+        const targetNode = currentLink.target;
+        const sourceCount = sourceNode.count || 0;
+        const targetCount = targetNode.count || 0;
+        const averageCount = (sourceCount + targetCount) / 2;
+
       
         if (averageCount == 1) {
           select(this).style("stroke", "red");
