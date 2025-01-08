@@ -292,10 +292,15 @@ Finally, the visualiser component visualises how developers interact to each oth
 
 \begin{minipage}{.95\linewidth}
 \begin{lstlisting}[language=Python, caption=Algorithm to extract interactions, label=algorithm]
+from datetime import datetime
+
 # Pull requests must be provided
 prs = []
 # The timframe is optional parameters
 timeframe = (start_date, end_date)
+d1 = datetime.strptime(start_date, "%Y-%m-%d")
+d2 = datetime.strptime(end_date, "%Y-%m-%d")
+durationInDays = abs((d2 - d1).days)
 
 # The number of comments per developer.
 nodes = {}
@@ -315,6 +320,7 @@ for pr in prs:
     author_pair = [pr.author, comment.author]
     author_pair.sort()
     links[author_pair] += 1
+    nodes[colourValue] = nodes[comment.author] / durationInDays
 \end{lstlisting}
 \end{minipage}
 
@@ -349,7 +355,7 @@ The crawler retrieves PRs and comments from GitHub.
 Then, migrator parses the data and stores it to a database.
 Finally, a user can see a visualisation of a project via the web based visualiser.
 In this section, we explain the role of each component and implementation details.
-You can check the actual implementations on our replication package~\footnote{TODO: We need to create a GitHub repo and put the implementations there}.
+You can check the actual implementations on our replication package at: https://github.com/DanJBee/CodeReviewVisualisation.
 
 \subsection{Crawler}
 \label{sec:crawler}
@@ -411,9 +417,9 @@ The migrator was also written in Python and we evaluated it with a MariaDB insta
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=\linewidth]{initial-prototype}
+  \includegraphics[width=\linewidth]{image}
   \caption{An example of visualisation. We blurred the actual profile photos to protect developers' privacy}
-  \label{fig:snapshot}
+  \label{fig:image}
 \end{figure}
 
 The visualiser is responsible for visualising developer interactions.
@@ -427,11 +433,15 @@ The results are serialised into a JSON string and return to the frontend.
 The frontend component is implemented by using TypeScript and React Framework.
 Since developer interactions can be visualised as a graph, we adopted the Force-directed graph component\footnote{\url{https://observablehq.com/@d3/force-directed-graph/2}} in D3.
 
-\Cref{fig:snapshot} shows an example of the visualisation.
+\Cref{fig:image} shows an example of the visualisation.
 Based on the algorithm presented in \Cref{sec:algorithm}, the size of each node represents the number of comments written by each developer with their avatar image on GitHub.
 Please note that we blurred images on the paper, but real implementation shows clear images.
 The thickness of edges between nodes denote the number of comments shared by the two developers.
 To handle extremely large or small cases, we use normalised values for both nodes and edges.
+The colours of the nodes and edges dictate the activity of each developer within the given timeframe.
+For instance, if a developer contributed every day of the chosen timeframe then they are coloured green,
+whereas if they only contributed once they are in red.
+Any values inbetween are gradient values between red, yellow, and green.
 
 
 \begin{figure}[h]
