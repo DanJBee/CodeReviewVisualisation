@@ -1,0 +1,103 @@
+A screenshot of the initial project prototype is shown in Figure~\ref{fig:initial-prototype}.
+
+\begin{figure}[h]
+    \centering
+    \fboxsep 2mm
+    \framebox{
+        \includegraphics[width=8cm]{initial-prototype}
+    }
+    \caption{\label{fig:initial-prototype} Please note that we have blurred the profile pictures in adherance to the GitHub Terms of Service.}
+\end{figure}
+
+Visualising complex and congested data is a challenge,
+no matter how well-versed a developer is on the knowledge of a certain API(s).
+Therefore,
+to help aid in this process, several APIs and frameworks can be used to help make it easier and more efficient.
+
+
+For instance, Spring Boot was used for the backend of the project.
+This was chosen
+because it makes programming REST APIs incredibly simple with its model that is built on several levels of abstraction.
+In addition to this,
+Spring Boot is powered by Java,
+which is a programming language that is universally applied in by millions of developers all over the world.
+As a result, the project is more accessible to contributors.
+On the other hand, D3.js, React, and Material UI were used in the frontend of the project, alongside GraphQL\@.
+These APIs and frameworks are chosen because of their simplicity and professional look for end-users.
+
+
+Firstly, GraphQL supplements the crawling process to collect the necessary data from GitHub.
+Without this,
+the backend relational database that stores necessary pull request information would contain no data and migration would not be possible.
+Furthermore, React and Material UI go hand-in-han for a polished and high-quality website design.
+Moreover,
+these libraries give both contributors and developers an immense array of tools for lots of different styles of projects.
+A vital part in this project was a npm (Node Package Manager) library: Axios.
+Axios is one of the most popular promise-based HTTP libraries that is used in Node.js and web development in general.
+This allowed a callback
+to be made to the backend service
+to allow the frontend to transform the JSON-based input from the backend into a function D3.js graph.
+
+
+Finally,
+D3.js was paramount
+for meeting the specifications for this project
+since it encompassed the visualisation representing the interactions between developers.
+D3.js is incredibly efficient to use, and yet so powerful in what it can achieve.
+It was able
+to support thousands of nodes asynchronously whilst reading from a database from the backend in a matter of seconds.
+Lastly, testing was a crucial part of the development cycle that was incorporated from the very beginning.
+This coding technique is known as TDD (Test-Driven Development)
+and helped amend issues early on by testing features in isolation to one another.
+JUnit Jupiter was the library chosen to do this, alongside some parts of the Spring Boot Testing framework.
+To summarise, the following technologies were chosen to complement the design and development of the project:
+
+\begin{enumerate}
+    \item GraphQL
+    \item React
+    \item Material UI
+    \item Axios
+    \item D3.js
+    \item Spring Boot
+    \item JUnit Jupiter
+\end{enumerate}
+
+
+The blue buttons on the bottom right-hand corner of Figure~\ref{fig:initial-prototype} allow users
+to add or subtract chunks of time from the time selection period.
+By default, the time period is set between the current date and a month from the current date.
+
+
+Furthermore,
+users can select precise dates for the time selection via the Material UI Date Time Picker~\cite{MaterialUIDatePicker}.
+An extra feature that was accommodated was the ability to pan and zoom around the graph structure
+via holding down the left mouse button.
+On top of that,
+hovering the mouse cursor over any node within the graph displays a tooltip containing the developer's GitHub username.
+
+
+Plus, every node's image cover is the profile picture of the developer that the node represents (these are blurred in the figure, however, for privacy reasons).
+The size of each node is calculated based on the number of pull requests that developer has made on the project overall.
+The thickness of each link between the nodes is measured based on the number of comments on the SAME pull requests between those two developers.
+
+
+We compiled a comprehensive algorithm for determining the links between the nodes to ensure that this is done correctly since it is a key aspect of the visualisation.
+The algorithm starts off by going through each crawled pull request, and for each author of each pull request it makes sure that it is stored in the internal pull requests authors nodes dictionary.
+Next, for each comment in the comments of each pull request, each author is also stored in the internal comments authors nodes dictionary.
+If the comment author is not already in the authors nodes dictionary, then the count of the comment author is incremented by one.
+Following this, a sorted list is stored containing both the authors of each pull request and each comment.
+This sorted list is then split into pairs which supplement the links dictionary that is passed to the frontend service.
+For each pair of items in this pairs dictionary, if it is not already in the links dictionary, it is added.
+Otherwise, the count of that item is incremented by one.
+
+
+A screenshot of the flow of the full-stack system that powered the visualisation is shown below in Figure~\ref{fig:diagram}.
+
+\begin{figure}[h]
+    \centering
+    \fboxsep 1mm
+    \framebox{
+        \includegraphics[width=8cm]{diagram}
+    }
+    \caption{\label{fig:diagram} Flow of the full-stack system.}
+\end{figure}
