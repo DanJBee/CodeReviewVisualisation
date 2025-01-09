@@ -1,6 +1,8 @@
 package uk.ac.rhul.cs.models;
 
-import java.beans.Transient;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * Node class.
@@ -19,6 +21,8 @@ public class Node {
 
   private transient int count;
 
+  private transient List<String> commentDates;
+
   /**
    * Node constructor method.
    *
@@ -29,6 +33,8 @@ public class Node {
     this.authorId = authorId;
     this.avatarUrl = avatarUrl;
     this.size = size;
+
+    this.commentDates = new ArrayList<String>();
   }
 
   public String getAuthorId() {
@@ -70,4 +76,25 @@ public class Node {
   public void setCount(int count) {
     this.count = count;
   }
+
+  /**
+   * It takes a string of a comment creation date
+   *
+   * @param commentDate "yyyy-MM-dd" format.
+   */
+  public void addCommentDate(String commentDate) {
+    this.commentDates.add(commentDate);
+  }
+
+  public Integer getNumberOfCommentDates() {
+    return new HashSet<String>(this.commentDates).size();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    Node comparingNode = (Node) obj;
+    return this.authorId.equals(comparingNode.getAuthorId());
+  }
+
+
 }

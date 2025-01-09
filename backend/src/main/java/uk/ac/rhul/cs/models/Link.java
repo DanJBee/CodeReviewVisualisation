@@ -1,6 +1,8 @@
 package uk.ac.rhul.cs.models;
 
-import java.beans.Transient;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * Link class.
@@ -17,6 +19,8 @@ public class Link {
 
   private transient double colourValue;
 
+  private transient List<String> commentDates;
+
   /**
    * Link constructor method.
    *
@@ -28,6 +32,8 @@ public class Link {
     this.source = source;
     this.target = target;
     this.thickness = thickness;
+
+    this.commentDates = new ArrayList<String>();
   }
 
   public Node getSource() {
@@ -61,4 +67,18 @@ public class Link {
   public void setColourValue(double colourValue) {
     this.colourValue = colourValue;
   }
+
+  /**
+   * It takes a string of a comment creation date
+   *
+   * @param commentDate "yyyy-MM-dd" format.
+   */
+  public void addCommentDate(String commentDate) {
+    this.commentDates.add(commentDate);
+  }
+
+  public Integer getNumberOfCommentDates() {
+    return new HashSet<String>(this.commentDates).size();
+  }
+
 }

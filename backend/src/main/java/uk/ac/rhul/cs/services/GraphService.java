@@ -1,8 +1,5 @@
 package uk.ac.rhul.cs.services;
 
-import org.springframework.stereotype.Service;
-import uk.ac.rhul.cs.models.*;
-
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.Instant;
@@ -10,10 +7,17 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import org.springframework.stereotype.Service;
+import uk.ac.rhul.cs.models.Author;
+import uk.ac.rhul.cs.models.Comment;
+import uk.ac.rhul.cs.models.Graph;
+import uk.ac.rhul.cs.models.Link;
+import uk.ac.rhul.cs.models.Node;
+import uk.ac.rhul.cs.models.PullRequest;
 
 /**
  * Graph service class.
@@ -59,8 +63,7 @@ public class GraphService {
     LocalDateTime startDate = LocalDateTime.parse(start, formatter);
     LocalDateTime endDate = LocalDateTime.parse(end, formatter);
 
-    Duration duration = Duration.between(startDate, endDate);
-    long durationInDays = duration.toDays();
+    long durationInDays = getDuration(startDate, endDate);
 
     Timestamp startTimestamp = Timestamp.from(Instant.parse(start));
     Timestamp endTimestamp = Timestamp.from(Instant.parse(end));
@@ -75,118 +78,77 @@ public class GraphService {
     List<Link> links = new ArrayList<>();
     Map<String, Integer> authorCount = new HashMap<>();
     for (PullRequest pullRequest : pullRequests) {
-      if (pullRequest.getAuthor().getAuthorId().equals("typescript-bot")) {
+      // We excluded all bots that have typename with bot, but still some bots have user typename.
+      if (pullRequest.getAuthor().getAuthorId().toLowerCase().contains("bot"))
         continue;
-      }
 
       authorCount.put(pullRequest.getAuthor().getAuthorId(),
           authorCount.getOrDefault(pullRequest.getAuthor().getAuthorId(), 0) + 1);
 
-      if (nodes.stream().noneMatch(node ->
-          node.getAuthorId().equals(pullRequest.getAuthor().getAuthorId()))) {
-        nodes.add(
-            new Node(
-                pullRequest.getAuthor().getAuthorId(),
-                pullRequest.getAuthor().getAvatarUrl(),
-                0L
-            )
-        );
-      }
+      Node prAuthor = findNodeOrCreate(nodes, pullRequest.getAuthor());
 
       for (Comment comment : pullRequest.getComments()) {
-        if (comment.getAuthor() != null
-            && comment.getAuthor().getAuthorId().equals("typescript-bot")) {
+        if (comment.getAuthor() == null)
           continue;
-        }
 
-        if (comment.getAuthor() != null) {
+        // Exclude some bots with user typename
+        if (comment.getAuthor().getAuthorId().toLowerCase().contains("bot"))
+          continue;
+
           authorCount.put(comment.getAuthor().getAuthorId(),
               authorCount.getOrDefault(comment.getAuthor().getAuthorId(), 0) + 1);
 
-          if (nodes.stream().noneMatch(node ->
-              node.getAuthorId().equals(comment.getAuthor().getAuthorId()))) {
-            nodes.add(
-                new Node(
-                    comment.getAuthor().getAuthorId(),
-                    comment.getAuthor().getAvatarUrl(),
-                    0L
-                )
-            );
+          Node commentAuthor = findNodeOrCreate(nodes, comment.getAuthor());
+          commentAuthor.setSize(commentAuthor.getSize() + 1);
+          commentAuthor.addCommentDate(comment.getDateString());
+
+          List<Node> authors = Arrays.asList(prAuthor, commentAuthor);
+          authors.sort(Comparator.comparing(Node::getAuthorId));
+
+          Link link;
+          if (links.stream().noneMatch(
+              l -> l.getSource().equals(authors.get(0)) && l.getTarget().equals(authors.get(1)))) {
+            link = new Link(authors.get(0), authors.get(1), 0l);
+            links.add(link);
+          } else {
+            link = links.stream().filter(
+                l -> l.getSource().equals(authors.get(0)) && l.getTarget().equals(authors.get(1)))
+                .findFirst().get();
           }
-
-          Node pullRequestNode = nodes.stream()
-              .filter(filteredNode ->
-                  filteredNode.getAuthorId().equals(pullRequest.getAuthor().getAuthorId()))
-              .findFirst().get();
-
-          // Increase the number of comments
-          Node node = nodes.stream()
-              .filter(filteredNode ->
-                  filteredNode.getAuthorId().equals(comment.getAuthor().getAuthorId()))
-              .findFirst().get();
-          node.setSize(node.getSize() + 1);
-
-          // Increase the number of links
-          List<Author> authors = Arrays.asList(pullRequest.getAuthor(), comment.getAuthor());
-          if (links.stream().noneMatch(link ->
-              link.getSource().getAuthorId().equals(authors.getFirst().getAuthorId())
-                  && link.getTarget().getAuthorId().equals(authors.get(1).getAuthorId()))) {
-            links.add(
-                new Link(
-                    new Node(
-                        authors.get(0).getAuthorId(),
-                        authors.get(0).getAvatarUrl(),
-                        pullRequestNode.getSize()
-                    ),
-                    new Node(
-                        authors.get(1).getAuthorId(),
-                        authors.get(1).getAvatarUrl(),
-                        node.getSize()
-                    ),
-                    0L
-                )
-            );
-          }
-
-          Optional<Link> optionalLink = links.stream().filter(filteredLink ->
-                  filteredLink.getSource().getAuthorId().equals(authors.getFirst()
-                      .getAuthorId())
-                      && filteredLink.getTarget().getAuthorId().equals(authors.get(1)
-                      .getAuthorId())
-              )
-              .findFirst();
-
-          if (optionalLink.isPresent()) {
-            Link link = optionalLink.get();
-            link.setThickness(link.getThickness() + 1);
-          }
-        }
+          link.setThickness(link.getThickness() + 1);
+          link.addCommentDate(comment.getDateString());
       }
     }
 
     for (Node node : nodes) {
-      String authorId = node.getAuthorId();
-      int count = authorCount.get(authorId);
-      node.setCount(count);
-      double chosenColourValue = (double) count / durationInDays;
-      node.setColourValue(chosenColourValue);
+      node.setColourValue((double) node.getNumberOfCommentDates() / durationInDays);
     }
-
     for (Link link : links) {
-      String sourceAuthorId = link.getSource().getAuthorId();
-      String targetAuthorId = link.getTarget().getAuthorId();
-      int sourceCount = authorCount.get(sourceAuthorId);
-      System.out.println("source count: " + sourceCount);
-      int targetCount = authorCount.get(targetAuthorId);
-      System.out.println("target count: " + targetCount);
-      long averageCount = (sourceCount + targetCount) / 2;
-      double chosenColourValue = (double) averageCount / durationInDays;
-      System.out.println("chosen colour value: " + chosenColourValue);
-      link.setColourValue((double) chosenColourValue);
+      link.setColourValue((double) link.getNumberOfCommentDates() / durationInDays);
     }
 
     authorCount.forEach((authorId, count) -> System.out.println(authorId + ": " + count));
 
     return new Graph(nodes, links, durationInDays);
+  }
+
+  private long getDuration(LocalDateTime startDate, LocalDateTime endDate) {
+    Duration duration = Duration.between(startDate, endDate);
+    long durationInDays = duration.toDays();
+
+    return durationInDays - (durationInDays / 7 * 2); // exclude weekend
+  }
+
+
+  private Node findNodeOrCreate(List<Node> nodes, Author author) {
+    if (nodes.stream()
+        .noneMatch(n -> n.getAuthorId().equals(author.getAuthorId()))) {
+      Node tempNode = new Node(author.getAuthorId(), author.getAuthorAvatarUrl(), 0l);
+      nodes.add(tempNode);
+      return tempNode;
+    } else {
+      return nodes.stream().filter(n -> n.getAuthorId().equals(author.getAuthorId())).findFirst()
+          .get();
+    }
   }
 }
