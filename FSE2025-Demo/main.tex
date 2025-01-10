@@ -198,6 +198,7 @@ To help developers understand the existing review pairs, we propose \service (Co
 In the graph, each node represents individual developer while the edges denote the relationships based on the discussions within the same code review requests.
 The size of node shows the number of total comments that a developer wrote in code review requests.
 The thickness of edge between two nodes represents the number of comments that two developers authored within the same code review requests.
+Both nodes and edges leverage a colour scheme to represent the regularity of the interactions.
 \service provides time window control, so developers can understand their code review activities across different time frames.
 We expect that \service can help developers improve their code review practices by providing a better understanding of their current practices.
 \end{abstract}
@@ -248,7 +249,7 @@ These techniques recommend a group of developers for a given code review request
 However, these techniques often limited to provide a guidance to individual code review requests rather than providing project wide guidances.
 
 In this study, we propose a tool, \service (Code Review Visualiser), that visualises developer interaction during pull request in GitHub.
-Especially, \service visualises the frequency with which a developer involved in code reviews and how often a pair of developers discuss together within the same code review.
+Especially, \service visualises how frequently a developer participates in code reviews and how often pairs of developers interact within the same code review.
 Based on a given project, our technique provides a visualisation of developers within a given timeframe.
 We expect the visualisation helps a software development team to understand the performance of their code review practices over time.
 They potentially identify a pair of developers who are struggling work each other (e.g., a pair of developers who rarely communicate each other).
@@ -265,7 +266,7 @@ Finally, the visualiser component visualises how developers interact to each oth
 
 We expect \service can help developers improve their code review practices.
 For example, a development team can encourage a pair of developers to work together if the pair has collaborated on many code review requests.
-Alternatively, they can consider changing code review pairs to bring in a fresh perspective.
+Alternatively, they can consider changing code review pairs to bring from a fresh perspective.
 
 %\section{Background}
 %\label{sec:background}
@@ -383,8 +384,10 @@ The implementation details can be found in our replication package\footnote{\url
 \subsection{Crawler}
 \label{sec:crawler}
 
+\vspace{-0.3cm}
 \begin{table}[h]
 	\caption{Data Properties}
+  \vspace{-0.3cm}
 	\label{table:properties}
 	\centering
 	\scriptsize
@@ -400,7 +403,7 @@ The implementation details can be found in our replication package\footnote{\url
 		\hline
 	\end{tabularx}
 \end{table}
-
+\vspace{-0.3cm}
 
 To visualise developer interactions, we need a large amount of pull request data.
 It will introduce huge traffics to code review platform if we request data whenever we need them.
@@ -427,6 +430,7 @@ Last, traversing all PRs take time and require high computation power on the PR 
   \includegraphics[width=0.8\linewidth]{erd}
   \caption{Entity Relationship Diagram}
   \label{fig:erd}
+  \vspace{-0.3cm}
 \end{figure}
 
 To mitigate the issues, we implemented a migrator that migrates the crawled API responses to a relational database instance.
@@ -461,42 +465,19 @@ Please note that we blurred images on the paper, but real implementation shows c
 The thickness of edges between nodes denote the number of comments shared by the two developers within the same PRs.
 To handle extremely large or small cases, we use normalised values for both nodes and edges.
 
-
+\vspace{-0.3cm}
 \begin{figure}[h]
   \centering
   \includegraphics[width=\linewidth]{date_controller}
   \caption{Date Controller}
   \label{fig:dateController}
 \end{figure}
-
+\vspace{-0.3cm}
 On the right bottom of the frontend, we put a date controller as shown in \Cref{fig:dateController}.
 The user can select specific date by clicking the date field.
 Once they select a pair of dates, they can easily update the date scope by clicking the buttons above.
 Whenever the dates updated, the graph visualisation is also dynamically updated.
 
-
-
-
-\section{Related Work}
-\label{sec:relatedWork}
-
-There have been many studies aimed at helping developers find code reviewers.
-Thongtanunam et al.~\cite{Thongtanunam15} argued that the developers working on large systems struggle to find appropriate reviewers.
-They assume that a developer who has previously changed the same file could be a good candidate as a reviewer, as they already understand the details of the file.
-Based on the assumption, they proposed a reviewer recommendation technique called RevFinder.
-Zanzani et al.~\cite{Zanjani16} also proposed an automated reviewer recommendation approach that leverages previously completed reviews.  
-These approaches are useful for developers to find potential reviewers.
-However, they do not provide insight of the current review practices.
-We believe our approach can provide additional information regarding the reviewer recommendation results.
-
-
-In addition, many empirical studies have been conducted to understand developer interactions during software development.
-Hong et al.~\cite{Hong11} investigated developer social network (DSN) of Mozilla projects and its evolution.
-They also compared the structure of DSN with general social networks (GSNs) such as Facebook and Twitter.
-Thung et al.~\cite{Thung13} empirically studied social network structure on GitHub.
-They constructed developer-developer and project-project relationship graphs and identified influential developers and projects by using PageRank.
-However, their analysis was conducted at a project level, not at the code review level, and they did not provide a tool to visualise the graphs.
-Bock et al.~\cite{Bock23} proposed a method that automatically identifies core developers by using role permissions of privileged events triggered in GitHub issues and pull requests.
 
 
 
@@ -530,6 +511,28 @@ Node edge thicknesses help supplement how much intelligence is being shared betw
 Moreover, the code review process can be optimised more thoroughly and the necessary improvements in team dynamics can be made\cite{gelbard2009interactive,rasch1992factors}.
 
 
+\section{Related Work}
+\label{sec:relatedWork}
+
+There have been many studies aimed at helping developers find code reviewers.
+Thongtanunam et al.~\cite{Thongtanunam15} argued that the developers working on large systems struggle to find appropriate reviewers.
+They assume that a developer who has previously changed the same file could be a good candidate as a reviewer, as they already understand the details of the file.
+Based on the assumption, they proposed a reviewer recommendation technique called RevFinder.
+Zanzani et al.~\cite{Zanjani16} also proposed an automated reviewer recommendation approach that leverages previously completed reviews.  
+These approaches are useful for developers to find potential reviewers.
+However, they do not provide insight of the current review practices.
+We believe our approach can provide additional information regarding the reviewer recommendation results.
+
+
+In addition, many empirical studies have been conducted to understand developer interactions during software development.
+Hong et al.~\cite{Hong11} investigated developer social network (DSN) of Mozilla projects and its evolution.
+They also compared the structure of DSN with general social networks (GSNs) such as Facebook and Twitter.
+Thung et al.~\cite{Thung13} empirically studied social network structure on GitHub.
+They constructed developer-developer and project-project relationship graphs and identified influential developers and projects by using PageRank.
+However, their analysis was conducted at a project level, not at the code review level, and they did not provide a tool to visualise the graphs.
+Bock et al.~\cite{Bock23} proposed a method that automatically identifies core developers by using role permissions of privileged events triggered in GitHub issues and pull requests.
+
+
 \section{Conclusion}
 \label{sec:conclusion}
 
@@ -547,11 +550,15 @@ As future work, we plan to conduct an empirical study to investigate the impact 
 We anticipate our approach will lead to a better understanding of code review practice.
 With this improved understanding, developers may be able to distribute heavy workloads more effectively among their peers or foster the onboarding of hidden newcomers to their projects.
 
+\section{Replication Package and Screencast}
+The source code of \service is available at \url{https://github.com/DanJBee/CodeReviewVisualisation} and a video demonstration of \service is available at \url{https://www.youtube.com/watch?v=L8YVGmvRkP4}.
+
 %%
 %% The next two lines define the bibliography style to be used, and
 %% the bibliography file.
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{reference}
+
 
 \end{document}
 \endinput
