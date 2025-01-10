@@ -237,7 +237,7 @@ We expect that \service can help developers improve their code review practices 
 
 Code review is a practice that all code changes are reviewed by one or more developers other than the change author themselves.
 Due to diverse benefits of code review, it has been widely adopted in both proprietary and open source projects.
-For example, previous studies have shown that it is useful for sharing knowledge and development context within a development team~\cite{Bacchelli13}.
+For example, previous studies have shown that it is useful for sharing knowledge and development context within a development team.
 In addition, code review is helpful for improving software quality and design quality~\cite{McIntosh14, Morales15}.
 Because of the diverse benefits, the practice has been widely adopted in both open and proprietary software projects.
 GitHub's pull request is a representative example of code review.
@@ -427,7 +427,7 @@ Last, traversing all PRs take time and require high computation power on the PR 
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.8\linewidth]{erd}
+  \includegraphics[width=0.7\linewidth]{erd}
   \caption{Entity Relationship Diagram}
   \label{fig:erd}
   \vspace{-0.3cm}
@@ -443,7 +443,7 @@ The migrator was also written in Python, and we evaluated it with a MariaDB inst
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=\linewidth]{image}
+  \includegraphics[width=0.8\linewidth]{image}
   \caption{An example of visualisation. We blurred the actual profile photos to protect developers' privacy}
   \label{fig:snapshot}
 \end{figure}
@@ -464,11 +464,15 @@ Based on the algorithm presented in \Cref{sec:algorithm}, the size of each node 
 Please note that we blurred images on the paper, but real implementation shows clear images.
 The thickness of edges between nodes denote the number of comments shared by the two developers within the same PRs.
 To handle extremely large or small cases, we use normalised values for both nodes and edges.
+The colours of the nodes and edges dictate the regularity of each developer within the given timeframe.
+For instance, if a developer contributed every day of the chosen timeframe then they are coloured green, whereas if they only contributed once they are in red.
+Any values in between are gradient values between red, yellow, and green.
+
 
 \vspace{-0.3cm}
 \begin{figure}[h]
   \centering
-  \includegraphics[width=\linewidth]{date_controller}
+  \includegraphics[width=0.8\linewidth]{date_controller}
   \caption{Date Controller}
   \label{fig:dateController}
 \end{figure}
@@ -508,7 +512,7 @@ In addition, the visualisation could help enhance developer recognition and moti
 The size of each developer's contributions (i.e., the size of the nodes in the graph) are a useful quantitative measure of the work balance within the team~\cite{koning1993three}.
 Developers are encouraged to knowledge share more frequently as a result of information silos discovered through analysis of graph nodes.
 Node edge thicknesses help supplement how much intelligence is being shared between team members.
-Moreover, the code review process can be optimised more thoroughly and the necessary improvements in team dynamics can be made\cite{gelbard2009interactive,rasch1992factors}.
+Moreover, the code review process can be optimised more thoroughly and the necessary improvements in team dynamics can be made\cite{gelbard2009interactive}.
 
 
 \section{Related Work}
@@ -550,8 +554,10 @@ As future work, we plan to conduct an empirical study to investigate the impact 
 We anticipate our approach will lead to a better understanding of code review practice.
 With this improved understanding, developers may be able to distribute heavy workloads more effectively among their peers or foster the onboarding of hidden newcomers to their projects.
 
+\vspace{-0.2cm}
 \section{Replication Package and Screencast}
 The source code of \service is available at \url{https://github.com/DanJBee/CodeReviewVisualisation} and a video demonstration of \service is available at \url{https://www.youtube.com/watch?v=L8YVGmvRkP4}.
+\vspace{-0.1cm}
 
 %%
 %% The next two lines define the bibliography style to be used, and
