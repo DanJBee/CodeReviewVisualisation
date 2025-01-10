@@ -18,13 +18,12 @@ public class Author {
 
   private String authorAvatarUrl;
 
-  public Author() {
-  }
+  public Author() {}
 
   /**
    * Author constructor method.
    *
-   * @param authorId        the author ID
+   * @param authorId the author ID
    * @param authorAvatarUrl the author avatar URL
    */
   public Author(String authorId, String authorAvatarUrl) {
@@ -47,4 +46,10 @@ public class Author {
   public void setAuthorAvatarUrl(String authorAvatarUrl) {
     this.authorAvatarUrl = authorAvatarUrl;
   }
+
+  public String getAuthorAvatarUrl() {
+    return authorAvatarUrl;
+  }
+
+
 }

@@ -9,6 +9,7 @@ import {
   min,
   scaleLinear,
   scaleSqrt,
+  select,
   zoom,
 } from "d3";
 import { Data, Link, Node } from "./types";
@@ -25,6 +26,7 @@ const graph = () => {
     // Defines the links & nodes in the graph
     const links = data.links.map((d: Link) => ({ ...d }));
     const nodes = data.nodes.map((d: Node) => ({ ...d }));
+    const duration = data.duration;
 
     // Creates a map of nodes by the author ID
     const nodeMap = new Map(nodes.map((node: Node) => [node.authorId, node]));
@@ -108,6 +110,43 @@ const graph = () => {
       // sets an individual ID for each node to ensure the images' height/width are the correct
       // dimensions
       .attr("fill", (d: Node) => `url(#image-${d.authorId})`);
+
+      const colourScale = scaleLinear<string>()
+      .domain([0, 0.5, 1])
+      .range(["red", "yellow", "green"]);
+
+      node.each(function (currentNode: Node) {
+        const authorCount = currentNode.count;
+        const colourValue = currentNode.colourValue;
+        console.log("colour value: " + colourValue);
+
+        if (authorCount == 1) {
+          select(this).style("stroke", "red");
+        } else if (authorCount == duration) {
+          select(this).style("stroke", "green");
+        } else {
+          select(this).style("stroke", colourScale(colourValue));
+        }
+      });
+
+      // Applies the same idea to the edges
+      link.each(function (currentLink: Link) {
+        const colourValue = currentLink.colourValue;
+        const sourceNode = currentLink.source;
+        const targetNode = currentLink.target;
+        const sourceCount = sourceNode.count || 0;
+        const targetCount = targetNode.count || 0;
+        const averageCount = (sourceCount + targetCount) / 2;
+
+      
+        if (averageCount == 1) {
+          select(this).style("stroke", "red");
+        } else if (averageCount == duration) {
+          select(this).style("stroke", "green");
+        } else {
+          select(this).style("stroke", colourScale(colourValue));
+        }
+      });
 
     // Sets the position attribute of the links & nodes in the graph each time the nodes 'ticks'
     function ticked() {

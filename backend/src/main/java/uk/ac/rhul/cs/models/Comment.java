@@ -1,8 +1,16 @@
 package uk.ac.rhul.cs.models;
 
-import jakarta.persistence.*;
-
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import java.sql.Timestamp;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Comment entity class.
@@ -26,6 +34,7 @@ public class Comment {
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "author_id")
   private Author author;
+
 
   public Comment() {
   }
@@ -66,5 +75,10 @@ public class Comment {
 
   public void setAuthor(Author author) {
     this.author = author;
+  }
+
+  public String getDateString() {
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    return this.createdAt.toLocalDateTime().format(formatter);
   }
 }
