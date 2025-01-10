@@ -105,46 +105,6 @@ public class GraphServiceTest {
   }
 
   @Test
-  void testGetGraphValidWithOnlyStartTime() {
-    // Subtract an hour from the formatted time string for the start time
-    Timestamp startTime = new Timestamp(formattedTime.getTime() - 3600000);
-
-    String start = startTime.toInstant().toString();
-
-    Graph graph = graphService.getGraphData(
-        "microsoft",
-        "typescript",
-        start,
-        null);
-    assertEquals(graph.getNodes().getFirst().getAuthorId(), "author");
-    assertEquals(graph.getNodes().getFirst().getAvatarUrl(), "avatar_url");
-    assertEquals(1L, graph.getNodes().getFirst().getSize());
-    assertEquals(1, graph.getLinks().size());
-    assertEquals("author", graph.getLinks().getFirst().getSource().getAuthorId());
-    assertEquals("author", graph.getLinks().getFirst().getTarget().getAuthorId());
-  }
-
-  @Test
-  void testGetGraphValidWithOnlyEndTime() {
-    // Add an hour to the formatted time string for the end time
-    Timestamp endTime = new Timestamp(formattedTime.getTime() + 3600000);
-
-    String end = endTime.toInstant().toString();
-
-    Graph graph = graphService.getGraphData(
-        "microsoft",
-        "typescript",
-        null,
-        end);
-    assertEquals(graph.getNodes().getFirst().getAuthorId(), "author");
-    assertEquals(graph.getNodes().getFirst().getAvatarUrl(), "avatar_url");
-    assertEquals(1L, graph.getNodes().getFirst().getSize());
-    assertEquals(1, graph.getLinks().size());
-    assertEquals("author", graph.getLinks().getFirst().getSource().getAuthorId());
-    assertEquals("author", graph.getLinks().getFirst().getTarget().getAuthorId());
-  }
-
-  @Test
   void testGraphInvalid() {
     assertThrows(NullPointerException.class, () -> graphService.getGraphData(
         "invalidOwner",

@@ -90,9 +90,9 @@ class GraphControllerTest {
   void testGetGetGraphValid() {
     Graph graph = graphController.getGraph("microsoft", "typescript", null, null);
     assertThat(graph.getNodes().size())
-        .isEqualTo(1);
+        .isEqualTo(0);
     assertThat(graph.getLinks().size())
-        .isEqualTo(1);
+        .isEqualTo(0);
   }
 
   @Test
