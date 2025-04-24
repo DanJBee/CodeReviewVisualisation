@@ -44,7 +44,7 @@
 %% for your publication.
 %%
 %%
-\documentclass[sigconf]{acmart}
+\documentclass[sigconf,nonacm]{acmart}
 
 \usepackage{listings}
 \usepackage{xcolor}
@@ -91,15 +91,15 @@
 %% values in them; it is your responsibility as an author to replace
 %% the commands and values with those provided to you when you
 %% complete the rights form.
-\setcopyright{acmlicensed}
-\copyrightyear{2018}
-\acmYear{2018}
+\setcopyright{cc}
+\copyrightyear{2025}
+\acmYear{2025}
 \acmDOI{XXXXXXX.XXXXXXX}
 %% These commands are for a PROCEEDINGS abstract or paper.
 %\acmConference[Conference acronym 'XX]{Make sure to enter the correct
 %  conference title from your rights confirmation email}{June 03--05,
 %  2018}{Woodstock, NY}
-\acmBooktitle{Companion Proceedings of the 33rd ACM Symposium on the Foundations of Software Engineering (FSE '25), June 23--27, 2025, Trondheim, Norway}
+\acmBooktitle{Companion Proceedings of the ACM Symposium on the Foundations of Software Engineering (FSE Companion '25), June 23--27, 2025, Trondheim, Norway}
 %%
 %%  Uncomment \acmBooktitle if the title of the proceedings is different
 %%  from ``Proceedings of ...''!
@@ -299,6 +299,15 @@ Alternatively, the team can consider changing code review pairs to bring in a fr
 \label{sec:algorithm}
 %\input{visualisation}
 
+\Cref{algorithm} shows the algorithm to extract interactions from pull requests for the visualisation.
+We represent the interactions as a graph.
+Each node represents a developer and its size denotes the number of comments the developer has written.
+Each edge between two nodes indicates the communication between two developers (PR author and reviewer) within PRs, and its thickness reflects the frequency of their interactions.
+Simply counting the frequency, however, the visualisation might be biased.
+For example, if a developer writes 100 comments on a single day, and they may appear as the most interactive developer in the visualisation.
+Based on the frequency, it is true that the developer is most active, but this does not necessarily reflect regularity.
+To address the issue, we use a colour scheme to represent the number of active days for each node and edge.
+
 \begin{minipage}{.95\linewidth}
 \begin{lstlisting}[language=Python, caption=Algorithm to extract interactions, label=algorithm]
 prs = [] # Pull requests must be provided
@@ -339,15 +348,6 @@ for link in links: # Calculate regularity of links
 \end{lstlisting}
 \end{minipage}
 
-\Cref{algorithm} shows the algorithm to extract interactions from pull requests for the visualisation.
-We represent the interactions as a graph.
-Each node represents a developer and its size denotes the number of comments the developer has written.
-Each edge between two nodes indicates the communication between two developers (PR author and reviewer) within PRs, and its thickness reflects the frequency of their interactions.
-Simply counting the frequency, however, the visualisation might be biased.
-For example, if a developer writes 100 comments on a single day, and they may appear as the most interactive developer in the visualisation.
-Based on the frequency, it is true that the developer is most active, but this does not necessarily reflect regularity.
-To address the issue, we use a colour scheme to represent the number of active days for each node and edge.
-
 When PRs are given, the algorithm iterates all PRs to extract information for the visualisation.
 If a timeframe is given to the algorithm, it only uses the PRs created within the timeframe.
 Otherwise, the algorithm leverages the given PRs.
@@ -366,11 +366,9 @@ By calculating the ratio of unique comment dates to the total duration of given 
 
 \begin{figure}[h]
   \centering
-  \vspace{-0.3cm}
   \includegraphics[width=0.8\linewidth]{diagram}
   \caption{Overall framework}
   \label{fig:framework}
-  \vspace{-0.3cm}
 \end{figure}
 
 The visualisation framework consists of three components as shown in~\Cref{fig:framework}: Crawler, Migrator, and Visualiser.
@@ -385,10 +383,8 @@ The implementation details can be found in our replication package\footnote{\url
 \subsection{Crawler}
 \label{sec:crawler}
 
-\vspace{-0.3cm}
 \begin{table}[h]
 	\caption{Data Properties}
-  \vspace{-0.3cm}
 	\label{table:properties}
 	\centering
 	\scriptsize
@@ -404,7 +400,6 @@ The implementation details can be found in our replication package\footnote{\url
 		\hline
 	\end{tabularx}
 \end{table}
-\vspace{-0.3cm}
 
 To visualise developer interactions, we need a large amount of pull request data.
 It will introduce huge traffics to code review platform if we request data whenever we need them.
@@ -431,7 +426,6 @@ Last, traversing all PRs take time and require high computation power on the PR 
   \includegraphics[width=0.7\linewidth]{erd}
   \caption{Entity Relationship Diagram}
   \label{fig:erd}
-  \vspace{-0.3cm}
 \end{figure}
 
 To mitigate the issues, we implemented a migrator that migrates the crawled API responses to a relational database instance.
@@ -445,12 +439,9 @@ During migration, we excluded all users whose type name (i.e., {\tt author.\_\_t
 
 \begin{figure}[h]
   \centering
-  \vspace{-0.3cm}
   \includegraphics[width=0.8\linewidth]{image}
-  \vspace{-0.3cm}
   \caption{An example of visualisation. We blurred the actual profile photos to protect developers' privacy}
   \label{fig:snapshot}
-  \vspace{-0.3cm}
 \end{figure}
 
 The visualiser is responsible for visualising developer interactions.
@@ -474,7 +465,6 @@ For instance, if a developer contributed every day of the chosen timeframe then 
 Any values in between are gradient values between red, yellow, and green.
 
 
-\vspace{-0.3cm}
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.8\linewidth]{date_controller}
@@ -482,7 +472,7 @@ Any values in between are gradient values between red, yellow, and green.
   \caption{Date Controller}
   \label{fig:dateController}
 \end{figure}
-\vspace{-0.3cm}
+
 On the right bottom of the frontend, we put a date controller as shown in \Cref{fig:dateController}.
 The user can select specific date by clicking the date field.
 Once they select a pair of dates, they can easily update the date scope by clicking the buttons above.
@@ -560,10 +550,8 @@ As future work, we plan to conduct an empirical study to investigate the impact 
 We anticipate our approach will lead to a better understanding of code review practice.
 With this improved understanding, developers may be able to distribute heavy workloads more effectively among their peers or facilitate the onboarding of previously unnoticed newcomers to their projects.
 
-\vspace{-0.1cm}
 \section{Replication Package and Screencast}
 The source code of \service is available at \url{https://github.com/DanJBee/CodeReviewVisualisation} and a video demonstration of \service is available at \url{https://www.youtube.com/watch?v=L8YVGmvRkP4}.
-\vspace{-0.2cm}
 
 %%
 %% The next two lines define the bibliography style to be used, and
