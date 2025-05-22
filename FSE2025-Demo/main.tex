@@ -44,7 +44,7 @@
 %% for your publication.
 %%
 %%
-\documentclass[sigconf,nonacm]{acmart}
+\documentclass[sigconf]{acmart}
 
 \usepackage{listings}
 \usepackage{xcolor}
@@ -350,13 +350,15 @@ By calculating the ratio of unique comment dates to the total duration of given 
 \section{Visualisation Framework}
 \label{sec:framework}
 
-
+\vspace{-0.2cm}
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.8\linewidth]{diagram}
+  \vspace{-0.2cm}
   \caption{Overall framework}
   \label{fig:framework}
 \end{figure}
+\vspace{-0.2cm}
 
 The visualisation framework consists of three components as shown in~\Cref{fig:framework}: Crawler, Migrator, and Visualiser.
 The crawler retrieves PRs and comments from GitHub.
@@ -370,8 +372,10 @@ The implementation details can be found in our replication package\footnote{\url
 \subsection{Crawler}
 \label{sec:crawler}
 
+\vspace{-0.2cm}
 \begin{table}[h]
 	\caption{Data Properties}
+  \vspace{-0.2cm}
 	\label{table:properties}
 	\centering
 	\scriptsize
@@ -387,6 +391,7 @@ The implementation details can be found in our replication package\footnote{\url
 		\hline
 	\end{tabularx}
 \end{table}
+\vspace{-0.2cm}
 
 To visualise developer interactions, we need a large amount of pull request data.
 It will introduce huge traffics to code review platform if we request data whenever we need them.
@@ -408,12 +413,15 @@ One of our visualiser's features supports visualising developer interactions wit
 However, GraphQL does not support query that returns PRs that were authored within a specific time range.
 Last, traversing all PRs take time and require high computation power on the PR platform.
 
+\vspace{-0.2cm}
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.7\linewidth]{erd}
+  \vspace{-0.2cm}
   \caption{Entity Relationship Diagram}
   \label{fig:erd}
 \end{figure}
+\vspace{-0.2cm}
 
 To mitigate the issues, we implemented a migrator that migrates the crawled API responses to a relational database instance.
 \Cref{fig:erd} presents an entity relationship diagram of our database schema.
@@ -424,12 +432,15 @@ During migration, we excluded all users whose type name (i.e., {\tt author.\_\_t
 \subsection{Visualiser}
 \label{sec:visualiser}
 
+\vspace{-0.2cm}
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.8\linewidth]{image}
+  \vspace{-0.2cm}
   \caption{An example of visualisation. We blurred the actual profile photos to protect developers' privacy}
   \label{fig:snapshot}
 \end{figure}
+\vspace{-0.2cm}
 
 The visualiser is responsible for visualising developer interactions.
 Users can select a specific project and time window to visualise developer interactions.
