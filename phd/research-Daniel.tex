@@ -52,7 +52,7 @@ Among diverse software engineering practices, I will specifically focus on code 
 Code review is one of the most outstanding quality assurance practices and heavily rely on social interactions between developers~\cite{Bosu17,Toufique17}.
 Unfortunately, existing studies on code review often overlook the social interactions involved in code review.
 By conducting empirical studies on social interactions during code review, I believe my research can make a meaningful contribution to the software engineering research community.
-For example, these studies can provide deeper insights into Equality, Diversity, and Inclusion (EDI) among participants involved in code review.
+These studies can provide deeper insights into Equality, Diversity, and Inclusion (EDI) among participants involved in code review.
 Additionally, I expect my research will identify several challenges in code review.
 I plan to address these challenges by proposing automated techniques based on my software engineering background.
 
@@ -84,6 +84,8 @@ Its size shows the frequency of their code review comments for the software proj
 If two participants left comment within the same code review request, an edge connects them.
 The thickness of edge dedicates the normalised frequency how often the two developers discuss within the same code review request.
 
+% We need to explain the disconnected nodes and too much focused nodes to highlight EDI issues.
+
 
 \begin{figure}[t]
   \centering
@@ -92,11 +94,11 @@ The thickness of edge dedicates the normalised frequency how often the two devel
   \label{fig:snapshot}
 \end{figure}
 
-\section{Aim \& Objective of the Project}
+\section{Aims \& Objectives of the Project}
 
 \begin{itemize}
-  \item {\bf Understand current practices.} By conducting diverse empirical studies, I expect we will get a better understanding of current practices.
-  \item {\bf Identify challenges and potential improvement.} Among the empirical findings, I believe some have the potential to highlight current challenges and improve existing practices.
+  \item {\bf Understanding current practices.} By conducting diverse empirical studies, I expect we will get a better understanding of current practices.
+  \item {\bf Identification of challenges and potential improvements.} Among the empirical findings, I believe some have the potential to highlight current challenges and improve existing practices.
   \item {\bf Modelling the findings.} By modelling code review practices, I plan to develop automated techniques that can correctly predict potential outcomes of the social interactions between participants.
 \end{itemize}
 
@@ -104,36 +106,47 @@ The thickness of edge dedicates the normalised frequency how often the two devel
 \section{Design of the Research Project}
 
 \noindent
-{\bf Systematic Literature Review} (SLR)~\cite{Kitchenham10} will help me to get a thorough and comprehensive understanding on existing studies. 
+{\bf Systematic Literature Review} (SLR)~\cite{Kitchenham10} This activity will help me to get a thorough and comprehensive understanding on existing studies. 
 I will focus on investigating code review studies.
 Specifically, the studies about social interactions in code review.
-Based on the understanding, I can identify the topics are well-studied and which are under-studied.
+Through the process, I can identify which topics are well-studied and which are under-studied.
 
 
 \noindent
-{\bf Empirical Studies} By using both quantitative and qualitative analyses, I can gain a deeper understanding of existing practices.
-I believe the SLR process will reveal several potential topics for empirical studies. 
+{\bf Empirical Studies} By using both quantitative and qualitative analyses, we can gain a deeper understanding of existing practices.
+I believe the SLR process will reveal several potential topics for fruitful empirical studies. 
 My first empirical study will be about the usability of CRV.
 Although we demonstrated CRV by using several open source projects, its actual usability and contribution to real practice have not yet been investigated.
 The objective data from the empirical study will encourage practitioners to adopt CRV more widely.
 I believe this, in turn, will lead to increased opportunities for collaboration. 
 
 \noindent
-{\bf Modelling}
+{\bf Modelling} A process specification language can be used to reify the workflow of code review.
+The $\n$Scr toolchain~\cite{Yoshida21} can be extended to model the social interactions during the code review process.
+This will provide insights and statistics that be leveraged for providing actionable information to participants.
 
 \section{Planned Timeline}
 %Planned timeline for work to be completed; this does not need to be very detailed but should show progression of the work to be completed, including placement, across the 3.5 years
 
+\noindent
 {\bf Year 1.} I will focus on conducting an SLR~\cite{Kitchenham10} to gain a thorough and comprehensive understanding of existing studies in the domain and refine my research plan.
 Simultaneously, I will conduct an empirical study on CRV as I am already working on it.
 This will bring me a good experience to exercise academic writing.
 
-{\bf Year 2--3.} I expect to identify potential research topics via SLR in Year 1.
+\noindent
+{\bf Year 2} I expect to identify potential research topics via SLR in Year 1.
 As mentioned above, I will conduct two lines of research: empirical studies and developing automated techniques to enhance code review practices.
 
-{\bf Year 3--3.5.} I believe my research outputs have now become clear and are ready to be shared with practitioners.
+\noindent
+{\bf Year 3.} I believe my research outputs have now become clear and are ready to be shared with practitioners.
 I will contact potential industry partners or open source projects to replicate my empirical studies.
 Additionally, if I can successfully manage to develop automated techniques, I will conduct an empirical study on their usability in real practice.
+
+\noindent
+{\bf Year 3--3.5.} Placement will be done this period.
+I expect to find a software development company to apply my research findings and extend my understanding of the practical issues.
+Finally, I will write up my thesis. 
+
 
 
 \section{Supervision Team}
@@ -151,9 +164,9 @@ Specifically, his experience in empirical software engineering and code review r
 {\bf Dr. Francisco Ferreira}
 
 Dr. Ferreira will be the secondary supervisor.
-He is an expert in type systems and formal logic.
+He is an expert in formal systems and logic.
 I expect his expertise in these areas will help me model social interactions between participants in code review.
-Based on this model, I believe I can develop automated techniques to improve the current code review practices.
+Based on this, I believe I can develop automated techniques to improve the current code review practices.
 
 
 
@@ -168,6 +181,19 @@ Additionally, Dr. Han plans to apply for the EPSRC New Investigator Award in 202
 
 \section{Ethical Considerations}
 %Max 250 words.
+
+This research project involves the analysis of publicly available open source data as well as the collection of primary data through interviews and questionnaires.
+The study will be conducted in accordance with the university's ethical guidelines and relevant legal frameworks, including the General Data Protection Regulation (GDPR).
+
+The research will utilise open source datasets (e.g., from GitHub, Stack Overflow, or other public repositories) for analysis.
+Only data that is publicly accessible and legally permissible for research use will be included.
+Where possible, data will be anonymised or aggregated to prevent the identification of individuals, even if the data is already in the public domain.
+
+Participants involved in interviews and questionnaires will be fully informed about the purpose, scope, and nature of the research.
+A participant information sheet and consent form will be provided, outlining their rights, including the right to withdraw at any time without consequence.
+Consent will be obtained in writing (or electronically, where appropriate) prior to participation.
+
+The research protocol, including data collection instruments and consent procedures, will be submitted for review and approval by the university’s Research Ethics Committee prior to the commencement of any data collection involving human participants.
 
 \bibliographystyle{IEEEtran}
 \bibliography{reference}
