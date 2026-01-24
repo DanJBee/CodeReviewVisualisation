@@ -8,7 +8,7 @@ from configparser import ConfigParser
 
 import requests
 
-from crawler.logger import init_logger
+from logger import init_logger
 
 # Initialises & reads the settings.ini configuration file
 config = ConfigParser()
@@ -23,9 +23,13 @@ HEADERS = {"Authorization": "Bearer %s" % config["DEFAULT"]["PAT"]}
 # Defines a standard cursor file name
 CURSOR_FILE = "cursor.txt"
 
-# Defines owner, repository name, & output constants
-OWNER = "owner_name"
-REPO = "repository_name"
+# Defines owner, repository name from settings
+OWNER = config["DATABASE"]["OWNER"]
+REPO = config["DATABASE"]["REPO"]
+
+# Maximum number of PRs to crawl (set to None for unlimited)
+MAX_PRS = 100
+PRS_PER_REQUEST = 10
 
 # Defines a template string for the GraphQL query
 query_template = """{
@@ -87,7 +91,7 @@ def run_query(q: str) -> dict:
 
 # Generates the GraphQL query based on the repository owner, name, number of PRs required, & previous cursor value
 def generate_query(
-    repo_owner: str, name: str, prs_before_cursor: str | None = None, nums_pr: int = 10
+    repo_owner: str, name: str, prs_before_cursor: str | None = None, nums_pr: int = PRS_PER_REQUEST
 ) -> str:
     before_cursor = ', before: "%s"' % prs_before_cursor if prs_before_cursor else ""
     try:
@@ -100,6 +104,9 @@ def generate_query(
 
 
 # Crawls the data using the previously generated query & stores it & the current cursor in a given output directory
+# Returns a tuple: (next_cursor, rate_limited)
+# - next_cursor: the cursor for the next page, or None if done
+# - rate_limited: True if rate limit was exhausted
 def crawl(
     repo_owner: str,
     name: str,
@@ -107,12 +114,12 @@ def crawl(
     prs_before_cursor: str | None = None,
     nums_pr: int = 10,
     current_cursor: str = None,
-) -> str | None:
+) -> tuple[str | None, bool]:
     query = generate_query(repo_owner, name, prs_before_cursor, nums_pr)
     try:
         result = run_query(query)
         if result is None:
-            return None
+            return None, False
     except Exception as exception:
         logging.error("Query failed", exception, exc_info=True)
         return crawl(
@@ -148,10 +155,10 @@ def crawl(
         logging.info("Remaining rate limit - {}".format(remaining_rate_limit))
         if remaining_rate_limit < 1:
             logging.info("Spent all remaining rate")
-            return
+            return new_cursor, True  # Rate limited
     except Exception as exception:
         logging.error("Query failed", exception, exc_info=True)
-    return new_cursor
+    return new_cursor, False
 
 
 # Saves the current cursor value to a file called "cursor.txt" for future reference
@@ -187,26 +194,41 @@ if __name__ == "__main__":
     # If the output directory does not exist then create it
     output_dir = f"../data/{OWNER}-{REPO}/"
     if not os.path.isdir(output_dir):
-        os.mkdir(output_dir)
+        os.makedirs(output_dir)
 
     # Loads the cursor value from the current output directory
-    cursor = (
-        load_cursor(output_dir)
-        if load_cursor(output_dir)
-        else crawl(OWNER, REPO, output_dir, None)
-    )
+    cursor = load_cursor(output_dir)
+    rate_limited = False
+    prs_crawled = 0
+    
     # If there is no currently loaded cursor i.e. this is the first query
     if not cursor:
         # Initially set prs_before_cursor = None since this is the first crawl
-        cursor = crawl(OWNER, REPO, output_dir, None)
+        cursor, rate_limited = crawl(OWNER, REPO, output_dir, None)
+        prs_crawled += PRS_PER_REQUEST
+    
+    # Track the last valid cursor
+    last_valid_cursor = cursor
+    
     # While there is still pull request information being returned
-    while cursor:
-        cursor = crawl(OWNER, REPO, output_dir, cursor)
-        if cursor is None:
+    while cursor or rate_limited:
+        # Check if we've reached the maximum number of PRs
+        if MAX_PRS and prs_crawled >= MAX_PRS:
+            logging.info(f"Reached maximum of {MAX_PRS} PRs. Stopping crawl.")
+            break
+            
+        if rate_limited:
             # Sleep for an hour to recover the API rate limit
+            logging.info("Rate limit exhausted. Sleeping for 1 hour...")
             time.sleep(3600)
-            cursor = crawl(OWNER, REPO, output_dir, cursor)
-    logging.info(f"Crawling all PRs from '{OWNER}/{REPO}' is done")
+            cursor, rate_limited = crawl(OWNER, REPO, output_dir, last_valid_cursor)
+        else:
+            last_valid_cursor = cursor
+            cursor, rate_limited = crawl(OWNER, REPO, output_dir, cursor)
+            prs_crawled += PRS_PER_REQUEST
+    
+    logging.info(f"Crawling PRs from '{OWNER}/{REPO}' is done ({prs_crawled} PRs)")
     # Save the last cursor, so it can be re-used in the next run of the program
-    with open(CURSOR_FILE, "w") as last_cursor_file:
-        last_cursor_file.write(cursor)
+    if last_valid_cursor:
+        with open(CURSOR_FILE, "w") as last_cursor_file:
+            last_cursor_file.write(last_valid_cursor)

@@ -3,10 +3,15 @@
 import json
 import os.path
 import sys
+from configparser import ConfigParser
+
+# Read settings
+config = ConfigParser()
+config.read("../settings.ini")
 
 # Defines owner, repository name, & output constants
-OWNER = "owner_name"
-REPO = "repository_name"
+OWNER = config["DATABASE"]["OWNER"]
+REPO = config["DATABASE"]["REPO"]
 OUTPUT = "../data/%s-%s" % (OWNER, REPO)
 
 
