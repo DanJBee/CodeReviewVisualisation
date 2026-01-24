@@ -77,20 +77,21 @@ def insert_author(db_cursor, author_id_value, avatar_url_value, type_name_value)
 
 
 # Defines a function that inserts a pull request into the pull_requests table with number, project_id,
-# created_at, & author_id parameters
+# created_at, author_id, & state parameters
 def insert_pull_request(
-    db_cursor, pr_number, project_id_value, created_at_timestamp_value, author_id_value
+    db_cursor, pr_number, project_id_value, created_at_timestamp_value, author_id_value, state_value
 ):
     # Insert into pull_requests table
     pull_requests_sql = (
-        "INSERT INTO pull_requests (number, project_id, created_at, author_id)"
-        "VALUES (%s, %s, %s, %s);"
+        "INSERT INTO pull_requests (number, project_id, created_at, author_id, state)"
+        "VALUES (%s, %s, %s, %s, %s);"
     )
     pull_requests_values = [
         pr_number,
         project_id_value,
         created_at_timestamp_value,
         author_id_value,
+        state_value,
     ]
     db_cursor.execute(pull_requests_sql, pull_requests_values)
 
@@ -135,6 +136,8 @@ for filename in glob.glob("*.json"):
     number = data["number"]
     # Finds the pull request creation date
     created_at = data["createdAt"]
+    # Finds the pull request state (OPEN, CLOSED, MERGED)
+    state = data.get("state", "OPEN")
     # If the author of the pull request is not a deleted user
     if data["author"] is not None:
         # Defines the author array of the collected data
@@ -159,7 +162,7 @@ for filename in glob.glob("*.json"):
 
             # Insert the pull request into the pull_requests table
             insert_pull_request(
-                cursor, number, project_id, created_at_timestamp, author_id
+                cursor, number, project_id, created_at_timestamp, author_id, state
             )
     # If the author of the pull request is a deleted user
     else:
@@ -173,7 +176,7 @@ for filename in glob.glob("*.json"):
         created_at_timestamp = convert_timestamp(created_at)
 
         # Insert the pull request into the pull_requests table
-        insert_pull_request(cursor, number, project_id, created_at_timestamp, login)
+        insert_pull_request(cursor, number, project_id, created_at_timestamp, login, state)
 
     # Finds the number of comments in the pull request
     comment_count = len(data["comments"]["nodes"])

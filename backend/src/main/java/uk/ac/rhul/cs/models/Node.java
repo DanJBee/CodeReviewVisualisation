@@ -23,6 +23,12 @@ public class Node {
 
   private transient List<String> commentDates;
 
+  // Workload: number of open PRs for this author
+  private int openPrCount;
+
+  // Maximum allowed open PRs before user is considered overloaded
+  private static final int MAX_WORKLOAD = 5;
+
   /**
    * Node constructor method.
    *
@@ -33,6 +39,7 @@ public class Node {
     this.authorId = authorId;
     this.avatarUrl = avatarUrl;
     this.size = size;
+    this.openPrCount = 0;
 
     this.commentDates = new ArrayList<String>();
   }
@@ -88,6 +95,36 @@ public class Node {
 
   public Integer getNumberOfCommentDates() {
     return new HashSet<String>(this.commentDates).size();
+  }
+
+  public int getOpenPrCount() {
+    return openPrCount;
+  }
+
+  public void setOpenPrCount(int openPrCount) {
+    this.openPrCount = openPrCount;
+  }
+
+  public void incrementOpenPrCount() {
+    this.openPrCount++;
+  }
+
+  /**
+   * Returns the workload status as a value between 0 and 1.
+   * 0 = fully loaded (red), 1 = available (green)
+   */
+  public double getWorkloadValue() {
+    if (openPrCount >= MAX_WORKLOAD) {
+      return 0.0; // Fully loaded
+    }
+    return 1.0 - ((double) openPrCount / MAX_WORKLOAD);
+  }
+
+  /**
+   * Returns true if the user has reached maximum workload
+   */
+  public boolean isOverloaded() {
+    return openPrCount >= MAX_WORKLOAD;
   }
 
   @Override

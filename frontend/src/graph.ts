@@ -76,8 +76,8 @@ const graph = () => {
     // Defines the link between each node in the graph
     const link = svg
       .append("g")
-      .attr("stroke", "#999")
-      .attr("stroke-opacity", 1.5)
+      .attr("stroke", "#cbd5e1")
+      .attr("stroke-opacity", 0.6)
       .selectAll()
       .data(links)
       .join("line")
@@ -101,8 +101,8 @@ const graph = () => {
     // Defines each individual node in the graph
     const node = svg
       .append("g")
-      .attr("stroke", "#fff")
-      .attr("stroke-width", 1.5)
+      .attr("stroke", "#e2e8f0")
+      .attr("stroke-width", 2)
       .selectAll()
       .data(nodes)
       .join("circle")
@@ -111,42 +111,27 @@ const graph = () => {
       // dimensions
       .attr("fill", (d: Node) => `url(#image-${d.authorId})`);
 
-      const colourScale = scaleLinear<string>()
+      // Workload colour scale: softer colors - green (available) to amber to red (overloaded)
+      const workloadColourScale = scaleLinear<string>()
       .domain([0, 0.5, 1])
-      .range(["red", "yellow", "green"]);
+      .range(["#ef4444", "#f59e0b", "#22c55e"]);
 
-      node.each(function (currentNode: Node) {
-        const authorCount = currentNode.count;
-        const colourValue = currentNode.colourValue;
-        console.log("colour value: " + colourValue);
+      // Add subtle workload indicator ring around each node (only visible when workload is concerning)
+      const workloadRing = svg
+        .append("g")
+        .attr("class", "workload-rings")
+        .selectAll()
+        .data(nodes)
+        .join("circle")
+        .attr("r", (d: Node) => scaleSize(d.size) + 3)
+        .attr("fill", "none")
+        .attr("stroke-width", 2.5)
+        .attr("stroke", (d: Node) => workloadColourScale(d.workloadValue))
+        .attr("opacity", (d: Node) => d.workloadValue < 0.6 ? 0.9 : 0.4); // more visible when concerning
 
-        if (authorCount == 1) {
-          select(this).style("stroke", "red");
-        } else if (authorCount == duration) {
-          select(this).style("stroke", "green");
-        } else {
-          select(this).style("stroke", colourScale(colourValue));
-        }
-      });
+      // Removed redundant node stroke coloring - workload ring provides the visual indicator
 
-      // Applies the same idea to the edges
-      link.each(function (currentLink: Link) {
-        const colourValue = currentLink.colourValue;
-        const sourceNode = currentLink.source;
-        const targetNode = currentLink.target;
-        const sourceCount = sourceNode.count || 0;
-        const targetCount = targetNode.count || 0;
-        const averageCount = (sourceCount + targetCount) / 2;
-
-      
-        if (averageCount == 1) {
-          select(this).style("stroke", "red");
-        } else if (averageCount == duration) {
-          select(this).style("stroke", "green");
-        } else {
-          select(this).style("stroke", colourScale(colourValue));
-        }
-      });
+      // Links use neutral gray - no color coding for cleaner look
 
     // Sets the position attribute of the links & nodes in the graph each time the nodes 'ticks'
     function ticked() {
@@ -157,6 +142,9 @@ const graph = () => {
         .attr("y2", (d: Link) => d.target.y);
 
       node.attr("cx", (d: Node) => d.x).attr("cy", (d: any) => d.y);
+      
+      // Move workload rings with nodes
+      workloadRing.attr("cx", (d: Node) => d.x).attr("cy", (d: Node) => d.y);
     }
 
     // Defines the simulation of the physics on the nodes in the graph
@@ -220,11 +208,15 @@ const graph = () => {
       .attr("y", "0")
       .attr("height", (d: Node) => scaleSize(d.size) * 2) // double the radius value
       .attr("width", (d: Node) => scaleSize(d.size) * 2) // double the radius value
-      .attr("xlink:href", (d: Node) => d.avatarUrl) // this value controls the image on the nodes in the graph
-      .attr("style", "filter: blur(2px);");
+      .attr("xlink:href", (d: Node) => d.avatarUrl); // this value controls the image on the nodes in the graph
 
-    // Appends a title to each node
-    node.append("title").text((d: Node) => d.authorId);
+    // Appends a title to each node with review workload info
+    node.append("title").text((d: Node) => {
+      const status = d.overloaded ? "Overloaded" : 
+                     d.openPrCount >= 3 ? "High workload" : 
+                     "Available";
+      return `${d.authorId} • ${d.openPrCount}/5 reviews pending • ${status}`;
+    });
 
     // Applies the drag physics to each node in the graph
     node.call(

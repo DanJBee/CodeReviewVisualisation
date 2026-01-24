@@ -31,6 +31,8 @@ public class PullRequest {
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "pullRequest")
   private List<Comment> comments;
 
+  private String state;
+
   public PullRequest() {
   }
 
@@ -86,5 +88,13 @@ public class PullRequest {
 
   public List<Comment> getComments() {
     return comments;
+  }
+
+  public String getState() {
+    return state;
+  }
+
+  public void setState(String state) {
+    this.state = state;
   }
 }

@@ -77,6 +77,8 @@ public class GraphService {
     List<Node> nodes = new ArrayList<>();
     List<Link> links = new ArrayList<>();
     Map<String, Integer> authorCount = new HashMap<>();
+    Map<String, Integer> reviewWorkload = new HashMap<>(); // PRs to review per user
+    
     for (PullRequest pullRequest : pullRequests) {
       // We excluded all bots that have typename with bot, but still some bots have user typename.
       if (pullRequest.getAuthor().getAuthorId().toLowerCase().contains("bot"))
@@ -86,6 +88,11 @@ public class GraphService {
           authorCount.getOrDefault(pullRequest.getAuthor().getAuthorId(), 0) + 1);
 
       Node prAuthor = findNodeOrCreate(nodes, pullRequest.getAuthor());
+      String prAuthorId = pullRequest.getAuthor().getAuthorId();
+      boolean isOpenPr = "OPEN".equals(pullRequest.getState());
+
+      // Track unique reviewers for this PR (to avoid counting same reviewer multiple times per PR)
+      java.util.Set<String> prReviewers = new java.util.HashSet<>();
 
       for (Comment comment : pullRequest.getComments()) {
         if (comment.getAuthor() == null)
@@ -95,12 +102,19 @@ public class GraphService {
         if (comment.getAuthor().getAuthorId().toLowerCase().contains("bot"))
           continue;
 
-          authorCount.put(comment.getAuthor().getAuthorId(),
-              authorCount.getOrDefault(comment.getAuthor().getAuthorId(), 0) + 1);
+          String commenterId = comment.getAuthor().getAuthorId();
+
+          authorCount.put(commenterId,
+              authorCount.getOrDefault(commenterId, 0) + 1);
 
           Node commentAuthor = findNodeOrCreate(nodes, comment.getAuthor());
           commentAuthor.setSize(commentAuthor.getSize() + 1);
           commentAuthor.addCommentDate(comment.getDateString());
+
+          // Track reviewers for open PRs (commenters who aren't the PR author)
+          if (isOpenPr && !commenterId.equals(prAuthorId)) {
+            prReviewers.add(commenterId);
+          }
 
           List<Node> authors = Arrays.asList(prAuthor, commentAuthor);
           authors.sort(Comparator.comparing(Node::getAuthorId));
@@ -118,10 +132,17 @@ public class GraphService {
           link.setThickness(link.getThickness() + 1);
           link.addCommentDate(comment.getDateString());
       }
+
+      // Increment review workload for each reviewer on this open PR
+      for (String reviewerId : prReviewers) {
+        reviewWorkload.put(reviewerId, reviewWorkload.getOrDefault(reviewerId, 0) + 1);
+      }
     }
 
     for (Node node : nodes) {
       node.setColourValue((double) node.getNumberOfCommentDates() / durationInDays);
+      // Set the review workload (open PRs they need to review)
+      node.setOpenPrCount(reviewWorkload.getOrDefault(node.getAuthorId(), 0));
     }
     for (Link link : links) {
       link.setColourValue((double) link.getNumberOfCommentDates() / durationInDays);

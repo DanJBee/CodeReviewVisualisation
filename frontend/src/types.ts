@@ -6,6 +6,9 @@ export interface Node extends SimulationNodeDatum {
   size: number;
   colourValue: number;
   count: number;
+  openPrCount: number;
+  workloadValue: number;
+  overloaded: boolean;
 }
 
 export interface Link extends SimulationLinkDatum<Node> {

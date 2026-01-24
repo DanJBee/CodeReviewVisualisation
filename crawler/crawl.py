@@ -40,6 +40,7 @@ query_template = """{
         node {
           number
           createdAt
+          state
           author {
             login
             avatarUrl
