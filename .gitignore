@@ -1,6 +1,10 @@
 # Credentials and secrets
 settings.ini
 
+# Runtime/crawled data
+data/
+crawler/cursor.txt
+
 # Python
 __pycache__/
 *.py[cod]
