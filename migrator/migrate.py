@@ -83,7 +83,7 @@ def insert_pull_request(
 ):
     # Insert into pull_requests table
     pull_requests_sql = (
-        "INSERT INTO pull_requests (number, project_id, created_at, author_id, state)"
+        "INSERT IGNORE INTO pull_requests (number, project_id, created_at, author_id, state)"
         "VALUES (%s, %s, %s, %s, %s);"
     )
     pull_requests_values = [
@@ -107,7 +107,7 @@ def insert_comment(db_cursor, author_id_value, created_at_date):
     cursor.fetchall()
 
     # If the author is a deleted user, then a "Ghost" value is used for author_id
-    comments_sql_deleted_user_query = "INSERT INTO comments (pull_request, author_id, created_at) VALUES (%s, %s, %s);"
+    comments_sql_deleted_user_query = "INSERT IGNORE INTO comments (pull_request, author_id, created_at) VALUES (%s, %s, %s);"
     comments_deleted_user_values = (
         last_inserted_pull_request_number[0],
         author_id_value,
