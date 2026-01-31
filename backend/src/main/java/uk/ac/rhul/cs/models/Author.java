@@ -18,6 +18,8 @@ public class Author {
 
   private String authorAvatarUrl;
 
+  private String authorTypeName;
+
   public Author() {}
 
   /**
@@ -51,5 +53,11 @@ public class Author {
     return authorAvatarUrl;
   }
 
+  public String getAuthorTypeName() {
+    return authorTypeName;
+  }
 
+  public void setAuthorTypeName(String authorTypeName) {
+    this.authorTypeName = authorTypeName;
+  }
 }

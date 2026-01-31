@@ -33,6 +33,12 @@ public class PullRequest {
 
   private String state;
 
+  @Column(name = "diff_url")
+  private String diffUrl;
+
+  @Column(name = "patch_url")
+  private String patchUrl;
+
   public PullRequest() {
   }
 
@@ -96,5 +102,21 @@ public class PullRequest {
 
   public void setState(String state) {
     this.state = state;
+  }
+
+  public String getDiffUrl() {
+    return diffUrl;
+  }
+ 
+  public void setDiffUrl(String diffUrl) {
+    this.diffUrl = diffUrl;
+  }
+
+  public String getPatchUrl() {
+    return patchUrl;
+  }
+
+  public void setPatchUrl(String patchUrl) {
+    this.patchUrl = patchUrl;
   }
 }

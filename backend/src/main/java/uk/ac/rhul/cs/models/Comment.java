@@ -1,5 +1,8 @@
 package uk.ac.rhul.cs.models;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Lob;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -35,6 +38,9 @@ public class Comment {
   @JoinColumn(name = "author_id")
   private Author author;
 
+  @Lob
+  @Column(name = "comment_body", columnDefinition = "TEXT")
+  private String commentBody;
 
   public Comment() {
   }
@@ -80,5 +86,13 @@ public class Comment {
   public String getDateString() {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     return this.createdAt.toLocalDateTime().format(formatter);
+  }
+
+  public String getCommentBody() {
+    return commentBody;
+  }
+
+  public void setCommentBody(String commentBody) {
+    this.commentBody = commentBody;
   }
 }
