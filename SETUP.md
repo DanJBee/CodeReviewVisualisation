@@ -58,6 +58,7 @@ brew services start mariadb
 
 ```bash
 # Update package list
+sudo add-apt-repository ppa:deadsnakes/ppa
 sudo apt update
 
 # Install Python 3.10
