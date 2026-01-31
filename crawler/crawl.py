@@ -54,6 +54,8 @@ query_template = """{
                 __typename
               }
               createdAt
+              # Request commnent body as well to further analyse its quality
+              body
             }
           }
         }
@@ -121,6 +123,33 @@ def crawl(
         result = run_query(query)
         if result is None:
             return None, False
+
+        # make a request to github api in order to fetch the diff and patch urls
+        # and append them to the pull request object
+        # these will be further given to the ai to analyse the content quality
+        repository = result.get("data", {}).get("repository", {})
+        pr_edges = repository.get("pullRequests", {}).get("edges", [])
+
+        for edge in pr_edges:
+            pr = edge.get("node")
+
+            if pr:
+                pr_number = pr.get("number")
+                if pr_number:
+                    api_url = f"https://api.github.com/repos/{repo_owner}/{name}/pulls/{pr_number}"
+                    headers = {
+                        'Authorization': f'token {config["DEFAULT"]["PAT"]}',
+                        'Accept': 'application.vnd.github.v3.diff'
+                    }
+                    response = requests.get(api_url, headers=headers)
+                    if response.status_code == 200:
+                        data = response.json()
+
+                        diff_url = data.get("diff_url")
+                        patch_url = data.get("patch_url")
+
+                        pr["diff_link"] = diff_url
+                        pr["patch_link"] = patch_url
     except Exception as exception:
         logging.error("Query failed", exception, exc_info=True)
         return crawl(
