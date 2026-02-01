@@ -23,6 +23,9 @@ To migrate data to your MariaDB relational database, first navigate to the `migr
 Next, you will need to install the `mysql-connector-python` library: `pip install mysql-connector-python`.
 After this, you can run the migrator: `python migrate.py`.
 
+### Using Gemini AI API
+In order to use the Gemini Model capabilities, generate a token from `https://aistudio.google.com/api-keys` and place it in `backend/src/main/resources/application.properties` file, filling `gemini.api.key` field. You can also change the model at need, by modifying the same file, but this time, the coresponding field is `gemini.api.url`.
+
 ### Running the backend
 
 You will need a MariaDB database with a `codereviewvisualisation` schema created. Spring Boot will create all the necessary tables for you.
