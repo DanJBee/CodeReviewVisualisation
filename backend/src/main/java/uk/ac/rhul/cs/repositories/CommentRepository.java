@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import java.sql.Timestamp;
 import java.util.List;
 
+import org.springframework.data.repository.query.Param;
+
 /**
  * Comment repository class.
  *
@@ -27,4 +29,9 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
   @Query(value = "SELECT type_name FROM authors, comments WHERE authors.author_id"
       + "= comments.author_id AND  authors.author_id = :authorId;", nativeQuery = true)
   List<String> findTypeNameByAuthorId(String authorId);
+
+  @Query(value = "SELECT c.* FROM comments c " +
+               "JOIN pull_requests pr ON c.pull_request = pr.id " +
+               "WHERE pr.project_id = :projectId", nativeQuery = true)
+  List<Comment> findAllByProjectId(@Param("projectId") Long projectId);
 }
