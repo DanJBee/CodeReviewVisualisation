@@ -106,3 +106,30 @@ Automatically: updates `settings.ini` → runs crawler → runs split → runs m
 |---------|----------|---------|-------------|
 | `MAX_PRS` | `crawler/crawl.py` | 100 | Max PRs to crawl (None = unlimited) |
 | `MAX_WORKLOAD` | `Node.java` | 5 | Reviews before user is "overloaded" |
+
+## 7. Improved Github Repo Crawler by requesting new information
+- Gather the content of pull requests discussions and comments
+- Gather the diff and patch files, made available through Github API
+
+## 8. Changes to database structure
+- Change database tables so they could also retain the new information mentioned above
+
+## 9. Changes to the data migration script
+- Improve `migrate.py` by adding support for the migration of the new crawled information
+
+## 10. Added AI Support
+
+**Problem:** CodeReviewVisualiser could, in its initial state, only provide information about the message exchange quantity between teammates.
+
+**Solution** Integrate AI to analyze the quality of messages passed between coleagues, and the relevance to the code changes that are being discussed.
+
+- Add Gemini AI API integration: currently using `Gemini 2.5 Flash Lite Model`.
+- Build an AI Personna that would act as a Team Supervisor, and would analyze the correctness and relevance of coleagues pull request commentaries.
+- Provide feedback resulted from comment and diff files analysis, and also generate valuable advice for each individual.
+- Based on the individual performance, establish if current worker is being lazy or does not have any work to attend to.:)
+- Assess each individual work load, by providing a qualificative.
+
+## 11. Format AI Response
+- Parse and format the template of Gemini AI Response and provide a JSON File containing only useful information.
+- Enrich the JSON by attaching the Avatar Photo URL of each worker.
+
